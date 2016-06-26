@@ -40,16 +40,21 @@ import qualified Data.HashTable.Class as H
 
 --
 -- polymorphic type class defining directed graph
+-- except g is not assumed to be a traversable or foldable
+-- 
 -- v (vertices) and e (edges) can be completely any types as long as we can define
--- verticesOf and cEdgesOf functions that impose directed graph structure
+-- resolveVertices and cEdgesOf functions.  cEdgesOf really imposes directed graph structure
 -- This class definition is really a copy-paste of D-graph definition from a graph textbook.
 --
 -- a simple implementation or this polymorphic type (class of types) will be provided at the end.
 -- NOTE:  a -> b -> c declares function of two arguments of type a and b returning type c
 --
+-- TODO This assumes that e can always be sematically resolved to (v,v)
+-- TODO needs validVertex :: g -> v -> Bool
+--
 class DGraph g v e where
-  verticesOf ::  g -> e -> (v,v)  -- given graph g and edge e returns a pair of verices
-  cEdgesOf   ::  g -> v -> [e]    -- given graph g and vertex v return a list of edges
+  resolveVertices ::  g -> e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
+  cEdgesOf   ::  g -> v -> [e]    -- return a list of child edges, empty if not a valid vertex
 
 --
 -- aggregator type that will be used for folding, notice arbitrary not specified types v (vertex) e (edge) and a (acc)
@@ -83,7 +88,7 @@ dfsFoldSlow g v logic =
         _applyVertex = applyVertex logic   -- (:t) v -> a -> a
         _applyEdge = applyEdge logic       -- (:t) e -> a -> a
         _childTempResults = map ((\ev -> PartialFoldRes{_rvertex = (_second ev), _redge = (_first ev), _raccumulator = (dfsFoldSlow g (_second ev) logic)})
-                           . (\e -> (e, (_second . (verticesOf g)) e))) (g `cEdgesOf` v) :: [PartialFoldRes v e a]
+                           . (\e -> (e, (_second . (resolveVertices g)) e))) (g `cEdgesOf` v) :: [PartialFoldRes v e a]
     in (_applyVertex v) . _aggregate $ map (view raccumulator)
           $ map (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
 
@@ -97,7 +102,7 @@ dfsFoldST h g v logic =
         _childEdges =  g `cEdgesOf` v      :: [e]
     in do
         _childTempResults <- forM _childEdges (\_childEdge -> do
-              let _childVertex= (_second . (verticesOf g)) _childEdge
+              let _childVertex= (_second . (resolveVertices g)) _childEdge
               _childResult <- dfsFoldST h g _childVertex logic
               return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
          )
@@ -136,7 +141,7 @@ _onSecondArg f _ a = f a
 ----------------------------------------------------------------------
 -- tests
 
--- let's create a very simple (and slow) instance of DGraph class for testing
+-- let's create a very simple (and slow)  of DGraph class for testing
 -- Note: runSimpleGraph is like a getter you can obtain list of pairs encapsulated
 -- in SimpleGraph sg by calling 'runSimpleGraph sg'
 --
@@ -151,7 +156,7 @@ newtype SimpleGraph v = SimpleGraph { runSimpleGraph:: [(v,v)]}
 -- (this is not some Java, things are logical here)
 --
 instance forall v . (Eq v) => (DGraph (SimpleGraph v) v (v,v)) where
-  verticesOf g e = e                                                      --(:t) g -> e -> (v,v), brain teaser why is that?
+  resolveVertices g e = e                                                      --(:t) g -> e -> (v,v), brain teaser why is that?
   cEdgesOf g ver = filter (\vv -> _first vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
 
 -- simple test data (list of pars that will serve as edges)
