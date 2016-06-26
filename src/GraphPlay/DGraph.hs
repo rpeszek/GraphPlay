@@ -26,6 +26,8 @@
 {-# LANGUAGE ScopedTypeVariables  #-}
 {-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE FlexibleInstances  #-}
+{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE OverlappingInstances #-}
 
 module GraphPlay.DGraph where --exports everything, a terrible programmer wrote it
 
@@ -38,24 +40,50 @@ import Control.Monad (join)
 import Data.List (nub)
 import qualified Data.HashTable.Class as H
 
---
--- polymorphic type class defining directed graph
--- except g is not assumed to be a traversable or foldable
--- 
--- v (vertices) and e (edges) can be completely any types as long as we can define
--- resolveVertices and cEdgesOf functions.  cEdgesOf really imposes directed graph structure
--- This class definition is really a copy-paste of D-graph definition from a graph textbook.
---
--- a simple implementation or this polymorphic type (class of types) will be provided at the end.
--- NOTE:  a -> b -> c declares function of two arguments of type a and b returning type c
---
--- TODO This assumes that e can always be sematically resolved to (v,v)
--- TODO needs validVertex :: g -> v -> Bool
---
-class DGraph g v e where
-  resolveVertices ::  g -> e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
-  cEdgesOf   ::  g -> v -> [e]    -- return a list of child edges, empty if not a valid vertex
 
+class DEdgeSemantics e v where
+  resolveVertices ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
+
+--
+-- one who directs directed graph :) - in child direction
+--
+class (DEdgeSemantics e v)  => DirectorC g v e where
+  cEdgesOf   ::  g -> v -> [e]   -- return a list of child edges, empty if not a valid vertex or a leaf
+
+class (DEdgeSemantics e v, Eq v)  =>  DGraph g v e where
+  validVetex ::  g -> v -> Bool
+  edgesOf    ::  g -> v -> [e]   -- return a of all edges, empty if not a valid vertex or disconnected vertex
+
+-- let's create a very simple (and slow)  of DirectorC class for testing
+-- Note: runSimpleGraph is like a getter you can obtain list of pairs encapsulated
+-- in SimpleGraph sg by calling 'runSimpleGraph sg'
+--
+newtype SimpleGraph v = SimpleGraph { runSimpleGraph:: [(v,v)]}
+
+--
+-- instances
+--
+instance forall g v e . (DGraph g v e) => DirectorC g v e where
+   cEdgesOf g v = filter (\e -> v == ((first' . resolveVertices) e)) (edgesOf g v)
+
+instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
+  resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
+
+instance forall v . (Eq v) => (DirectorC (SimpleGraph v) v (v,v)) where
+  cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
+
+
+-- HELPERS
+-- various helpers (typically exist defined somewhere else but wanted to limit imports)
+--
+second' :: (a,b) -> b
+second' (_,x) = x
+
+first' :: (a,b) -> a
+first' (x,_) = x
+
+
+------------ TODO move out   --
 --
 -- aggregator type that will be used for folding, notice arbitrary not specified types v (vertex) e (edge) and a (acc)
 --
@@ -72,29 +100,29 @@ data PartialFoldRes v e a = PartialFoldRes {_rvertex:: v, _redge:: e, _raccumula
 makeLenses ''PartialFoldRes
 
 --
--- polymorphic DFS graphFold function, folds any implementation of polymorphic DGraph g starting at vertex v
+-- polymorphic DFS graphFold function, folds any implementation of polymorphic DirectorC g starting at vertex v
 -- using aggregator DGAggregator that aggregates to an arbitrary type a
 --
--- Note RHS of => defines constraints (g v e form a DGraph)
+-- Note RHS of => defines constraints (g v e form a DirectorC)
 -- '.' is function composition
 -- :: defines a type to help compiler approve the code (polymporhic definition make Haskell often require explicitly specifying type in implementation)
 -- \x -> expression    defines a lambda in Haskell
 -- $ replaces '()' making code easier to read.  Instead of grouping x ( y z ) I can write x $ y z
 -- 'over' mutates lens (like raccumulator defined in the helper type), 'view' is a lens getter
 --
-dfsFoldSlow :: forall g v e a. (DGraph g v e) => g -> v -> DGAggregator v e a  -> a
+dfsFoldSlow :: forall g v e a. (DirectorC g v e) => g -> v -> DGAggregator v e a  -> a
 dfsFoldSlow g v logic =
     let _aggregate = aggregate logic       -- (:t) [a] -> a
         _applyVertex = applyVertex logic   -- (:t) v -> a -> a
         _applyEdge = applyEdge logic       -- (:t) e -> a -> a
-        _childTempResults = map ((\ev -> PartialFoldRes{_rvertex = (_second ev), _redge = (_first ev), _raccumulator = (dfsFoldSlow g (_second ev) logic)})
-                           . (\e -> (e, (_second . (resolveVertices g)) e))) (g `cEdgesOf` v) :: [PartialFoldRes v e a]
+        _childTempResults = map ((\ev -> PartialFoldRes{_rvertex = (second' ev), _redge = (first' ev), _raccumulator = (dfsFoldSlow g (second' ev) logic)})
+                           . (\e -> (e, (second' . resolveVertices) e))) (g `cEdgesOf` v) :: [PartialFoldRes v e a]
     in (_applyVertex v) . _aggregate $ map (view raccumulator)
           $ map (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
 
 
 
-dfsFoldST :: forall s g v e a. (Eq v, Hashable v, DGraph g v e) => ST s (HashTable s v a) -> g -> v -> DGAggregator v e a  -> ST s a
+dfsFoldST :: forall s g v e a. (Eq v, Hashable v, DirectorC g v e) => ST s (HashTable s v a) -> g -> v -> DGAggregator v e a  -> ST s a
 dfsFoldST h g v logic =
     let _aggregate = aggregate logic       :: [a] -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
@@ -102,7 +130,7 @@ dfsFoldST h g v logic =
         _childEdges =  g `cEdgesOf` v      :: [e]
     in do
         _childTempResults <- forM _childEdges (\_childEdge -> do
-              let _childVertex= (_second . (resolveVertices g)) _childEdge
+              let _childVertex= (second' . resolveVertices) _childEdge
               _childResult <- dfsFoldST h g _childVertex logic
               return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
          )
@@ -110,23 +138,16 @@ dfsFoldST h g v logic =
             $ map (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
 
 
-runDtsFoldST :: forall s g v e a. (Eq v, Hashable v, DGraph g v e) => g -> v -> DGAggregator v e a  -> ST s a
+runDtsFoldST :: forall s g v e a. (Eq v, Hashable v, DirectorC g v e) => g -> v -> DGAggregator v e a  -> ST s a
 runDtsFoldST g v logic = do
      ht <- H.new :: ST s (HashTable s v a)
      a <- dfsFoldST (return ht) g v logic
      return a
 
-dfsFold :: forall g v e a. (Eq v, Hashable v, DGraph g v e) => g -> v -> DGAggregator v e a  -> a
+dfsFold :: forall g v e a. (Eq v, Hashable v, DirectorC g v e) => g -> v -> DGAggregator v e a  -> a
 dfsFold g v agg = runST $ runDtsFoldST g v agg
--- various helpers (typically exist defined somewhere else but wanted to limit imports)
--- remember (,) is a pair
---
-_second :: (a,b) -> b
-_second (_,x) = x
 
-_first :: (a,b) -> a
-_first (x,_) = x
-
+-- HELPERS
 --
 -- converts function of one arg to function of 2 args which ignores the first argument
 -- read declaration like so : (a -> b) -> (c -> a -> b)  (-> always associate to the right)
@@ -141,23 +162,6 @@ _onSecondArg f _ a = f a
 ----------------------------------------------------------------------
 -- tests
 
--- let's create a very simple (and slow)  of DGraph class for testing
--- Note: runSimpleGraph is like a getter you can obtain list of pairs encapsulated
--- in SimpleGraph sg by calling 'runSimpleGraph sg'
---
-newtype SimpleGraph v = SimpleGraph { runSimpleGraph:: [(v,v)]}
-
---
--- notice how this syntax defines how SimpleGraph is a DGraph
--- edges are defined as (v,v)
---
--- NOTICE: we need to find matching first element, so we need to have ==
--- not all types have that only types that implement Eq class do.
--- (this is not some Java, things are logical here)
---
-instance forall v . (Eq v) => (DGraph (SimpleGraph v) v (v,v)) where
-  resolveVertices g e = e                                                      --(:t) g -> e -> (v,v), brain teaser why is that?
-  cEdgesOf g ver = filter (\vv -> _first vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
 
 -- simple test data (list of pars that will serve as edges)
 testEdges = [
@@ -170,10 +174,10 @@ testEdges = [
 --
 -- notice SimpleGraph is not specialized to String type
 --
-testDimondGraph :: SimpleGraph String
-testDimondGraph = SimpleGraph testEdges
+testDimonGraph :: SimpleGraph String
+testDimonGraph = SimpleGraph testEdges
 
--- testDimondGraph `cEdgesOf` "a0" :: [(String, String)]
+-- testDimonGraph `cEdgesOf` "a0" :: [(String, String)]
 
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)
@@ -186,7 +190,7 @@ countEdges = DGAggregator {
     }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = (dfsFold testDimondGraph "a0" (countEdges :: DGAggregator v (v, v) Int)) -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = (dfsFold testDimonGraph "a0" (countEdges :: DGAggregator v (v, v) Int)) -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 -- another example aggregator (polymorphic)
@@ -205,7 +209,7 @@ flattenUnique = nub . join  -- nub returns list of unique items (that is why Eq 
                             -- '.' is function composition in Haskell (it is iteself a function of cause)
 
 testDimongVerices:: [String]
-testDimongVerices = (dfsFold testDimondGraph "a0" (listChildVertices :: DGAggregator String (String, String) [String])) -- :: tells compiler how to specialize polymorphic aggreagator
+testDimongVerices = (dfsFold testDimonGraph "a0" (listChildVertices :: DGAggregator String (String, String) [String])) -- :: tells compiler how to specialize polymorphic aggreagator
 -- prints ["a0","a01","a3","a02"]
 
 --
@@ -228,7 +232,7 @@ safeListMax a []     = a                        -- for empty list
 safeListMax a (x:xs) = max x (safeListMax a xs) -- for non-emtpy list starting with x
 
 testDimongGraphDepthCount:: Int
-testDimongGraphDepthCount = (dfsFold testDimondGraph "a0" (countDepth :: DGAggregator v (v, v) Int)) -- :: needs to define edge type
+testDimongGraphDepthCount = (dfsFold testDimonGraph "a0" (countDepth :: DGAggregator v (v, v) Int)) -- :: needs to define edge type
 -- prints 2
 
 tests = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]
