@@ -1,13 +1,13 @@
 name:                graphplay
-version:             0.1.0.0
+version:             0.0.0.1
 synopsis:            Initial project template from stack
 description:         Please see README.md
 homepage:            https://github.com/githubuser/graphplay#readme
 license:             BSD3
 license-file:        LICENSE
-author:              Author name here
+author:              Robert Peszek
 maintainer:          example@example.com
-copyright:           2016 Author name here
+copyright:           2016 Robert Peszek
 category:            Web
 build-type:          Simple
 -- extra-source-files:
