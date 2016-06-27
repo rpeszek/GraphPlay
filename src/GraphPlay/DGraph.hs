@@ -32,6 +32,7 @@
 module GraphPlay.DGraph where --exports everything, a terrible programmer wrote it
 
 import GraphPlay.Helpers
+import Data.List (nub)
 
 --
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know
@@ -49,10 +50,13 @@ class (DEdgeSemantics e v)  => DirectorC g v e where
 
 --
 -- Directed Graph
+-- mimics math defintion of being a set of edges and vertices
+-- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
+-- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (DEdgeSemantics e v, Eq v)  =>  DGraph g v e where
-  validVetex ::  g -> v -> Bool
-  edgesOf    ::  g -> v -> [e]   -- returns a of all edges (children and parents), empty if not a valid vertex or disconnected vertex
+class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t where
+  vertices ::  g -> t v
+  edges    ::  g -> t e
 
 -- let's create a very simple (and slow)  of DirectorC class for testing
 -- Note: runSimpleGraph is like a getter you can obtain list of pairs encapsulated
@@ -63,16 +67,15 @@ newtype SimpleGraph v = SimpleGraph { runSimpleGraph:: [(v,v)]}
 --
 -- instances
 --
-instance forall g v e . (DGraph g v e) => DirectorC g v e where
-   cEdgesOf g v = filter (\e -> v == ((first' . resolveVertices) e)) (edgesOf g v)
+
+-- TODO default implementation of DirectorC under Eq predicate?
 
 instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
   resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
 
--- why do I need that DGraph should be enough?  do I need another pragma?
 instance forall v . (Eq v) => (DirectorC (SimpleGraph v) v (v,v)) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
 
-instance forall v . (Eq v) => (DGraph (SimpleGraph v) v (v,v)) where
-  validVetex g ver =  foldr (\vv b -> b || (first' vv == ver) || (second' vv == ver)) False $ runSimpleGraph g  --foldr :: Foldable t => (a -> b -> b) -> b -> t a -> b
-  edgesOf g ver = filter (\vv -> (first' vv == ver) || (second' vv == ver)) . runSimpleGraph $ g  --(:t) g -> v -> [e]
+instance  forall v . (Eq v) => (DGraph (SimpleGraph v) v (v,v) []) where
+  vertices g =  nub . (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . runSimpleGraph $ g
+  edges g  =  runSimpleGraph $ g
