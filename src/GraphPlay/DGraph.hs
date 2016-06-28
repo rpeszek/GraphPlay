@@ -44,13 +44,14 @@ class DEdgeSemantics e v where
 --
 -- DirectorC one who directs directed graph :) - in child direction
 -- It is less than a graph, we can ask for list of child edges at any instance of type v
+-- caller picks with Traversable to use for navigatigaging children
 --
-class (DEdgeSemantics e v)  => DirectorC g v e where
-  cEdgesOf   ::  g -> v -> [e]   -- return a list of child edges, empty if not a valid vertex or a leaf
+class (Traversable t, DEdgeSemantics e v)  => DirectorC g v e t where
+  cEdgesOf   ::  g -> v -> t e   -- return a list of child edges, empty if not a valid vertex or a leaf
 
 --
 -- Directed Graph
--- mimics math defintion of being a set of edges and vertices
+-- mimics math defintion of being a set of d-edges and vertices
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
@@ -73,7 +74,7 @@ newtype SimpleGraph v = SimpleGraph { runSimpleGraph:: [(v,v)]}
 instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
   resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
 
-instance forall v . (Eq v) => (DirectorC (SimpleGraph v) v (v,v)) where
+instance forall v . (Eq v) => (DirectorC (SimpleGraph v) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
 
 instance  forall v . (Eq v) => (DGraph (SimpleGraph v) v (v,v) []) where

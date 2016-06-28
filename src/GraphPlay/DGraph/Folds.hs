@@ -8,6 +8,8 @@
 {-# LANGUAGE FlexibleInstances  #-}
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE OverlappingInstances #-}
+--{-# LANGUAGE GADTs #-}
+{-# LANGUAGE RankNTypes #-}
 
 module GraphPlay.DGraph.Folds where --TODO exports everything, a terrible programmer wrote it
 
@@ -24,10 +26,18 @@ import GraphPlay.DGraph
 --
 -- aggregator type that will be used for folding, notice arbitrary not specified types v (vertex) e (edge) and a (acc)
 --
-data DGAggregator v e a = DGAggregator {
-    applyVertex :: v -> a -> a,        -- function that takes vertex and acc and returns new acc
-    applyEdge :: e -> a -> a,          -- function that takes an edge and acc and returns new acc
-    aggregate :: [a] -> a              -- function that combines several acc results into one (to be used across child results of a vertex)
+{-}
+data DGAggregator t v e a where
+  DGAggregator :: {
+     applyVertex :: v -> a -> a,        -- function that takes vertex and acc and returns new acc
+     applyEdge :: e -> a -> a,          -- function that takes an edge and acc and returns new acc
+     aggregate :: (Traversable t) => t a -> a              -- function that combines several acc results into one (to be used across child results of a vertex)
+  } -> DGAggregator t v e a
+  -}
+data DGAggregator t v e a = DGAggregator {
+      applyVertex :: v -> a -> a,        -- function that takes vertex and acc and returns new acc
+      applyEdge :: e -> a -> a,          -- function that takes an edge and acc and returns new acc
+      aggregate :: (Traversable t) => t a -> a               -- function that combines several acc results into one (to be used across child results of a vertex)
 }
 
 --
@@ -47,39 +57,40 @@ makeLenses ''PartialFoldRes
 -- $ replaces '()' making code easier to read.  Instead of grouping x ( y z ) I can write x $ y z
 -- 'over' mutates lens (like raccumulator defined in the helper type), 'view' is a lens getter
 --
-dfsFoldSlow :: forall g v e a. (DirectorC g v e) => g -> v -> DGAggregator v e a  -> a
+dfsFoldSlow :: forall g v e t a. (DirectorC g v e t) => g -> v -> DGAggregator t v e a  -> a
 dfsFoldSlow g v logic =
     let _aggregate = aggregate logic       -- (:t) [a] -> a
         _applyVertex = applyVertex logic   -- (:t) v -> a -> a
         _applyEdge = applyEdge logic       -- (:t) e -> a -> a
-        _childTempResults = map ((\ev -> PartialFoldRes{_rvertex = (second' ev), _redge = (first' ev), _raccumulator = (dfsFoldSlow g (second' ev) logic)})
-                           . (\e -> (e, (second' . resolveVertices) e))) (g `cEdgesOf` v) :: [PartialFoldRes v e a]
-    in (_applyVertex v) . _aggregate $ map (view raccumulator)
-          $ map (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
+        _childTempResults = fmap ((\ev -> PartialFoldRes{_rvertex = (second' ev), _redge = (first' ev), _raccumulator = (dfsFoldSlow g (second' ev) logic)})
+                           . (\e -> (e, (second' . resolveVertices) e))) (g `cEdgesOf` v) :: t (PartialFoldRes v e a)
+    in (_applyVertex v) . _aggregate $ fmap (view raccumulator)
+          $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
 
-
-
-dfsFoldST :: forall s g v e a. (Eq v, Hashable v, DirectorC g v e) => ST s (HashTable s v a) -> g -> v -> DGAggregator v e a  -> ST s a
+--
+--TODO understand why formM did not need to change when [] became t
+--
+dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, DirectorC g v e t) => ST s (HashTable s v a) -> g -> v -> DGAggregator t v e a  -> ST s a
 dfsFoldST h g v logic =
-    let _aggregate = aggregate logic       :: [a] -> a
+    let _aggregate = aggregate logic       :: t a -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
         _applyEdge = applyEdge logic       :: e -> a -> a
-        _childEdges =  g `cEdgesOf` v      :: [e]
+        _childEdges =  g `cEdgesOf` v      :: t e
     in do
         _childTempResults <- forM _childEdges (\_childEdge -> do
               let _childVertex= (second' . resolveVertices) _childEdge
               _childResult <- dfsFoldST h g _childVertex logic
               return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
          )
-        return $ (_applyVertex v) . _aggregate $ map (view raccumulator)
-            $ map (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
+        return $ (_applyVertex v) . _aggregate $ fmap (view raccumulator)
+            $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
 
 
-runDtsFoldST :: forall s g v e a. (Eq v, Hashable v, DirectorC g v e) => g -> v -> DGAggregator v e a  -> ST s a
+runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, DirectorC g v e t) => g -> v -> DGAggregator t v e a  -> ST s a
 runDtsFoldST g v logic = do
      ht <- H.new :: ST s (HashTable s v a)
      a <- dfsFoldST (return ht) g v logic
      return a
 
-dfsFold :: forall g v e a. (Eq v, Hashable v, DirectorC g v e) => g -> v -> DGAggregator v e a  -> a
+dfsFold :: forall g v e t a. (Eq v, Hashable v, DirectorC g v e t) => g -> v -> DGAggregator t v e a  -> a
 dfsFold g v agg = runST $ runDtsFoldST g v agg
