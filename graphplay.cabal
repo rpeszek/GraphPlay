@@ -2,7 +2,7 @@ name:                graphplay
 version:             0.0.0.1
 synopsis:            Initial project template from stack
 description:         Please see README.md
-homepage:            https://github.com/githubuser/graphplay#readme
+homepage:            https://github.com/rpeszek/GraphPlay#readme
 license:             BSD3
 license-file:        LICENSE
 author:              Robert Peszek
@@ -24,18 +24,19 @@ library
                       , containers
   default-language:    Haskell2010
 
-executable graphplay-exe
-  hs-source-dirs:      app
-  main-is:             Main.hs
-  ghc-options:         -threaded -rtsopts -with-rtsopts=-N
-  build-depends:       base
-                     , graphplay
-  default-language:    Haskell2010
+-- executable graphplay-exe
+--   hs-source-dirs:      app
+--   main-is:             Main.hs
+--   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
+--   build-depends:       base
+--                      , graphplay
+--   default-language:    Haskell2010
 
 test-suite graphplay-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
-  main-is:             Spec.hs
+  --                   change back to Spec.hs when tests are in place
+  main-is:             Experiment.hs
   build-depends:       base
                      , graphplay
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
@@ -43,4 +44,4 @@ test-suite graphplay-test
 
 source-repository head
   type:     git
-  location: https://github.com/githubuser/graphplay
+  location: https://github.com/rpeszek/GraphPlay

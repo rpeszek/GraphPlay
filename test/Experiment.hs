@@ -16,6 +16,10 @@ import GraphPlay.DGraph.Folds
 import Control.Monad (join)
 import Data.List (nub)
 
+
+main :: IO ()
+main = print experiments
+
 -- simple test data (list of pars that will serve as edges)
 testEdges = [
         ("a0", "a01"),
@@ -88,7 +92,7 @@ testDimongGraphDepthCount:: Int
 testDimongGraphDepthCount = (dfsFold testDimonGraph (countDepth :: DGAggregator [] v (v, v) Int) "a0") -- :: needs to define edge type
 -- prints 2
 
-tests = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]
+experiments = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]
 -- prints all examples
 
 --about 62 code lines

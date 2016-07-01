@@ -48,7 +48,7 @@ class DEdgeSemantics e v | e -> v where
 -- It is less than a graph, we can ask for list of child edges at any instance of type v
 -- caller picks with Traversable to use for navigatigaging children
 --
-class (Traversable t, DEdgeSemantics e v)  => DirectorC g v e t | g -> v, e -> v where
+class (Traversable t, DEdgeSemantics e v)  => DirectorC g v e t | g -> t, g -> v, e -> v where
   cEdgesOf   ::  g -> v -> t e   -- return a list of child edges, empty if not a valid vertex or a leaf
 
 --
@@ -57,7 +57,7 @@ class (Traversable t, DEdgeSemantics e v)  => DirectorC g v e t | g -> v, e -> v
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> v, e -> v where
+class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> t, g -> v, e -> v where
   vertices ::  g -> t v
   edges    ::  g -> t e
 
@@ -76,9 +76,18 @@ newtype SimpleGraph v t = SimpleGraph { runSimpleGraph:: t (v,v)}
 instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
   resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
 
---TODO needs to get more general than []
-instance forall v . (Eq v) => (DirectorC (SimpleGraph v []) v (v,v) []) where
+--TODO these are temporary
+instance forall v t. (Eq v) => (DirectorC (SimpleGraph v []) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
+
+-- needs work, not efficient anyway, needs fast indexing of graph
+--instance forall v t. (Eq v, Traversable t, Applicative t, Monoid (t (v,v))) => (DirectorC (SimpleGraph v t) v (v,v) t) where
+--    cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
+
+-- misses nub, it is not efficient anyway
+--instance  forall v t . ( Eq v, Foldable t, Monoid (t (v,v))) => (DGraph (SimpleGraph v t) v (v,v) t) where
+--  vertices g =  (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) mempty) . runSimpleGraph $ g
+--  edges g  =  runSimpleGraph $ g
 
 instance  forall v . (Eq v) => (DGraph (SimpleGraph v []) v (v,v) []) where
   vertices g =  nub . (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . runSimpleGraph $ g
