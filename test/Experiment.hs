@@ -12,7 +12,7 @@
 
 import GraphPlay.DGraph
 import GraphPlay.Helpers
-import GraphPlay.DGraph.Folds
+import GraphPlay.DGraph.DfsFolds
 import Control.Monad (join)
 import Data.List (nub)
 

@@ -26,14 +26,6 @@ import GraphPlay.DGraph
 --
 -- aggregator type that will be used for folding, notice arbitrary not specified types v (vertex) e (edge) and a (acc)
 --
-{-}
-data DGAggregator t v e a where
-  DGAggregator :: {
-     applyVertex :: v -> a -> a,        -- function that takes vertex and acc and returns new acc
-     applyEdge :: e -> a -> a,          -- function that takes an edge and acc and returns new acc
-     aggregate :: (Traversable t) => t a -> a              -- function that combines several acc results into one (to be used across child results of a vertex)
-  } -> DGAggregator t v e a
-  -}
 data DGAggregator t v e a = DGAggregator {
       applyVertex :: v -> a -> a,        -- function that takes vertex and acc and returns new acc
       applyEdge :: e -> a -> a,          -- function that takes an edge and acc and returns new acc
@@ -46,6 +38,11 @@ data DGAggregator t v e a = DGAggregator {
 data PartialFoldRes v e a = PartialFoldRes {_rvertex:: v, _redge:: e, _raccumulator:: a}
 makeLenses ''PartialFoldRes
 
+data FoldOptimizer m a b = FoldOptimizer {
+      optimize :: (a -> m b) -> a -> m b
+}
+
+
 --
 -- polymorphic DFS graphFold function, folds any implementation of polymorphic CIndex g starting at vertex v
 -- using aggregator DGAggregator that aggregates to an arbitrary type a
@@ -57,7 +54,29 @@ makeLenses ''PartialFoldRes
 -- $ replaces '()' making code easier to read.  Instead of grouping x ( y z ) I can write x $ y z
 -- 'over' mutates lens (like raccumulator defined in the helper type), 'view' is a lens getter
 --
+dfsFoldM :: forall m g v e t a. (Monad m, CIndex g v e t) => FoldOptimizer m v a -> g ->  DGAggregator t v e a  -> v -> m a
+dfsFoldM optimizer g logic v =
+    let _aggregate = aggregate logic       :: t a -> a
+        _applyVertex = applyVertex logic   :: v -> a -> a
+        _applyEdge = applyEdge logic       :: e -> a -> a
+        _childEdges =  g `cEdgesOf` v      :: t e
+    in do
+        _childTempResults <- forM _childEdges (\_childEdge -> do
+              let _childVertex= (second' . resolveVertices) _childEdge
+              _childResult <- optimize optimizer (dfsFoldM optimizer g logic) $ _childVertex
+              return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
+         )
+        return $ (_applyVertex v) . _aggregate $ fmap (view raccumulator)
+            $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
+
+
+
+
 dfsFoldSlow :: forall g v e t a. (CIndex g v e t) => g -> DGAggregator t v e a  -> v -> a
+dfsFoldSlow g logic v = let optimizer = FoldOptimizer { optimize = id } :: FoldOptimizer Identity v a
+              in runIdentity (dfsFoldM optimizer g logic v)
+
+{-  THIS Alternative implementation would not need Eq!
 dfsFoldSlow g logic v =
     let _aggregate = aggregate logic       -- (:t) [a] -> a
         _applyVertex = applyVertex logic   -- (:t) v -> a -> a
@@ -66,11 +85,16 @@ dfsFoldSlow g logic v =
                            . (\e -> (e, (second' . resolveVertices) e))) (g `cEdgesOf` v) :: t (PartialFoldRes v e a)
     in (_applyVertex v) . _aggregate $ fmap (view raccumulator)
           $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
+-}
+
 
 --
 --TODO understand why formM did not need to change when [] became t
 --
 dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  DGAggregator t v e a  -> v -> ST s a
+dfsFoldST h     = let optimizer = FoldOptimizer { optimize = memo h } :: FoldOptimizer (ST s) v a
+                  in dfsFoldM optimizer 
+{-}
 dfsFoldST h g logic v =
     let _aggregate = aggregate logic       :: t a -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
@@ -84,7 +108,7 @@ dfsFoldST h g logic v =
          )
         return $ (_applyVertex v) . _aggregate $ fmap (view raccumulator)
             $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
-
+-}
 
 runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
