@@ -57,12 +57,12 @@ makeLenses ''PartialFoldRes
 -- $ replaces '()' making code easier to read.  Instead of grouping x ( y z ) I can write x $ y z
 -- 'over' mutates lens (like raccumulator defined in the helper type), 'view' is a lens getter
 --
-dfsFoldSlow :: forall g v e t a. (DirectorC g v e t) => g -> v -> DGAggregator t v e a  -> a
-dfsFoldSlow g v logic =
+dfsFoldSlow :: forall g v e t a. (DirectorC g v e t) => g -> DGAggregator t v e a  -> v -> a
+dfsFoldSlow g logic v =
     let _aggregate = aggregate logic       -- (:t) [a] -> a
         _applyVertex = applyVertex logic   -- (:t) v -> a -> a
         _applyEdge = applyEdge logic       -- (:t) e -> a -> a
-        _childTempResults = fmap ((\ev -> PartialFoldRes{_rvertex = (second' ev), _redge = (first' ev), _raccumulator = (dfsFoldSlow g (second' ev) logic)})
+        _childTempResults = fmap ((\ev -> PartialFoldRes{_rvertex = (second' ev), _redge = (first' ev), _raccumulator = (dfsFoldSlow g logic (second' ev))})
                            . (\e -> (e, (second' . resolveVertices) e))) (g `cEdgesOf` v) :: t (PartialFoldRes v e a)
     in (_applyVertex v) . _aggregate $ fmap (view raccumulator)
           $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
