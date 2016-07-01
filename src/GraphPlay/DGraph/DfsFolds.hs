@@ -74,41 +74,11 @@ dfsFoldM optimizer g logic v =
 
 dfsFoldSlow :: forall g v e t a. (CIndex g v e t) => g -> DGAggregator t v e a  -> v -> a
 dfsFoldSlow g logic v = let optimizer = FoldOptimizer { optimize = id } :: FoldOptimizer Identity v a
-              in runIdentity (dfsFoldM optimizer g logic v)
+                        in runIdentity (dfsFoldM optimizer g logic v)
 
-{-  THIS Alternative implementation would not need Eq!
-dfsFoldSlow g logic v =
-    let _aggregate = aggregate logic       -- (:t) [a] -> a
-        _applyVertex = applyVertex logic   -- (:t) v -> a -> a
-        _applyEdge = applyEdge logic       -- (:t) e -> a -> a
-        _childTempResults = fmap ((\ev -> PartialFoldRes{_rvertex = (second' ev), _redge = (first' ev), _raccumulator = (dfsFoldSlow g logic (second' ev))})
-                           . (\e -> (e, (second' . resolveVertices) e))) (g `cEdgesOf` v) :: t (PartialFoldRes v e a)
-    in (_applyVertex v) . _aggregate $ fmap (view raccumulator)
-          $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
--}
-
-
---
---TODO understand why formM did not need to change when [] became t
---
 dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  DGAggregator t v e a  -> v -> ST s a
 dfsFoldST h     = let optimizer = FoldOptimizer { optimize = memo h } :: FoldOptimizer (ST s) v a
-                  in dfsFoldM optimizer 
-{-}
-dfsFoldST h g logic v =
-    let _aggregate = aggregate logic       :: t a -> a
-        _applyVertex = applyVertex logic   :: v -> a -> a
-        _applyEdge = applyEdge logic       :: e -> a -> a
-        _childEdges =  g `cEdgesOf` v      :: t e
-    in do
-        _childTempResults <- forM _childEdges (\_childEdge -> do
-              let _childVertex= (second' . resolveVertices) _childEdge
-              _childResult <- memo h (dfsFoldST h g logic) $ _childVertex
-              return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
-         )
-        return $ (_applyVertex v) . _aggregate $ fmap (view raccumulator)
-            $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
--}
+                  in dfsFoldM optimizer
 
 runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
@@ -116,5 +86,8 @@ runDtsFoldST g logic v = do
      a <- dfsFoldST ht g logic v
      return a
 
+dfsFoldFast :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> a
+dfsFoldFast g agg v = runST $ runDtsFoldST g agg v
+
 dfsFold :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> a
-dfsFold g agg v = runST $ runDtsFoldST g agg v
+dfsFold = dfsFoldFast
