@@ -24,9 +24,9 @@ import GraphPlay.DGraph
 
 
 --
--- aggregator type that will be used for folding, notice arbitrary not specified types v (vertex) e (edge) and a (acc)
+-- aggregator type that will be used for folding
 --
-data DGAggregator t v e a = DGAggregator {
+data ChildTraversingAccLogic t v e a = ChildTraversingAccLogic {
       applyVertex :: v -> a -> a,        -- function that takes vertex and acc and returns new acc
       applyEdge :: e -> a -> a,          -- function that takes an edge and acc and returns new acc
       aggregate :: (Traversable t) => t a -> a               -- function that combines several acc results into one (to be used across child results of a vertex)
@@ -45,7 +45,7 @@ data FoldOptimizer m a b = FoldOptimizer {
 
 --
 -- polymorphic DFS graphFold function, folds any implementation of polymorphic CIndex g starting at vertex v
--- using aggregator DGAggregator that aggregates to an arbitrary type a
+-- using aggregator ChildTraversingAccLogic that aggregates to an arbitrary type a
 --
 -- Note RHS of => defines constraints (g v e form a CIndex)
 -- '.' is function composition
@@ -54,7 +54,7 @@ data FoldOptimizer m a b = FoldOptimizer {
 -- $ replaces '()' making code easier to read.  Instead of grouping x ( y z ) I can write x $ y z
 -- 'over' mutates lens (like raccumulator defined in the helper type), 'view' is a lens getter
 --
-dfsFoldM :: forall m g v e t a. (Monad m, CIndex g v e t) => FoldOptimizer m v a -> g ->  DGAggregator t v e a  -> v -> m a
+dfsFoldM :: forall m g v e t a. (Monad m, CIndex g v e t) => FoldOptimizer m v a -> g ->  ChildTraversingAccLogic t v e a  -> v -> m a
 dfsFoldM optimizer g logic v =
     let _aggregate = aggregate logic       :: t a -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
@@ -72,22 +72,22 @@ dfsFoldM optimizer g logic v =
 
 
 
-dfsFoldSlow :: forall g v e t a. (CIndex g v e t) => g -> DGAggregator t v e a  -> v -> a
+dfsFoldSlow :: forall g v e t a. (CIndex g v e t) => g -> ChildTraversingAccLogic t v e a  -> v -> a
 dfsFoldSlow g logic v = let optimizer = FoldOptimizer { optimize = id } :: FoldOptimizer Identity v a
                         in runIdentity (dfsFoldM optimizer g logic v)
 
-dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  DGAggregator t v e a  -> v -> ST s a
+dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  ChildTraversingAccLogic t v e a  -> v -> ST s a
 dfsFoldST h     = let optimizer = FoldOptimizer { optimize = memo h } :: FoldOptimizer (ST s) v a
                   in dfsFoldM optimizer
 
-runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> ST s a
+runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  ChildTraversingAccLogic t v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
      ht <- H.new :: ST s (HashTable s v a)
      a <- dfsFoldST ht g logic v
      return a
 
-dfsFoldFast :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> a
+dfsFoldFast :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  ChildTraversingAccLogic t v e a  -> v -> a
 dfsFoldFast g agg v = runST $ runDtsFoldST g agg v
 
-dfsFold :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> a
+dfsFold :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  ChildTraversingAccLogic t v e a  -> v -> a
 dfsFold = dfsFoldFast

@@ -39,22 +39,22 @@ testDimonGraph = SimpleGraph testEdges
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)
 --
-countEdges :: DGAggregator [] v e Int
-countEdges = DGAggregator {
+countEdges :: ChildTraversingAccLogic [] v e Int
+countEdges = ChildTraversingAccLogic {
        applyEdge   = const (+1),
        applyVertex = const id,
        aggregate   = sum
     }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = (dfsFold testDimonGraph (countEdges :: DGAggregator [] v (v, v) Int) "a0") -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = (dfsFold testDimonGraph (countEdges :: ChildTraversingAccLogic [] v (v, v) Int) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 -- another example aggregator (polymorphic)
 -- NOTICE again to list non-duplicate vertices we need to be able to merge duplicates, hece Eq constraint
 --
-listChildVertices :: forall v e . (Eq v) => DGAggregator [] v e [v]
-listChildVertices = DGAggregator {
+listChildVertices :: forall v e . (Eq v) => ChildTraversingAccLogic [] v e [v]
+listChildVertices = ChildTraversingAccLogic {
        applyEdge   = const id,
        applyVertex = (:),  -- applying vertex is simply list prepend funtion that adds element to a list
        aggregate   = flattenUnique
@@ -66,14 +66,14 @@ flattenUnique = nub . join  -- nub returns list of unique items (that is why Eq 
                             -- '.' is function composition in Haskell (it is iteself a function of cause)
 
 testDimongVerices:: [String]
-testDimongVerices = (dfsFold testDimonGraph  (listChildVertices :: DGAggregator [] String (String, String) [String]) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
+testDimongVerices = (dfsFold testDimonGraph  (listChildVertices :: ChildTraversingAccLogic [] String (String, String) [String]) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
 -- prints ["a0","a01","a3","a02"]
 
 --
 -- One more polymorphic aggregator
 --
-countDepth :: DGAggregator [] v e Int
-countDepth = DGAggregator {
+countDepth :: ChildTraversingAccLogic [] v e Int
+countDepth = ChildTraversingAccLogic {
                  applyEdge   = const (+1),
                  applyVertex = const id,
                  aggregate   =  safeListMax 0
@@ -89,7 +89,7 @@ safeListMax a []     = a                        -- for empty list
 safeListMax a (x:xs) = max x (safeListMax a xs) -- for non-emtpy list starting with x
 
 testDimongGraphDepthCount:: Int
-testDimongGraphDepthCount = (dfsFold testDimonGraph (countDepth :: DGAggregator [] v (v, v) Int) "a0") -- :: needs to define edge type
+testDimongGraphDepthCount = (dfsFold testDimonGraph (countDepth :: ChildTraversingAccLogic [] v (v, v) Int) "a0") -- :: needs to define edge type
 -- prints 2
 
 experiments = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]
