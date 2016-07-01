@@ -44,11 +44,11 @@ class DEdgeSemantics e v | e -> v where
   resolveVertices ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
 
 --
--- DirectorC one who directs directed graph :) - in child direction
+-- CIndex one who directs directed graph :) - in child direction
 -- It is less than a graph, we can ask for list of child edges at any instance of type v
 -- caller picks with Traversable to use for navigatigaging children
 --
-class (Traversable t, DEdgeSemantics e v)  => DirectorC g v e t | g -> t, g -> v, e -> v where
+class (Traversable t, DEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e -> v where
   cEdgesOf   ::  g -> v -> t e   -- return a list of child edges, empty if not a valid vertex or a leaf
 
 --
@@ -61,7 +61,7 @@ class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> t, g -> v
   vertices ::  g -> t v
   edges    ::  g -> t e
 
--- let's create a very simple (and slow)  of DirectorC class for testing
+-- let's create a very simple (and slow)  of CIndex class for testing
 -- Note: runSimpleGraph is like a getter you can obtain list of pairs encapsulated
 -- in SimpleGraph sg by calling 'runSimpleGraph sg'
 --
@@ -71,17 +71,17 @@ newtype SimpleGraph v t = SimpleGraph { runSimpleGraph:: t (v,v)}
 -- instances
 --
 
--- TODO default implementation of DirectorC under Eq predicate?
+-- TODO default implementation of CIndex under Eq predicate?
 
 instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
   resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
 
 --TODO these are temporary
-instance forall v t. (Eq v) => (DirectorC (SimpleGraph v []) v (v,v) []) where
+instance forall v t. (Eq v) => (CIndex (SimpleGraph v []) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
 
 -- needs work, not efficient anyway, needs fast indexing of graph
---instance forall v t. (Eq v, Traversable t, Applicative t, Monoid (t (v,v))) => (DirectorC (SimpleGraph v t) v (v,v) t) where
+--instance forall v t. (Eq v, Traversable t, Applicative t, Monoid (t (v,v))) => (CIndex (SimpleGraph v t) v (v,v) t) where
 --    cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
 
 -- misses nub, it is not efficient anyway

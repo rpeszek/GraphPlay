@@ -11,7 +11,7 @@
 --{-# LANGUAGE GADTs #-}
 {-# LANGUAGE RankNTypes #-}
 
-module GraphPlay.DGraph.Folds where --TODO exports everything, a terrible programmer wrote it
+module GraphPlay.DGraph.DfsFolds where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable
 import Control.Monad
@@ -47,17 +47,17 @@ data PartialFoldRes v e a = PartialFoldRes {_rvertex:: v, _redge:: e, _raccumula
 makeLenses ''PartialFoldRes
 
 --
--- polymorphic DFS graphFold function, folds any implementation of polymorphic DirectorC g starting at vertex v
+-- polymorphic DFS graphFold function, folds any implementation of polymorphic CIndex g starting at vertex v
 -- using aggregator DGAggregator that aggregates to an arbitrary type a
 --
--- Note RHS of => defines constraints (g v e form a DirectorC)
+-- Note RHS of => defines constraints (g v e form a CIndex)
 -- '.' is function composition
 -- :: defines a type to help compiler approve the code (polymporhic definition make Haskell often require explicitly specifying type in implementation)
 -- \x -> expression    defines a lambda in Haskell
 -- $ replaces '()' making code easier to read.  Instead of grouping x ( y z ) I can write x $ y z
 -- 'over' mutates lens (like raccumulator defined in the helper type), 'view' is a lens getter
 --
-dfsFoldSlow :: forall g v e t a. (DirectorC g v e t) => g -> DGAggregator t v e a  -> v -> a
+dfsFoldSlow :: forall g v e t a. (CIndex g v e t) => g -> DGAggregator t v e a  -> v -> a
 dfsFoldSlow g logic v =
     let _aggregate = aggregate logic       -- (:t) [a] -> a
         _applyVertex = applyVertex logic   -- (:t) v -> a -> a
@@ -70,7 +70,7 @@ dfsFoldSlow g logic v =
 --
 --TODO understand why formM did not need to change when [] became t
 --
-dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, DirectorC g v e t) => HashTable s v a -> g ->  DGAggregator t v e a  -> v -> ST s a
+dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  DGAggregator t v e a  -> v -> ST s a
 dfsFoldST h g logic v =
     let _aggregate = aggregate logic       :: t a -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
@@ -86,11 +86,11 @@ dfsFoldST h g logic v =
             $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
 
 
-runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, DirectorC g v e t) => g ->  DGAggregator t v e a  -> v -> ST s a
+runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
      ht <- H.new :: ST s (HashTable s v a)
      a <- dfsFoldST ht g logic v
      return a
 
-dfsFold :: forall g v e t a. (Eq v, Hashable v, DirectorC g v e t) => g ->  DGAggregator t v e a  -> v -> a
+dfsFold :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  DGAggregator t v e a  -> v -> a
 dfsFold g agg v = runST $ runDtsFoldST g agg v
