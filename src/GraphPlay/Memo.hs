@@ -22,9 +22,8 @@ import qualified Data.HashTable.Class as H
 type HashTable s k v = C.HashTable s k v
 
 -- passing ST.pure hash allows for better hash sharing
-memo :: (Eq a, Hashable a) => ST s (HashTable s a b) -> (a -> ST s b) -> (a -> ST s b)
-memo h f a = do
-   ht <- h
+memo :: (Eq a, Hashable a) => HashTable s a b -> (a -> ST s b) -> (a -> ST s b)
+memo ht f a = do
    maybe_b <- H.lookup ht a
    b <- case maybe_b of
            Nothing -> f a
@@ -34,10 +33,9 @@ memo h f a = do
         _  -> return ()
    return b
 
-dumpMemoStore :: (Eq a, Hashable a) => ST s (HashTable s a b) -> ST s [(a,b)]
+dumpMemoStore :: (Eq a, Hashable a) => HashTable s a b -> ST s [(a,b)]
 dumpMemoStore h = do
-     ht <- h
-     H.foldM (\list el -> return (el: list)) [] ht
+     H.foldM (\list el -> return (el: list)) [] h
 
 -- TESTS ---
 -- TMemoExperiments have code that traces
@@ -50,7 +48,7 @@ fib i = do
          f2 <- fib (i-2)
          return (f1 + f2)
 
-fibX :: ST s (HashTable s Int Int) -> Int -> ST s Int
+fibX :: HashTable s Int Int -> Int -> ST s Int
 fibX h 0 = return 0
 fibX h 1 = return 1
 fibX h i = do
@@ -61,7 +59,7 @@ fibX h i = do
 runFib :: Int -> ST s Int
 runFib i = do
   ht <- H.new:: ST s (HashTable s Int Int)
-  f <- fibX (return ht) i
+  f <- fibX ht i
   return f
 
 regFibIO  n = stToIO $ fib n

@@ -27,7 +27,7 @@ testEdges = [
 --
 -- notice SimpleGraph is not specialized to String type
 --
-testDimonGraph :: SimpleGraph String
+testDimonGraph :: SimpleGraph String []
 testDimonGraph = SimpleGraph testEdges
 
 -- testDimonGraph `cEdgesOf` "a0" :: [(String, String)]
@@ -43,7 +43,7 @@ countEdges = DGAggregator {
     }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = (dfsFold testDimonGraph "a0" (countEdges :: DGAggregator [] v (v, v) Int)) -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = (dfsFold testDimonGraph (countEdges :: DGAggregator [] v (v, v) Int) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 -- another example aggregator (polymorphic)
@@ -62,7 +62,7 @@ flattenUnique = nub . join  -- nub returns list of unique items (that is why Eq 
                             -- '.' is function composition in Haskell (it is iteself a function of cause)
 
 testDimongVerices:: [String]
-testDimongVerices = (dfsFold testDimonGraph "a0" (listChildVertices :: DGAggregator [] String (String, String) [String])) -- :: tells compiler how to specialize polymorphic aggreagator
+testDimongVerices = (dfsFold testDimonGraph  (listChildVertices :: DGAggregator [] String (String, String) [String]) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
 -- prints ["a0","a01","a3","a02"]
 
 --
@@ -85,7 +85,7 @@ safeListMax a []     = a                        -- for empty list
 safeListMax a (x:xs) = max x (safeListMax a xs) -- for non-emtpy list starting with x
 
 testDimongGraphDepthCount:: Int
-testDimongGraphDepthCount = (dfsFold testDimonGraph "a0" (countDepth :: DGAggregator [] v (v, v) Int)) -- :: needs to define edge type
+testDimongGraphDepthCount = (dfsFold testDimonGraph (countDepth :: DGAggregator [] v (v, v) Int) "a0") -- :: needs to define edge type
 -- prints 2
 
 tests = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]

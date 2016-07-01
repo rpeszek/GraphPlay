@@ -70,8 +70,8 @@ dfsFoldSlow g v logic =
 --
 --TODO understand why formM did not need to change when [] became t
 --
-dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, DirectorC g v e t) => ST s (HashTable s v a) -> g -> v -> DGAggregator t v e a  -> ST s a
-dfsFoldST h g v logic =
+dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, DirectorC g v e t) => HashTable s v a -> g ->  DGAggregator t v e a  -> v -> ST s a
+dfsFoldST h g logic v =
     let _aggregate = aggregate logic       :: t a -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
         _applyEdge = applyEdge logic       :: e -> a -> a
@@ -79,18 +79,18 @@ dfsFoldST h g v logic =
     in do
         _childTempResults <- forM _childEdges (\_childEdge -> do
               let _childVertex= (second' . resolveVertices) _childEdge
-              _childResult <- dfsFoldST h g _childVertex logic
+              _childResult <- memo h (dfsFoldST h g logic) $ _childVertex
               return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
          )
         return $ (_applyVertex v) . _aggregate $ fmap (view raccumulator)
             $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
 
 
-runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, DirectorC g v e t) => g -> v -> DGAggregator t v e a  -> ST s a
-runDtsFoldST g v logic = do
+runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, DirectorC g v e t) => g ->  DGAggregator t v e a  -> v -> ST s a
+runDtsFoldST g logic v = do
      ht <- H.new :: ST s (HashTable s v a)
-     a <- dfsFoldST (return ht) g v logic
+     a <- dfsFoldST ht g logic v
      return a
 
-dfsFold :: forall g v e t a. (Eq v, Hashable v, DirectorC g v e t) => g -> v -> DGAggregator t v e a  -> a
-dfsFold g v agg = runST $ runDtsFoldST g v agg
+dfsFold :: forall g v e t a. (Eq v, Hashable v, DirectorC g v e t) => g ->  DGAggregator t v e a  -> v -> a
+dfsFold g agg v = runST $ runDtsFoldST g agg v

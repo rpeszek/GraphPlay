@@ -23,11 +23,13 @@
 --
 {-# LANGUAGE TemplateHaskell   #-}
 {-# LANGUAGE MultiParamTypeClasses    #-}
+{-# LANGUAGE FunctionalDependencies   #-}
 {-# LANGUAGE ScopedTypeVariables  #-}
 {-# LANGUAGE FlexibleContexts  #-}
 {-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE OverlappingInstances #-}
+--{-# LANGUAGE UndecidableInstances #-} - dangerous can cause typechecker to loop
+--{-# LANGUAGE OverlappingInstances #-} - convenient allows defaulting
+--{-# LANGUAGE IncoherentInstances #-} - stronger version of overlapping
 
 module GraphPlay.DGraph where --exports everything, a terrible programmer wrote it
 
@@ -38,7 +40,7 @@ import Data.List (nub)
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know
 -- how to resolve edge into ordered pair of vertices
 --
-class DEdgeSemantics e v where
+class DEdgeSemantics e v | e -> v where
   resolveVertices ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
 
 --
@@ -46,7 +48,7 @@ class DEdgeSemantics e v where
 -- It is less than a graph, we can ask for list of child edges at any instance of type v
 -- caller picks with Traversable to use for navigatigaging children
 --
-class (Traversable t, DEdgeSemantics e v)  => DirectorC g v e t where
+class (Traversable t, DEdgeSemantics e v)  => DirectorC g v e t | g -> v, e -> v where
   cEdgesOf   ::  g -> v -> t e   -- return a list of child edges, empty if not a valid vertex or a leaf
 
 --
@@ -55,7 +57,7 @@ class (Traversable t, DEdgeSemantics e v)  => DirectorC g v e t where
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t where
+class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> v, e -> v where
   vertices ::  g -> t v
   edges    ::  g -> t e
 
@@ -63,7 +65,7 @@ class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t where
 -- Note: runSimpleGraph is like a getter you can obtain list of pairs encapsulated
 -- in SimpleGraph sg by calling 'runSimpleGraph sg'
 --
-newtype SimpleGraph v = SimpleGraph { runSimpleGraph:: [(v,v)]}
+newtype SimpleGraph v t = SimpleGraph { runSimpleGraph:: t (v,v)}
 
 --
 -- instances
@@ -74,9 +76,10 @@ newtype SimpleGraph v = SimpleGraph { runSimpleGraph:: [(v,v)]}
 instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
   resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
 
-instance forall v . (Eq v) => (DirectorC (SimpleGraph v) v (v,v) []) where
+--TODO needs to get more general than []
+instance forall v . (Eq v) => (DirectorC (SimpleGraph v []) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
 
-instance  forall v . (Eq v) => (DGraph (SimpleGraph v) v (v,v) []) where
+instance  forall v . (Eq v) => (DGraph (SimpleGraph v []) v (v,v) []) where
   vertices g =  nub . (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . runSimpleGraph $ g
   edges g  =  runSimpleGraph $ g
