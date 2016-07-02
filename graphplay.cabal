@@ -15,7 +15,12 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-  exposed-modules:     Lib, GraphPlay.DGraph, GraphPlay.DGraph.DfsFolds, GraphPlay.Memo
+  exposed-modules:     Lib
+                       , GraphPlay.Helpers
+                       , GraphPlay.Memo
+                       , GraphPlay.DGraph
+                       , GraphPlay.DGraph.DfsFolds
+                       , GraphPlay.DGraph.DfsMonoidFolds
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl

@@ -32,27 +32,16 @@ data ChildTraversingAccLogic t v e a = ChildTraversingAccLogic {
       aggregate :: (Traversable t) => t a -> a               -- function that combines several acc results into one (to be used across child results of a vertex)
 }
 
+
 --
 -- helper type used internally, holds computation result for a vertex
 --
 data PartialFoldRes v e a = PartialFoldRes {_rvertex:: v, _redge:: e, _raccumulator:: a}
 makeLenses ''PartialFoldRes
 
-data FoldOptimizer m a b = FoldOptimizer {
-      optimize :: (a -> m b) -> a -> m b
-}
-
-
 --
 -- polymorphic DFS graphFold function, folds any implementation of polymorphic CIndex g starting at vertex v
 -- using aggregator ChildTraversingAccLogic that aggregates to an arbitrary type a
---
--- Note RHS of => defines constraints (g v e form a CIndex)
--- '.' is function composition
--- :: defines a type to help compiler approve the code (polymporhic definition make Haskell often require explicitly specifying type in implementation)
--- \x -> expression    defines a lambda in Haskell
--- $ replaces '()' making code easier to read.  Instead of grouping x ( y z ) I can write x $ y z
--- 'over' mutates lens (like raccumulator defined in the helper type), 'view' is a lens getter
 --
 dfsFoldM :: forall m g v e t a. (Monad m, CIndex g v e t) => FoldOptimizer m v a -> g ->  ChildTraversingAccLogic t v e a  -> v -> m a
 dfsFoldM optimizer g logic v =
@@ -70,12 +59,17 @@ dfsFoldM optimizer g logic v =
             $ fmap (\chres -> over (raccumulator) (_applyEdge( view redge chres)) chres ) _childTempResults
 
 
-
-
+--
+-- This walks the grah without remembering visited vertices (effectively walks a tree)
+-- will not work if DGraph has cycles
+--
 dfsFoldSlow :: forall g v e t a. (CIndex g v e t) => g -> ChildTraversingAccLogic t v e a  -> v -> a
 dfsFoldSlow g logic v = let optimizer = FoldOptimizer { optimize = id } :: FoldOptimizer Identity v a
                         in runIdentity (dfsFoldM optimizer g logic v)
 
+--
+-- Uses memoization to assure that each vertex is visisted only once.  Will work with cycles.
+--
 dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  ChildTraversingAccLogic t v e a  -> v -> ST s a
 dfsFoldST h     = let optimizer = FoldOptimizer { optimize = memo h } :: FoldOptimizer (ST s) v a
                   in dfsFoldM optimizer
