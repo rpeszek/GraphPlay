@@ -28,6 +28,17 @@ library
                       , hashtables
                       , containers
   default-language:    Haskell2010
+  extensions:          TemplateHaskell
+                      , ScopedTypeVariables
+                      , MultiParamTypeClasses
+                      , FunctionalDependencies
+                      , FlexibleContexts
+                      , FlexibleInstances
+                      , UndecidableInstances
+                      , OverlappingInstances
+                      , RankNTypes
+                      -- GADT
+
 
 -- executable graphplay-exe
 --   hs-source-dirs:      app

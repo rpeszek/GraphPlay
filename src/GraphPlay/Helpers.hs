@@ -1,4 +1,3 @@
-{-# LANGUAGE ScopedTypeVariables  #-}
 
 --
 -- SHARED HELPERS

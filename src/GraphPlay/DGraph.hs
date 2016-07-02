@@ -21,15 +21,6 @@
 --
 --  Note: LANGUAGE extensions shown below are typically configured globally for a project
 --
-{-# LANGUAGE TemplateHaskell   #-}
-{-# LANGUAGE MultiParamTypeClasses    #-}
-{-# LANGUAGE FunctionalDependencies   #-}
-{-# LANGUAGE ScopedTypeVariables  #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE FlexibleInstances  #-}
---{-# LANGUAGE UndecidableInstances #-} - dangerous can cause typechecker to loop
---{-# LANGUAGE OverlappingInstances #-} - convenient allows defaulting
---{-# LANGUAGE IncoherentInstances #-} - stronger version of overlapping
 
 module GraphPlay.DGraph where --exports everything, a terrible programmer wrote it
 

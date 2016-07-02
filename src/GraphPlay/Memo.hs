@@ -1,8 +1,3 @@
-{-# LANGUAGE TemplateHaskell   #-}
-{-# LANGUAGE MultiParamTypeClasses    #-}
-{-# LANGUAGE ScopedTypeVariables  #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE FlexibleInstances  #-}
 
 module GraphPlay.Memo (
                HashTable,

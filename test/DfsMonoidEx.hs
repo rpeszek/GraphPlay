@@ -1,10 +1,3 @@
-{-# LANGUAGE TemplateHaskell   #-}
-{-# LANGUAGE MultiParamTypeClasses    #-}
-{-# LANGUAGE ScopedTypeVariables  #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE OverlappingInstances #-}
 
 
 ----------------------------------------------------------------------
@@ -58,7 +51,7 @@ testDimongGraphEdgeCount:: Int
 testDimongGraphEdgeCount = getSum $ (dfsFold testDimonGraph (countEdges :: ChildFoldingAccLogic v (v, v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
--- 
+--
 -- THIS LIST will have duplicates
 --
 listChildVertices :: forall v e . (Eq v) => ChildFoldingAccLogic v e [v]

@@ -1,10 +1,3 @@
-{-# LANGUAGE TemplateHaskell   #-}
-{-# LANGUAGE MultiParamTypeClasses    #-}
-{-# LANGUAGE ScopedTypeVariables  #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE OverlappingInstances #-}
 
 
 ----------------------------------------------------------------------

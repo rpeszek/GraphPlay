@@ -1,15 +1,6 @@
 --
 --
 --
-{-# LANGUAGE TemplateHaskell   #-}
-{-# LANGUAGE MultiParamTypeClasses    #-}
-{-# LANGUAGE ScopedTypeVariables  #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE FlexibleInstances  #-}
-{-# LANGUAGE UndecidableInstances #-}
-{-# LANGUAGE OverlappingInstances #-}
---{-# LANGUAGE GADTs #-}
-{-# LANGUAGE RankNTypes #-}
 
 module GraphPlay.DGraph.DfsFolds where --TODO exports everything, a terrible programmer wrote it
 
