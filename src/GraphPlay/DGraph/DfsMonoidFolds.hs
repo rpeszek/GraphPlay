@@ -49,26 +49,6 @@ dfsFoldM optimizer g logic v =
      in
          _finalResult
 
-{-
-dfsFoldST :: forall s g v e m t a. (Monad m, Eq v, Hashable v, DirectorC g v e t m) => (HashTable s v a) -> g -> DGAggregator t v e a  -> v -> m (ST s a)
-dfsFoldST h g logic v =
-        let acc_fold  =  foldResults logic           :: a -> a ->  a
-            a0 = seed logic                          :: a
-            acc_applyVertex =  applyVertex logic v   :: a -> a
-            acc_applyEdge  =  applyEdge logic        :: e -> a ->  a
-            _recursionV = dfsFoldST h g logic        :: v -> m (ST s a)
-            _recursionE = _recursionV . second' . resolveVertices       :: e -> m (ST s a)
-            _recursion  = (\e -> (liftPairHelper e) . _recursionE $ e)  :: e ->  m(ST s (e, a))
-            _childEdgesM =  g `cEdgesOf` v                              :: m (t e)
-            _foldedChildResults = _childEdgesM >>=
-                           (mapM _recursion) >>=
-                           return . (foldM (\acc stea -> stea >>= (\ea -> return $ acc_fold acc (acc_applyEdge (first' ea) (second' ea)))) a0)
-            -- _combined :: m (ST s a)
-            _finalResult = (liftHelper acc_applyVertex) _foldedChildResults  :: m (ST s a)
-        in
-            _finalResult
--}
-
 --
 -- This walks the grah without remembering visited vertices (effectively walks a tree)
 -- will not work if DGraph has cycles

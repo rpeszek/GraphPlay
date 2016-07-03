@@ -21,12 +21,14 @@ library
                        , GraphPlay.DGraph
                        , GraphPlay.DGraph.DfsFolds
                        , GraphPlay.DGraph.DfsMonoidFolds
+                       , GraphPlay.DGraph.Indexers
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl
                       , hashable
                       , hashtables
                       , containers
+                      , unordered-containers
   default-language:    Haskell2010
   extensions:          TemplateHaskell
                       , ScopedTypeVariables
@@ -52,7 +54,7 @@ test-suite graphplay-test
   type:                exitcode-stdio-1.0
   hs-source-dirs:      test
   --                   change back to Spec.hs when tests are in place
-  main-is:             Experiment.hs
+  main-is:             Spec.hs
   build-depends:       base
                      , graphplay
   ghc-options:         -threaded -rtsopts -with-rtsopts=-N
