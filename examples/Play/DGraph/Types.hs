@@ -1,8 +1,11 @@
-module Play.DGraphTypes (
+module Play.DGraph.Types (
    SimpleGraph(..)
 ) where
 
 import GraphPlay.DGraph
+import GraphPlay.Helpers
+import Data.List (nub)
+
 -- let's create a very simple (and slow)  of CIndex class for testing
 -- Note: getEdges is like a getter you can obtain list of pairs encapsulated
 -- in SimpleGraph sg by calling 'getEdges sg'

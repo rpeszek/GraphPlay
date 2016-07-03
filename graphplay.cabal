@@ -23,6 +23,8 @@ library
                        , GraphPlay.DGraph.DfsFolds
                        , GraphPlay.DGraph.DfsMonoidFolds
                        , GraphPlay.DGraph.Indexers
+                       , Play.DGraph.Types
+                       , Play.DGraph.Samples
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl
