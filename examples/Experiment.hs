@@ -6,6 +6,7 @@
 import GraphPlay.DGraph
 import GraphPlay.Helpers
 import GraphPlay.DGraph.DfsFolds
+import Play.DGraphTypes
 import Control.Monad (join)
 import Data.List (nub)
 

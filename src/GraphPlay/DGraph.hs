@@ -52,11 +52,6 @@ class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> t, g -> v
   vertices ::  g -> t v
   edges    ::  g -> t e
 
--- let's create a very simple (and slow)  of CIndex class for testing
--- Note: runSimpleGraph is like a getter you can obtain list of pairs encapsulated
--- in SimpleGraph sg by calling 'runSimpleGraph sg'
---
-newtype SimpleGraph v t = SimpleGraph { runSimpleGraph:: t (v,v)}
 
 --
 -- instances
@@ -67,19 +62,12 @@ newtype SimpleGraph v t = SimpleGraph { runSimpleGraph:: t (v,v)}
 instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
   resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
 
---TODO these are temporary
-instance forall v t. (Eq v) => (CIndex (SimpleGraph v []) v (v,v) []) where
-  cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
 
 -- needs work, not efficient anyway, needs fast indexing of graph
 --instance forall v t. (Eq v, Traversable t, Applicative t, Monoid (t (v,v))) => (CIndex (SimpleGraph v t) v (v,v) t) where
---    cEdgesOf g ver = filter (\vv -> first' vv == ver) . runSimpleGraph $ g  --(:t) g -> v -> [e]
+--    cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
 -- misses nub, it is not efficient anyway
 --instance  forall v t . ( Eq v, Foldable t, Monoid (t (v,v))) => (DGraph (SimpleGraph v t) v (v,v) t) where
---  vertices g =  (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) mempty) . runSimpleGraph $ g
---  edges g  =  runSimpleGraph $ g
-
-instance  forall v . (Eq v) => (DGraph (SimpleGraph v []) v (v,v) []) where
-  vertices g =  nub . (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . runSimpleGraph $ g
-  edges g  =  runSimpleGraph $ g
+--  vertices g =  (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) mempty) . getEdges $ g
+--  edges g  =  getEdges $ g
