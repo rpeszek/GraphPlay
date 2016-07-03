@@ -3,9 +3,9 @@ module Play.DGraph.MonoidFoldsOnSimpleGraph where
 ----------------------------------------------------------------------
 -- test experiments
 
-import GraphPlay.DGraph
-import GraphPlay.Helpers
-import GraphPlay.DGraph.DfsMonoidFolds
+import PolyGraph.DGraph
+import PolyGraph.Helpers
+import PolyGraph.DGraph.DfsMonoidFolds
 import Control.Monad (join)
 import Data.List (nub)
 import Play.DGraph.Types

@@ -22,9 +22,9 @@
 --  Note: LANGUAGE extensions shown below are typically configured globally for a project
 --
 
-module GraphPlay.DGraph where --exports everything, a terrible programmer wrote it
+module PolyGraph.DGraph where --exports everything, a terrible programmer wrote it
 
-import GraphPlay.Helpers
+import PolyGraph.Helpers
 import Data.List (nub)
 
 --

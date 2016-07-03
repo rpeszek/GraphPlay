@@ -1,13 +1,13 @@
 
-module GraphPlay.DGraph.Indexers where
+module PolyGraph.DGraph.Indexers where
 
 import qualified Data.Maybe as MB
 import Control.Monad
 import Control.Monad.ST
 import Data.Hashable
 import qualified Data.HashMap.Strict as HM
-import GraphPlay.Helpers
-import GraphPlay.DGraph
+import PolyGraph.Helpers
+import PolyGraph.DGraph
 
 data CIndexContainer v e t = CIndexContainer {
     indexedcEdgesOf :: v -> t e

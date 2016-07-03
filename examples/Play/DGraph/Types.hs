@@ -2,8 +2,8 @@ module Play.DGraph.Types (
    SimpleGraph(..)
 ) where
 
-import GraphPlay.DGraph
-import GraphPlay.Helpers
+import PolyGraph.DGraph
+import PolyGraph.Helpers
 import Data.List (nub)
 
 -- let's create a very simple (and slow)  of CIndex class for testing

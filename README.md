@@ -1,4 +1,4 @@
-# GraphPlay
+# PolyGraph
 Project to play and experiment with graphs, polymorphism, and Haskell language. 
 Trying to look at graphs not as 'data structures'.
 

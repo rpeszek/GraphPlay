@@ -2,16 +2,16 @@
 --
 --
 
-module GraphPlay.DGraph.DfsMonoidFolds where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.DGraph.DfsMonoidFolds where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable
 import Control.Monad
 import Control.Monad.ST
 import Control.Lens
 import qualified Data.HashTable.Class as H
-import GraphPlay.Helpers
-import GraphPlay.Memo
-import GraphPlay.DGraph
+import PolyGraph.Helpers
+import PolyGraph.Memo
+import PolyGraph.DGraph
 
 
 --

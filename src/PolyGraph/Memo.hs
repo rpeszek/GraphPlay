@@ -1,5 +1,5 @@
 
-module GraphPlay.Memo (
+module PolyGraph.Memo (
                HashTable,
                memo,
                dumpMemoStore
