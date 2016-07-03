@@ -1,6 +1,6 @@
 # GraphPlay
 
-WORK IN PROGRESS. I made it a public folder for my colleagues to follow along.
+WORK IN PROGRESS. I made it a public project for my colleagues to follow along.
 
 Project to play and experiment with graphs, polymorphism, and Haskell language.
 Trying to look at graphs not as 'data structures'.
