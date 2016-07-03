@@ -1,4 +1,4 @@
-
+module Play.DGraph.FoldsOnSimpleGraph where
 
 ----------------------------------------------------------------------
 -- test experiments
@@ -6,15 +6,10 @@
 import GraphPlay.DGraph
 import GraphPlay.Helpers
 import GraphPlay.DGraph.DfsFolds
-import Play.DGraph.Types
-import Play.DGraph.Samples
 import Control.Monad (join)
 import Data.List (nub)
-
-
-main :: IO ()
-main = print experiments
-
+import Play.DGraph.Types
+import Play.DGraph.Samples
 
 -- playTwoDimonds `cEdgesOf` "a0" :: [(String, String)]
 

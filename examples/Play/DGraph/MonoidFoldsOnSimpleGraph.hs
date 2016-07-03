@@ -1,4 +1,4 @@
-
+module Play.DGraph.MonoidFoldsOnSimpleGraph where
 
 ----------------------------------------------------------------------
 -- test experiments
@@ -6,31 +6,11 @@
 import GraphPlay.DGraph
 import GraphPlay.Helpers
 import GraphPlay.DGraph.DfsMonoidFolds
-import Play.DGraphTypes
 import Control.Monad (join)
 import Data.List (nub)
+import Play.DGraph.Types
+import Play.DGraph.Samples
 
-
-main :: IO ()
-main = print experiments
-
--- simple test data (list of pars that will serve as edges)
-testEdges = [
-        ("a0", "a01"),
-        ("a0", "a02"),
-        ("a01", "a1"),
-        ("a02", "a1"),
-        ("a1", "a11"),
-        ("a1", "a12"),
-        ("a11", "a2"),
-        ("a12", "a2")
-     ]
-
---
--- notice SimpleGraph is not specialized to String type
---
-testDimonGraph :: SimpleGraph String []
-testDimonGraph = SimpleGraph testEdges
 
 -- | Monoid under addition.
 newtype Sum a = Sum { getSum :: a } deriving Show
@@ -49,7 +29,7 @@ countEdges = ChildFoldingAccLogic {
     }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = getSum $ (dfsFold testDimonGraph (countEdges :: ChildFoldingAccLogic v (v, v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDimonds (countEdges :: ChildFoldingAccLogic v (v, v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 --
@@ -63,7 +43,7 @@ listChildVertices = ChildFoldingAccLogic {
 
 
 testDimongVerices:: [String]
-testDimongVerices = (dfsFold testDimonGraph  (listChildVertices :: ChildFoldingAccLogic  String (String, String) [String]) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
+testDimongVerices = (dfsFold playTwoDimonds  (listChildVertices :: ChildFoldingAccLogic  String (String, String) [String]) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
 -- prints ["a0","a01","a3","a02"]
 
 --
@@ -77,7 +57,7 @@ countDepth = ChildFoldingAccLogic {
 
 
 testDimongGraphDepthCount:: Int
-testDimongGraphDepthCount = getSum $ (dfsFold testDimonGraph (countDepth :: ChildFoldingAccLogic v (v, v) (Sum Int)) "a0") -- :: needs to define edge type
+testDimongGraphDepthCount = getSum $ (dfsFold playTwoDimonds (countDepth :: ChildFoldingAccLogic v (v, v) (Sum Int)) "a0") -- :: needs to define edge type
 -- prints 2
 
 experiments = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]
