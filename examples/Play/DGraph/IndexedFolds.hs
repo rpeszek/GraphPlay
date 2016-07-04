@@ -6,6 +6,7 @@ import PolyGraph.DGraph.DfsFolds
 import Play.DGraph.Types
 import Play.DGraph.Samples (playFirstLast)
 
+{-
 data MyGraph = MyGraph {
    myEdges    :: [FastDEdge FirstLastLine FirstLastWord],
    myVertices :: [FirstLastWord]
@@ -21,6 +22,10 @@ playFastVertices = fastVertices playFastEdges :: [FirstLastWord]
 playGraph = MyGraph {myEdges = playFastEdges, myVertices = playFastVertices}
 
 playCIndex = buildHmCIndex playGraph
+-}
+
+playGraph = buidDGraph firstLastWordInLine (firstLastWordTextLines playFirstLast) :: DGraphHelper FirstLastWord FirstLastLine []
+playCIndex = buildHmCIndex playGraph
 
 -- this counts edges as if graph was expanded to a tree
 countEdgesAsOnTree :: ChildTraversingAccLogic [] v e Int
@@ -31,6 +36,6 @@ countEdgesAsOnTree = ChildTraversingAccLogic {
     }
 
 playEdgeCount:: Int
-playEdgeCount = dfsFold playCIndex (countEdgesAsOnTree :: ChildTraversingAccLogic [] FirstLastWord (FastDEdge FirstLastLine FirstLastWord) Int) (head playFastVertices)
+playEdgeCount = dfsFold playCIndex (countEdgesAsOnTree :: ChildTraversingAccLogic [] FirstLastWord (FastDEdge FirstLastLine FirstLastWord) Int) (head $ helperVertices playGraph)
 
 experiments = playEdgeCount

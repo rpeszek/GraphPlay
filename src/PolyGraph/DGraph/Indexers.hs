@@ -3,6 +3,8 @@ module PolyGraph.DGraph.Indexers (
    BuildableCollection
    , buildHmCIndex
    , CIndexContainer
+   , DGraphHelper(..)
+   , buidDGraph
    , emptyFastDEgdes
    , buidFastDEdges
    , FastDEdge(..)
@@ -106,6 +108,26 @@ fastVertices' empty edges = foldr(\edge vertices -> (prependElement $ (first' . 
 
 fastVertices  :: forall t t0 v e. (Foldable t, BuildableCollection t0)  => t (FastDEdge e v) -> t0 v
 fastVertices = fastVertices' emptyCollection
+
+------------------------------------------------------------------------------------
+-- helpers for building a graph                                                -----
+------------------------------------------------------------------------------------
+data DGraphHelper v e t = DGraphHelper {
+   helperEdges    :: t (FastDEdge e v),
+   helperVertices :: t v
+}
+
+instance forall e v t. (Eq v, Foldable t) => DGraph(DGraphHelper v e t) v (FastDEdge e v) t where
+  edges    = helperEdges
+  vertices = helperVertices
+
+buidDGraph :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
+                                    (e -> (v,v)) -> t e -> DGraphHelper v e t0
+buidDGraph _slowResolveVertices _slowEdgeCollection =
+             let _fastDedges = buidFastDEdges emptyFastDEgdes _slowResolveVertices _slowEdgeCollection :: t0 (FastDEdge e v)
+                 _fastVertices = fastVertices _fastDedges   ::t0 v
+             in DGraphHelper {helperEdges = _fastDedges, helperVertices = _fastVertices}
+
 
 --collectVertices' :: forall t t0 v . (Foldable t, BuildableCollection t0) => t0 v -> t (v,v) -> t0 v
 --collectVertices' empty edges = foldr(\edge vertices -> (prependElement $ first' edge) .(prependElement $ second' edge) $ vertices) empty edges
