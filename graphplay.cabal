@@ -27,6 +27,7 @@ library
                        , Play.DGraph.Samples
                        , Play.DGraph.FoldsOnSimpleGraph
                        , Play.DGraph.MonoidFoldsOnSimpleGraph
+                       , Play.DGraph.IndexedFolds
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl

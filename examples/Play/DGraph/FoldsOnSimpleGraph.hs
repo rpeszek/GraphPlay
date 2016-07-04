@@ -15,16 +15,17 @@ import Play.DGraph.Samples
 
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)
+-- this counts edges as if graph was expanded to a tree
 --
-countEdges :: ChildTraversingAccLogic [] v e Int
-countEdges = ChildTraversingAccLogic {
+countEdgesAsOnTree :: ChildTraversingAccLogic [] v e Int
+countEdgesAsOnTree = ChildTraversingAccLogic {
        applyEdge   = const (+1),
        applyVertex = const id,
        aggregate   = sum
     }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = (dfsFold playTwoDimonds (countEdges :: ChildTraversingAccLogic [] v (v, v) Int) "a0") -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = (dfsFold playTwoDimonds (countEdgesAsOnTree :: ChildTraversingAccLogic [] v (v, v) Int) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 -- another example aggregator (polymorphic)

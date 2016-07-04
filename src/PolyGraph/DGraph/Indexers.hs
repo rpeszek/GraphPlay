@@ -2,7 +2,12 @@
 module PolyGraph.DGraph.Indexers (
    BuildableCollection
    , buildHmCIndex
-   , CIndexContainer -- snould not be needed
+   , CIndexContainer
+   , emptyFastDEgdes
+   , buidFastDEdges
+   , FastDEdge(..)
+   , fastVertices
+   , collectVertices
 ) where
 
 import qualified Data.Maybe as MB
@@ -72,25 +77,42 @@ instance  BuildableCollection [] where
 --  DEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --
 -----------------------------------------------------------------------------------------
 
-data DEdgeWithFastSemantics e v = DEdgeWithIndexedSemantics {
+data FastDEdge e v = DEdgeWithIndexedSemantics {
     getDEdge  :: e,
     getVertices   :: (v,v)
 }
 
+instance forall e v.(Eq v) => Eq(FastDEdge e v) where
+  fedge1 == fedge2 = (getVertices fedge1) == (getVertices fedge2)
 
-instance forall v e map. DEdgeSemantics (DEdgeWithFastSemantics e v) v where
+
+instance forall v e map. DEdgeSemantics (FastDEdge e v) v where
    resolveVertices indexedE = getVertices indexedE
 
-emptyFastDEgdes :: forall t e v . (BuildableCollection t) =>  t (DEdgeWithFastSemantics e v)
+emptyFastDEgdes :: forall t e v . (BuildableCollection t) =>  t (FastDEdge e v)
 emptyFastDEgdes = emptyCollection
 
 buidFastDEdges :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
-                             t0 (DEdgeWithFastSemantics e v) ->  (e -> (v,v)) -> t e -> t0 (DEdgeWithFastSemantics e v)
+                             t0 (FastDEdge e v) ->  (e -> (v,v)) -> t e -> t0 (FastDEdge e v)
 buidFastDEdges _emptyCollection _slowResolveVertices _slowEdgeCollection =
         --foldr :: (a -> b -> b) -> b -> t a -> b
         foldr (\oldEdge inxEdges ->
                   let newEdge = DEdgeWithIndexedSemantics {getDEdge = oldEdge, getVertices = _slowResolveVertices oldEdge}
                   in prependElement newEdge inxEdges) _emptyCollection _slowEdgeCollection
+
+
+
+fastVertices' :: forall t t0 v e. (Foldable t, BuildableCollection t0) => t0 v -> t (FastDEdge e v) -> t0 v
+fastVertices' empty edges = foldr(\edge vertices -> (prependElement $ (first' . getVertices) edge) . (prependElement $ (second' . getVertices) edge) $ vertices) empty edges
+
+fastVertices  :: forall t t0 v e. (Foldable t, BuildableCollection t0)  => t (FastDEdge e v) -> t0 v
+fastVertices = fastVertices' emptyCollection
+
+collectVertices' :: forall t t0 v . (Foldable t, BuildableCollection t0) => t0 v -> t (v,v) -> t0 v
+collectVertices' empty edges = foldr(\edge vertices -> (prependElement $ first' edge) .(prependElement $ second' edge) $ vertices) empty edges
+
+collectVertices  :: forall t t0 v . (Foldable t, BuildableCollection t0)  => t (v,v) -> t0 v
+collectVertices = collectVertices' emptyCollection
 
 ----------------------------
 -- IDEAS that did not work:

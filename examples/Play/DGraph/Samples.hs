@@ -19,3 +19,13 @@ testEdges = [
 --
 playTwoDimonds :: SimpleGraph String []
 playTwoDimonds = SimpleGraph testEdges
+
+playFirstLastTxt:: String
+playFirstLastTxt = "a implies b\n" ++
+                "a implies c\n" ++
+                "b implies d\n" ++
+                "c implies d\n" ++
+                "d implies e\n" ++
+                "a implies f\n"
+
+playFirstLast = FirstLastText playFirstLastTxt

@@ -22,14 +22,14 @@ instance Num a => Monoid (Sum a) where
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)
 --
-countEdges ::  ChildFoldingAccLogic v e (Sum Int)
-countEdges = ChildFoldingAccLogic {
+countEdgesAsOnTree ::  ChildFoldingAccLogic v e (Sum Int)
+countEdgesAsOnTree = ChildFoldingAccLogic {
        applyEdge   = const (Sum 1),
        applyVertex = const (Sum 0)
     }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDimonds (countEdges :: ChildFoldingAccLogic v (v, v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDimonds (countEdgesAsOnTree :: ChildFoldingAccLogic v (v, v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 --

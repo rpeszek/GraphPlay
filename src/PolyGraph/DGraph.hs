@@ -48,7 +48,7 @@ class (Traversable t, DEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> t, g -> v, e -> v where
+class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> t, g -> v, g -> e where
   vertices ::  g -> t v
   edges    ::  g -> t e
 

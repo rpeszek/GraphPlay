@@ -16,6 +16,7 @@ second' (_,x) = x
 first' :: (a,b) -> a
 first' (x,_) = x
 
+
 --liftSTHelper :: forall s m a b. (Monad m)=> (a -> b) -> m (ST s a) -> m (ST s b)
 --liftSTHelper = liftM . liftM
 
