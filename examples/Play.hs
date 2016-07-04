@@ -8,7 +8,7 @@ main :: IO ()
 main = do
   print "Folds:"
   print FSG.experiments
-  print "\nMonoid Folds:"
+  print "Monoid Folds:"
   print MFSG.experiments
-  print "\nIndexed Folds:"
+  print "Indexed Folds:"
   print IND1.experiments

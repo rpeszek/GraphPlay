@@ -2,13 +2,10 @@
 module PolyGraph.DGraph.Indexers (
    BuildableCollection
    , buildHmCIndex
-   , CIndexContainer
+   , CIndexHelper
    , DGraphHelper(..)
-   , buidDGraph
-   , emptyFastDEgdes
-   , buidFastDEdges
    , FastDEdge(..)
-   , fastVertices
+   , buidDGraph
 ) where
 
 import qualified Data.Maybe as MB
@@ -23,12 +20,12 @@ import PolyGraph.DGraph
 -- builders that create fast CIndex implemenations for any DGraph   ---
 -----------------------------------------------------------------------
 
-data CIndexContainer v e t = CIndexContainer {
-    indexedcEdgesOf :: v -> t e
+data CIndexHelper v e t = CIndexHelper {
+    helpercEdgesOf :: v -> t e
 }
 
-instance forall v e t . (Hashable v, Eq v, DEdgeSemantics e v, Traversable t) => CIndex (CIndexContainer v e t) v e t where
-   cEdgesOf = indexedcEdgesOf
+instance forall v e t . (Hashable v, Eq v, DEdgeSemantics e v, Traversable t) => CIndex (CIndexHelper v e t) v e t where
+   cEdgesOf = helpercEdgesOf
 
 class (Eq k) => BuildableMap i k v | i -> k, i-> v where
    safeKeyOverValue ::  i -> k -> (v -> v) -> v ->  i
@@ -53,11 +50,11 @@ buildMap g =
 buildHM :: forall g v e t0 t i. (Eq v, Hashable v, DGraph g v e t0, BuildableCollection t, Traversable t) => g -> HM.HashMap v (t e)
 buildHM = buildMap
 
-buildHmCIndex :: forall g v e t0 t. (Hashable v, Eq v, DGraph g v e t0, BuildableCollection t, Traversable t) => g -> CIndexContainer v e t
+buildHmCIndex :: forall g v e t0 t. (Hashable v, Eq v, DGraph g v e t0, BuildableCollection t, Traversable t) => g -> CIndexHelper v e t
 buildHmCIndex g =
     let hm = buildHM g :: HM.HashMap v (t e)
         cEdgesOfImpl = (\v -> HM.lookupDefault emptyCollection v hm) :: v -> t e
-    in CIndexContainer { indexedcEdgesOf = cEdgesOfImpl}
+    in CIndexHelper { helpercEdgesOf = cEdgesOfImpl}
 
 --- Helper instances For CIndexing work ---
 
