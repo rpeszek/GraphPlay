@@ -107,7 +107,7 @@ fastVertices  :: forall t t0 v e. (Foldable t, BuildableCollection t0)  => t (Fa
 fastVertices = fastVertices' emptyCollection
 
 ------------------------------------------------------------------------------------
--- helpers for building a graph                                                -----
+-- helpers for building a graph from thigs that have slow edge resolution        ---
 ------------------------------------------------------------------------------------
 data DGraphHelper v e t = DGraphHelper {
    helperEdges    :: t (FastDEdge e v),
