@@ -7,7 +7,6 @@ module PolyGraph.DGraph.Indexers (
    , buidFastDEdges
    , FastDEdge(..)
    , fastVertices
-   , collectVertices
 ) where
 
 import qualified Data.Maybe as MB
@@ -108,11 +107,11 @@ fastVertices' empty edges = foldr(\edge vertices -> (prependElement $ (first' . 
 fastVertices  :: forall t t0 v e. (Foldable t, BuildableCollection t0)  => t (FastDEdge e v) -> t0 v
 fastVertices = fastVertices' emptyCollection
 
-collectVertices' :: forall t t0 v . (Foldable t, BuildableCollection t0) => t0 v -> t (v,v) -> t0 v
-collectVertices' empty edges = foldr(\edge vertices -> (prependElement $ first' edge) .(prependElement $ second' edge) $ vertices) empty edges
+--collectVertices' :: forall t t0 v . (Foldable t, BuildableCollection t0) => t0 v -> t (v,v) -> t0 v
+--collectVertices' empty edges = foldr(\edge vertices -> (prependElement $ first' edge) .(prependElement $ second' edge) $ vertices) empty edges
 
-collectVertices  :: forall t t0 v . (Foldable t, BuildableCollection t0)  => t (v,v) -> t0 v
-collectVertices = collectVertices' emptyCollection
+--collectVertices  :: forall t t0 v . (Foldable t, BuildableCollection t0)  => t (v,v) -> t0 v
+--collectVertices = collectVertices' emptyCollection
 
 ----------------------------
 -- IDEAS that did not work:

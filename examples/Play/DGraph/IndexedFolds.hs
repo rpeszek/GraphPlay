@@ -15,7 +15,7 @@ instance DGraph(MyGraph) FirstLastWord (FastDEdge FirstLastLine FirstLastWord) [
   edges = myEdges
   vertices = myVertices
 
-playFastEdges =    buidFastDEdges emptyFastDEgdes firstLastWordInLine (firstLastWordTextLines playFirstLast) :: [FastDEdge FirstLastLine FirstLastWord]
+playFastEdges    = buidFastDEdges emptyFastDEgdes firstLastWordInLine (firstLastWordTextLines playFirstLast) :: [FastDEdge FirstLastLine FirstLastWord]
 playFastVertices = fastVertices playFastEdges :: [FirstLastWord]
 
 playGraph = MyGraph {myEdges = playFastEdges, myVertices = playFastVertices}
