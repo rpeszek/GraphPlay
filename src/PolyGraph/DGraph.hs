@@ -22,10 +22,7 @@
 --  Note: LANGUAGE extensions shown below are typically configured globally for a project
 --
 
-module PolyGraph.DGraph where --exports everything, a terrible programmer wrote it
-
-import PolyGraph.Helpers
-import Data.List (nub)
+module PolyGraph.DGraph where --exports everything on purpose
 
 --
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know
@@ -43,7 +40,7 @@ class (Traversable t, DEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e
   cEdgesOf   ::  g -> v -> t e   -- return a list of child edges, empty if not a valid vertex or a leaf
 
 --
--- Directed Graph
+-- Directed Graph - TODO investigation Graph generalization
 -- mimics math defintion of being a set of d-edges and vertices
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
@@ -57,17 +54,5 @@ class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> t, g -> v
 -- instances
 --
 
--- TODO default implementation of CIndex under Eq predicate?
-
 instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
   resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
-
-
--- needs work, not efficient anyway, needs fast indexing of graph
---instance forall v t. (Eq v, Traversable t, Applicative t, Monoid (t (v,v))) => (CIndex (SimpleGraph v t) v (v,v) t) where
---    cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
-
--- misses nub, it is not efficient anyway
---instance  forall v t . ( Eq v, Foldable t, Monoid (t (v,v))) => (DGraph (SimpleGraph v t) v (v,v) t) where
---  vertices g =  (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) mempty) . getEdges $ g
---  edges g  =  getEdges $ g

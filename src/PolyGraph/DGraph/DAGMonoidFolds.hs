@@ -5,12 +5,12 @@
 
 module PolyGraph.DGraph.DAGMonoidFolds where --TODO exports everything, a terrible programmer wrote it
 
-import Data.Hashable
-import Control.Monad
-import Control.Monad.ST
+import Data.Hashable (Hashable)
+import Control.Monad (liftM, foldM)
+import Control.Monad.ST (ST, runST)
 import Control.Lens
-import qualified Data.HashTable.Class as H
-import PolyGraph.Helpers
+import qualified Data.HashTable.Class as HT
+import qualified PolyGraph.Helpers as H
 import PolyGraph.Memo
 import PolyGraph.DGraph
 
@@ -35,17 +35,17 @@ liftPairHelper e1 =  liftM $ (,) e1
 
 --
 --
-dfsFoldM :: forall m g v e t a. (Monoid a, Monad m, CIndex g v e t) => FoldOptimizer m v a -> g ->  ChildFoldingAccLogic v e a  -> v -> m a
+dfsFoldM :: forall m g v e t a. (Monoid a, Monad m, CIndex g v e t) => H.FoldOptimizer m v a -> g ->  ChildFoldingAccLogic v e a  -> v -> m a
 dfsFoldM optimizer g logic v =
      let acc_applyVertex =  applyVertex logic v   :: a
          acc_applyEdge   =  applyEdge   logic     :: e -> a
-         _recursionV     =  optimize optimizer (dfsFoldM optimizer g logic)   :: v -> m a
-         _recursionE     = _recursionV . second' . resolveVertices            :: e -> m a
+         _recursionV     =  H.optimize optimizer (dfsFoldM optimizer g logic)   :: v -> m a
+         _recursionE     = _recursionV . H.second' . resolveVertices            :: e -> m a
          _recursion      = (\e -> (liftPairHelper e) . _recursionE $ e)       :: e -> m (e, a)
          _childEdgesM    =  g `cEdgesOf` v                                    :: t e
          _foldedChildResults =
                         (mapM _recursion _childEdgesM) >>=
-                        (foldM (\a ea -> return $ (acc_applyEdge (first' ea)) `mappend` (second' ea) `mappend` a) mempty)
+                        (foldM (\a ea -> return $ (acc_applyEdge (H.first' ea)) `mappend` (H.second' ea) `mappend` a) mempty)
          _finalResult = (liftM (mappend acc_applyVertex)) _foldedChildResults  :: m a
      in
          _finalResult
@@ -55,19 +55,19 @@ dfsFoldM optimizer g logic v =
 -- will not work if DGraph has cycles
 --
 dfsFoldSlow :: forall g v e t a. (Monoid a, CIndex g v e t) => g -> ChildFoldingAccLogic v e a  -> v -> a
-dfsFoldSlow g logic v = let optimizer = FoldOptimizer { optimize = id } :: FoldOptimizer Identity v a
+dfsFoldSlow g logic v = let optimizer = H.FoldOptimizer { H.optimize = id } :: H.FoldOptimizer Identity v a
                         in runIdentity (dfsFoldM optimizer g logic v)
 
 --
--- Uses memoization to assure that each vertex is visisted only once.  Will work with cycles.
+-- Uses memoization to assure that each vertex is visisted only once.  Will currently not work with cycles.
 --
 dfsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  ChildFoldingAccLogic v e a  -> v -> ST s a
-dfsFoldST h     = let optimizer = FoldOptimizer { optimize = memo h } :: FoldOptimizer (ST s) v a
+dfsFoldST h     = let optimizer = H.FoldOptimizer { H.optimize = memo h } :: H.FoldOptimizer (ST s) v a
                   in dfsFoldM optimizer
 
 runDtsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => g ->  ChildFoldingAccLogic v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
-     ht <- H.new :: ST s (HashTable s v a)
+     ht <- HT.new :: ST s (HashTable s v a)
      a <- dfsFoldST ht g logic v
      return a
 

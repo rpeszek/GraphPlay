@@ -9,7 +9,7 @@ import PolyGraph.DGraph.DAGFolds
 import Control.Monad (join)
 import Data.List (nub)
 import Play.DGraph.Types
-import Play.DGraph.Samples
+import Play.DGraph.Samples (playTwoDimonds)
 
 -- playTwoDimonds `cEdgesOf` "a0" :: [(String, String)]
 

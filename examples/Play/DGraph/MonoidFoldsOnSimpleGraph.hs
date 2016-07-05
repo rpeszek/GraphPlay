@@ -9,7 +9,7 @@ import PolyGraph.DGraph.DAGMonoidFolds
 import Control.Monad (join)
 import Data.List (nub)
 import Play.DGraph.Types
-import Play.DGraph.Samples
+import Play.DGraph.Samples (playTwoDimonds)
 
 
 -- | Monoid under addition.

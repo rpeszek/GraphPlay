@@ -1,11 +1,12 @@
 
 module PolyGraph.DGraph.Indexers (
    BuildableCollection
+   , CIndexHelper(..)
    , buildHmCIndex
-   , CIndexHelper
    , DGraphHelper(..)
-   , FastDEdge(..)
    , buidDGraph
+   , DEdgeHelper(..)
+   , buidDEdgeHelpers
 ) where
 
 import qualified Data.Maybe as MB
@@ -75,53 +76,55 @@ instance  BuildableCollection [] where
 --  DEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --
 -----------------------------------------------------------------------------------------
 
-data FastDEdge e v = DEdgeWithIndexedSemantics {
-    getDEdge  :: e,
+data DEdgeHelper e v = DEdgeWithIndexedSemantics {
+    getDEdge      :: e,
     getVertices   :: (v,v)
 }
 
-instance forall e v.(Eq v) => Eq(FastDEdge e v) where
+instance forall e v.(Eq v) => Eq(DEdgeHelper e v) where
   fedge1 == fedge2 = (getVertices fedge1) == (getVertices fedge2)
 
 
-instance forall v e map. DEdgeSemantics (FastDEdge e v) v where
+instance forall v e map. DEdgeSemantics (DEdgeHelper e v) v where
    resolveVertices indexedE = getVertices indexedE
 
-emptyFastDEgdes :: forall t e v . (BuildableCollection t) =>  t (FastDEdge e v)
+emptyFastDEgdes :: forall t e v . (BuildableCollection t) =>  t (DEdgeHelper e v)
 emptyFastDEgdes = emptyCollection
 
-buidFastDEdges :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
-                             t0 (FastDEdge e v) ->  (e -> (v,v)) -> t e -> t0 (FastDEdge e v)
-buidFastDEdges _emptyCollection _slowResolveVertices _slowEdgeCollection =
+buidDEdgeHelpers' :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
+                             t0 (DEdgeHelper e v) ->  (e -> (v,v)) -> t e -> t0 (DEdgeHelper e v)
+buidDEdgeHelpers' _emptyCollection _slowResolveVertices _slowEdgeCollection =
         --foldr :: (a -> b -> b) -> b -> t a -> b
         foldr (\oldEdge inxEdges ->
                   let newEdge = DEdgeWithIndexedSemantics {getDEdge = oldEdge, getVertices = _slowResolveVertices oldEdge}
                   in prependElement newEdge inxEdges) _emptyCollection _slowEdgeCollection
 
+buidDEdgeHelpers :: forall t e v t0. (Foldable t, BuildableCollection t0) => (e -> (v,v)) -> t e -> t0 (DEdgeHelper e v)
+buidDEdgeHelpers  = buidDEdgeHelpers' emptyCollection
 
 
-fastVertices' :: forall t t0 v e. (Foldable t, BuildableCollection t0) => t0 v -> t (FastDEdge e v) -> t0 v
+fastVertices' :: forall t t0 v e. (Foldable t, BuildableCollection t0) => t0 v -> t (DEdgeHelper e v) -> t0 v
 fastVertices' empty edges = foldr(\edge vertices -> (prependElement $ (first' . getVertices) edge) . (prependElement $ (second' . getVertices) edge) $ vertices) empty edges
 
-fastVertices  :: forall t t0 v e. (Foldable t, BuildableCollection t0)  => t (FastDEdge e v) -> t0 v
+fastVertices  :: forall t t0 v e. (Foldable t, BuildableCollection t0)  => t (DEdgeHelper e v) -> t0 v
 fastVertices = fastVertices' emptyCollection
 
 ------------------------------------------------------------------------------------
 -- helpers for building a graph from thigs that have slow edge resolution        ---
 ------------------------------------------------------------------------------------
 data DGraphHelper v e t = DGraphHelper {
-   helperEdges    :: t (FastDEdge e v),
+   helperEdges    :: t (DEdgeHelper e v),
    helperVertices :: t v
 }
 
-instance forall e v t. (Eq v, Foldable t) => DGraph(DGraphHelper v e t) v (FastDEdge e v) t where
+instance forall e v t. (Eq v, Foldable t) => DGraph(DGraphHelper v e t) v (DEdgeHelper e v) t where
   edges    = helperEdges
   vertices = helperVertices
 
 buidDGraph :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
                                     (e -> (v,v)) -> t e -> DGraphHelper v e t0
 buidDGraph _slowResolveVertices _slowEdgeCollection =
-             let _fastDedges = buidFastDEdges emptyFastDEgdes _slowResolveVertices _slowEdgeCollection :: t0 (FastDEdge e v)
+             let _fastDedges = buidDEdgeHelpers' emptyFastDEgdes _slowResolveVertices _slowEdgeCollection :: t0 (DEdgeHelper e v)
                  _fastVertices = fastVertices _fastDedges   ::t0 v
              in DGraphHelper {helperEdges = _fastDedges, helperVertices = _fastVertices}
 

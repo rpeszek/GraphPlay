@@ -5,18 +5,18 @@
 
 module PolyGraph.DGraph.DAGFolds where --TODO exports everything, a terrible programmer wrote it
 
-import Data.Hashable
-import Control.Monad
-import Control.Monad.ST
+import Data.Hashable (Hashable)
+import Control.Monad (liftM, forM)
+import Control.Monad.ST (ST, runST)
 import Control.Lens
-import qualified Data.HashTable.Class as H
-import PolyGraph.Helpers
+import qualified Data.HashTable.Class as HT
+import qualified PolyGraph.Helpers as H
 import PolyGraph.Memo
 import PolyGraph.DGraph
 
 
 --
--- aggregator type that will be used for folding
+-- aggregator type that will be used in folding
 --
 data ChildTraversingAccLogic t v e a = ChildTraversingAccLogic {
       applyVertex :: v -> a -> a,        -- function that takes vertex and acc and returns new acc
@@ -35,7 +35,7 @@ makeLenses ''PartialFoldRes
 -- polymorphic DFS graphFold function, folds any implementation of polymorphic CIndex g starting at vertex v
 -- using aggregator ChildTraversingAccLogic that aggregates to an arbitrary type a
 --
-dfsFoldM :: forall m g v e t a. (Monad m, CIndex g v e t) => FoldOptimizer m v a -> g ->  ChildTraversingAccLogic t v e a  -> v -> m a
+dfsFoldM :: forall m g v e t a. (Monad m, CIndex g v e t) => H.FoldOptimizer m v a -> g ->  ChildTraversingAccLogic t v e a  -> v -> m a
 dfsFoldM optimizer g logic v =
     let _aggregate = aggregate logic       :: t a -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
@@ -43,8 +43,8 @@ dfsFoldM optimizer g logic v =
         _childEdges =  g `cEdgesOf` v      :: t e
     in do
         _childTempResults <- forM _childEdges (\_childEdge -> do
-              let _childVertex= (second' . resolveVertices) _childEdge
-              _childResult <- optimize optimizer (dfsFoldM optimizer g logic) $ _childVertex
+              let _childVertex= (H.second' . resolveVertices) _childEdge
+              _childResult <- H.optimize optimizer (dfsFoldM optimizer g logic) $ _childVertex
               return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
          )
         return $ (_applyVertex v) . _aggregate $ fmap (view raccumulator)
@@ -53,22 +53,21 @@ dfsFoldM optimizer g logic v =
 
 --
 -- This walks the grah without remembering visited vertices (effectively walks a tree)
--- will not work if DGraph has cycles
 --
 dfsFoldSlow :: forall g v e t a. (CIndex g v e t) => g -> ChildTraversingAccLogic t v e a  -> v -> a
-dfsFoldSlow g logic v = let optimizer = FoldOptimizer { optimize = id } :: FoldOptimizer Identity v a
+dfsFoldSlow g logic v = let optimizer = H.FoldOptimizer { H.optimize = id } :: H.FoldOptimizer Identity v a
                         in runIdentity (dfsFoldM optimizer g logic v)
 
 --
--- Uses memoization to assure that each vertex is visisted only once.  Will work with cycles.
+-- Uses memoization to assure that each vertex is visisted only once.  Will currently not work with cycles.
 --
 dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  ChildTraversingAccLogic t v e a  -> v -> ST s a
-dfsFoldST h     = let optimizer = FoldOptimizer { optimize = memo h } :: FoldOptimizer (ST s) v a
+dfsFoldST h     = let optimizer = H.FoldOptimizer { H.optimize = memo h } :: H.FoldOptimizer (ST s) v a
                   in dfsFoldM optimizer
 
 runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  ChildTraversingAccLogic t v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
-     ht <- H.new :: ST s (HashTable s v a)
+     ht <- HT.new :: ST s (HashTable s v a)
      a <- dfsFoldST ht g logic v
      return a
 

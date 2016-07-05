@@ -1,31 +1,14 @@
 module Play.DGraph.IndexedFolds where
 
-import PolyGraph.DGraph.Indexers
+import qualified PolyGraph.DGraph.Indexers as I
 import PolyGraph.DGraph
 import PolyGraph.DGraph.DAGFolds
-import Play.DGraph.Types
-import Play.DGraph.Samples (playFirstLast)
+import qualified Play.DGraph.Types as T
+import qualified Play.DGraph.Samples as S (playFirstLast)
 
-{-
-data MyGraph = MyGraph {
-   myEdges    :: [FastDEdge FirstLastLine FirstLastWord],
-   myVertices :: [FirstLastWord]
-}
-
-instance DGraph(MyGraph) FirstLastWord (FastDEdge FirstLastLine FirstLastWord) [] where
-  edges = myEdges
-  vertices = myVertices
-
-playFastEdges    = buidFastDEdges emptyFastDEgdes firstLastWordInLine (firstLastWordTextLines playFirstLast) :: [FastDEdge FirstLastLine FirstLastWord]
-playFastVertices = fastVertices playFastEdges :: [FirstLastWord]
-
-playGraph = MyGraph {myEdges = playFastEdges, myVertices = playFastVertices}
-
-playCIndex = buildHmCIndex playGraph
--}
-
-playGraph = buidDGraph firstLastWordInLine (firstLastWordTextLines playFirstLast) :: DGraphHelper FirstLastWord FirstLastLine []
-playCIndex = buildHmCIndex playGraph
+-- :: are shown for clarity, not really needed
+playGraph = I.buidDGraph T.firstLastWordInLine (T.firstLastWordTextLines S.playFirstLast) :: I.DGraphHelper T.FirstLastWord T.FirstLastLine []
+playCIndex = I.buildHmCIndex playGraph   :: I.CIndexHelper T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) []
 
 -- this counts edges as if graph was expanded to a tree
 countEdgesAsOnTree :: ChildTraversingAccLogic [] v e Int
@@ -36,6 +19,6 @@ countEdgesAsOnTree = ChildTraversingAccLogic {
     }
 
 playEdgeCount:: Int
-playEdgeCount = dfsFold playCIndex (countEdgesAsOnTree :: ChildTraversingAccLogic [] FirstLastWord (FastDEdge FirstLastLine FirstLastWord) Int) (head $ helperVertices playGraph)
+playEdgeCount = dfsFold playCIndex (countEdgesAsOnTree :: ChildTraversingAccLogic [] T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) Int) (head $ I.helperVertices playGraph)
 
 experiments = playEdgeCount
