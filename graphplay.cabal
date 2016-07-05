@@ -20,8 +20,8 @@ library
                        , PolyGraph.Helpers
                        , PolyGraph.Memo
                        , PolyGraph.DGraph
-                       , PolyGraph.DGraph.DfsFolds
-                       , PolyGraph.DGraph.DfsMonoidFolds
+                       , PolyGraph.DGraph.DAGFolds
+                       , PolyGraph.DGraph.DAGMonoidFolds
                        , PolyGraph.DGraph.Indexers
                        , Play.DGraph.Types
                        , Play.DGraph.Samples

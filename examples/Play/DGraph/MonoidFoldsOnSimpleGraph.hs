@@ -5,7 +5,7 @@ module Play.DGraph.MonoidFoldsOnSimpleGraph where
 
 import PolyGraph.DGraph
 import PolyGraph.Helpers
-import PolyGraph.DGraph.DfsMonoidFolds
+import PolyGraph.DGraph.DAGMonoidFolds
 import Control.Monad (join)
 import Data.List (nub)
 import Play.DGraph.Types

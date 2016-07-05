@@ -1,8 +1,9 @@
 --
---
+-- Smilar to DAGFolds but use different accumulator types based on Monoid
+-- TODO raise error if cycle detected
 --
 
-module PolyGraph.DGraph.DfsMonoidFolds where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.DGraph.DAGMonoidFolds where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable
 import Control.Monad

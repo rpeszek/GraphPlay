@@ -2,7 +2,7 @@ module Play.DGraph.IndexedFolds where
 
 import PolyGraph.DGraph.Indexers
 import PolyGraph.DGraph
-import PolyGraph.DGraph.DfsFolds
+import PolyGraph.DGraph.DAGFolds
 import Play.DGraph.Types
 import Play.DGraph.Samples (playFirstLast)
 

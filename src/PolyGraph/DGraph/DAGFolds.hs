@@ -1,8 +1,9 @@
 --
---
+-- These folds assume that DGraph has no cycles.
+-- TODO raise error if cycles are detected
 --
 
-module PolyGraph.DGraph.DfsFolds where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.DGraph.DAGFolds where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable
 import Control.Monad
