@@ -8,7 +8,6 @@ import qualified Play.DGraph.Types as T
 import qualified Play.DGraph.Samples as S (playFirstLast)
 import qualified Data.HashSet as HS
 
--- :: are shown for clarity, not really needed
 playGraph :: I.DGraphHelper T.FirstLastWord T.FirstLastLine []
 playGraph = I.buidDGraph T.firstLastWordInLine (T.firstLastWordTextLines S.playFirstLast)
 
