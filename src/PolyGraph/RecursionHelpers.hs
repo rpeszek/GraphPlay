@@ -1,16 +1,23 @@
 
-module PolyGraph.Memo (
+module PolyGraph.RecursionHelpers (
                HashTable,
                memo,
-               dumpMemoStore
+               noReentry,
+               handleReentry,
+               dumpMemoStore,
+               RecursionHandler (..)
                ) where --exports everything, terrible programmer
 
 import Control.Monad
 import Control.Monad.ST
 import Data.Hashable
+import Data.Maybe (fromMaybe)
 import qualified Data.HashTable.ST.Cuckoo as C
 import qualified Data.HashTable.Class as H
 
+data RecursionHandler m a b = RecursionHandler {
+      handle :: (a -> m b) -> a -> m b
+}
 
 -- memo helpers use ST Monad
 
@@ -27,6 +34,35 @@ memo ht f a = do
         Nothing -> H.insert ht a b
         _  -> return ()
    return b
+
+--
+-- result function returns f1 (second fn arg) function result on first call and f2 (first fn arg) afterwords
+-- this is a re-entry handler
+--
+handleReentry :: (Eq a, Hashable a) => HashTable s a Bool -> (a -> ST s b) -> (a -> ST s b) -> (a -> ST s b)
+handleReentry ht handler f a = do
+   maybe_b <- H.lookup ht a
+   H.insert ht a True
+   case maybe_b of
+           Nothing ->
+               f a
+           Just x  ->
+               handler a
+
+
+noReentry :: (Eq a, Hashable a) => HashTable s a Bool -> (a -> ST s b) -> (a -> ST s b)
+noReentry ht = handleReentry ht (\_ -> fail "reentry-detected")
+{-
+noReentry ht f a = do
+   maybe_b <- H.lookup ht a
+   H.insert ht a True
+   case maybe_b of
+           Nothing ->
+               f a
+           Just x  ->
+               fail ("re-entry detected")
+-}
+
 
 dumpMemoStore :: (Eq a, Hashable a) => HashTable s a b -> ST s [(a,b)]
 dumpMemoStore h = do
@@ -55,6 +91,21 @@ runFib :: Int -> ST s Int
 runFib i = do
   ht <- H.new:: ST s (HashTable s Int Int)
   f <- fibX ht i
+  return f
+
+fibY :: HashTable s Int Bool -> HashTable s Int Int -> Int -> ST s Int
+fibY h0 h 0 = return 0
+fibY h0 h 1 = return 1
+fibY h0 h i = do
+           f1 <- ((memo h) . (noReentry h0)) (fibY h0 h) $ (i-1)
+           f2 <- ((memo h) . (noReentry h0)) (fibY h0 h) $ (i-2)
+           return (f1 + f2)
+
+runFibY :: Int -> ST s Int
+runFibY i = do
+  ht0 <- H.new :: ST s (HashTable s Int Bool)
+  ht <- H.new:: ST s (HashTable s Int Int)
+  f <- fibY ht0 ht i
   return f
 
 regFibIO  n = stToIO $ fib n

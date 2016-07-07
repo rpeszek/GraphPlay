@@ -1,6 +1,7 @@
 module Play.DGraph.Samples where
 
 import Play.DGraph.Types
+import qualified Data.HashSet as HS
 
 -- simple test data (list of pars that will serve as edges)
 testEdges = [
@@ -17,6 +18,9 @@ testEdges = [
 --
 -- notice SimpleGraph is not specialized to String type
 --
+playTwoDimonds2 :: SimpleGraph String HS.HashSet
+playTwoDimonds2 = SimpleGraph (HS.fromList testEdges)
+
 playTwoDimonds :: SimpleGraph String []
 playTwoDimonds = SimpleGraph testEdges
 

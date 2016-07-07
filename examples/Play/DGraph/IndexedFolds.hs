@@ -2,7 +2,7 @@ module Play.DGraph.IndexedFolds where
 
 import qualified PolyGraph.DGraph.Indexers as I
 import PolyGraph.DGraph
-import PolyGraph.DGraph.DAGFolds
+import PolyGraph.DGraph.TreeFold
 import qualified Play.DGraph.Types as T
 import qualified Play.DGraph.Samples as S (playFirstLast)
 
@@ -11,14 +11,15 @@ playGraph = I.buidDGraph T.firstLastWordInLine (T.firstLastWordTextLines S.playF
 playCIndex = I.buildHmCIndex playGraph   :: I.CIndexHelper T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) []
 
 -- this counts edges as if graph was expanded to a tree
-countEdgesAsOnTree :: ChildTraversingAccLogic [] v e Int
-countEdgesAsOnTree = ChildTraversingAccLogic {
+countTreeEdges :: FoldAccLogic [] v e Int
+countTreeEdges = FoldAccLogic {
        applyEdge   = const (+1),
        applyVertex = const id,
-       aggregate   = sum
+       aggregate   = sum,
+       handleCycle = const $ Left (AccError "Cycle detected that would be infinite tree")
     }
 
 playEdgeCount:: Int
-playEdgeCount = dfsFold playCIndex (countEdgesAsOnTree :: ChildTraversingAccLogic [] T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) Int) (head $ I.helperVertices playGraph)
+playEdgeCount = dfsFold playCIndex (countTreeEdges :: FoldAccLogic [] T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) Int) (head $ I.helperVertices playGraph)
 
 experiments = playEdgeCount

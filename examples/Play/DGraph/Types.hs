@@ -12,9 +12,10 @@ import PolyGraph.Helpers
 import Data.List (nub, null, lines, words)
 import qualified PolyGraph.DGraph.Indexers as INX
 import qualified Data.Hashable as HASH
+import qualified Data.HashSet as HS
 
-
--- let's create a very simple (and slow)  of CIndex class for testing
+--
+-- Simple implemenation of DGraph
 -- Note: getEdges is like a getter you can obtain list of pairs encapsulated
 -- in SimpleGraph sg by calling 'getEdges sg'
 --
@@ -26,6 +27,13 @@ instance  forall v . (Eq v) => (DGraph (SimpleGraph v []) v (v,v) []) where
 
 instance forall v t. (Eq v) => (CIndex (SimpleGraph v []) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
+
+instance  forall v . (HASH.Hashable v, Eq v) => (DGraph (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
+  vertices g = (HS.foldr (\vv acc ->  (first' vv) `HS.insert` ((second' vv) `HS.insert` acc)) HS.empty) . getEdges $ g
+  edges g  =  getEdges $ g
+
+instance forall v t. (Eq v) => (CIndex (SimpleGraph v HS.HashSet) v (v,v) []) where
+  cEdgesOf g ver = HS.toList . HS.filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
 -- TODO use Text?
 newtype FirstLastLine      = FirstLastLine { getLineT:: String } deriving (Show, Eq)

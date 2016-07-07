@@ -1,6 +1,6 @@
 
-import qualified Play.DGraph.FoldsOnSimpleGraph as FSG
-import qualified Play.DGraph.MonoidFoldsOnSimpleGraph as MFSG
+import qualified Play.DGraph.TreeFoldOnSimpleGraph as FSG
+import qualified Play.DGraph.TreeMonoidFoldOnSimpleGraph as MFSG
 import qualified Play.DGraph.IndexedFolds as IND1
 
 

@@ -18,15 +18,15 @@ library
                        , examples
   exposed-modules:     Lib
                        , PolyGraph.Helpers
-                       , PolyGraph.Memo
+                       , PolyGraph.RecursionHelpers
                        , PolyGraph.DGraph
-                       , PolyGraph.DGraph.DAGFolds
-                       , PolyGraph.DGraph.DAGMonoidFolds
+                       , PolyGraph.DGraph.TreeFold
+                       , PolyGraph.DGraph.TreeMonoidFold
                        , PolyGraph.DGraph.Indexers
                        , Play.DGraph.Types
                        , Play.DGraph.Samples
-                       , Play.DGraph.FoldsOnSimpleGraph
-                       , Play.DGraph.MonoidFoldsOnSimpleGraph
+                       , Play.DGraph.TreeFoldOnSimpleGraph
+                       , Play.DGraph.TreeMonoidFoldOnSimpleGraph
                        , Play.DGraph.IndexedFolds
   build-depends:       base >= 4.7 && < 5
                       , lens
