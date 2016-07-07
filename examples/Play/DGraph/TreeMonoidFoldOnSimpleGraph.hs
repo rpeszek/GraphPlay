@@ -3,16 +3,16 @@ module Play.DGraph.TreeMonoidFoldOnSimpleGraph where
 ----------------------------------------------------------------------
 -- test experiments
 
+import Data.Hashable
 import PolyGraph.DGraph
 import PolyGraph.Helpers
 import PolyGraph.DGraph.TreeMonoidFold
-import Control.Monad (join)
-import Data.List (nub)
+import qualified Data.HashSet as HS
 import Play.DGraph.Types (SimpleGraph)
 import Play.DGraph.Samples (playTwoDimonds)
 
 
--- | Monoid under addition.
+-- | Numbers as Monoids under addition.
 newtype Sum a = Sum { getSum :: a } deriving Show
 
 instance Num a => Monoid (Sum a) where
@@ -24,25 +24,26 @@ instance Num a => Monoid (Sum a) where
 --
 countTreeEdges ::  MonoidFoldAccLogic v e (Sum Int)
 countTreeEdges = defaultMonoidFoldAccLogic {
-       applyEdge   = const (Sum 1)
-    }
+                      applyEdge   = const (Sum 1)
+                 }
 
 testDimongGraphEdgeCount:: Int
 testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDimonds (countTreeEdges :: MonoidFoldAccLogic v (v, v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 --
--- THIS LIST will have duplicates
+-- NOTE if I used [] instead of HashSet this aggregator would not scale (would have exp cost)
 --
-listChildVertices :: forall v e . (Eq v) => MonoidFoldAccLogic v e [v]
+listChildVertices :: forall v e . (Hashable v, Eq v) => MonoidFoldAccLogic v e (HS.HashSet v)
 listChildVertices = defaultMonoidFoldAccLogic {
-       applyVertex = (\v -> [v])
-    }
+                       applyVertex = (\ v -> HS.singleton v)
+                    }
 
 
 testDimongVerices:: [String]
-testDimongVerices = (dfsFold playTwoDimonds  (listChildVertices :: MonoidFoldAccLogic  String (String, String) [String]) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
--- prints ["a0","a01","a3","a02"]
+testDimongVerices = HS.toList (dfsFold playTwoDimonds (listChildVertices :: MonoidFoldAccLogic  String (String, String) (HS.HashSet String)) "a0")
+-- :: Note need to tell compiler how to specialize polymorphic aggreagator
+-- prints all vertices
 
 --
 -- One more polymorphic aggregator

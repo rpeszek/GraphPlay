@@ -6,10 +6,11 @@ module Play.DGraph.TreeFoldOnSimpleGraph where
 import PolyGraph.DGraph
 import PolyGraph.Helpers
 import PolyGraph.DGraph.TreeFold
-import Control.Monad (join)
-import Data.List (nub)
+import Data.Monoid
+import Data.Hashable
+import qualified Data.HashSet as HS
 import Play.DGraph.Types
-import Play.DGraph.Samples (playTwoDimonds)
+import Play.DGraph.Samples (playTwoDimondsSetGraph, playTwoDimonds)
 
 -- playTwoDimonds `cEdgesOf` "a0" :: [(String, String)]
 
@@ -29,24 +30,19 @@ testDimongGraphEdgeCount:: Int
 testDimongGraphEdgeCount = (dfsFold playTwoDimonds (countTreeEdges :: FoldAccLogic [] v (v, v) Int) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
--- another example aggregator (polymorphic)
--- NOTICE again to list non-duplicate vertices we need to be able to merge duplicates, hece Eq constraint
 --
-listChildVertices :: forall v e . (Eq v) => FoldAccLogic [] v e [v]
+-- NOTE if I used [] instead of HashSet this aggregator would not scale (would have exp cost)
+--
+listChildVertices :: forall v e . (Hashable v, Eq v) => FoldAccLogic [] v e (HS.HashSet v)
 listChildVertices = FoldAccLogic {
        applyEdge   = const id,
-       applyVertex = (:),  -- applying vertex is simply list prepend funtion that adds element to a list
-       aggregate   = flattenUnique,
-       handleCycle = const $ Right []
+       applyVertex = HS.insert,  -- applying vertex is simply list prepend funtion that adds element to a list
+       aggregate   = mconcat,
+       handleCycle = const $ Right mempty
     }
 
-flattenUnique :: (Eq a) => [[a]] -> [a]
-flattenUnique = nub . join  -- nub returns list of unique items (that is why Eq is needed)
-                            -- join is basically flatten when applied to lists (it is more polymorphic of course)
-                            -- '.' is function composition in Haskell (it is iteself a function of cause)
-
 testDimongVerices:: [String]
-testDimongVerices = (dfsFold playTwoDimonds  (listChildVertices :: FoldAccLogic [] String (String, String) [String]) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
+testDimongVerices = HS.toList (dfsFold playTwoDimonds  (listChildVertices :: FoldAccLogic [] String (String, String) (HS.HashSet String)) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
 -- prints ["a0","a01","a3","a02"]
 
 --

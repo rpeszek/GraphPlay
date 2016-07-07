@@ -18,8 +18,8 @@ testEdges = [
 --
 -- notice SimpleGraph is not specialized to String type
 --
-playTwoDimonds2 :: SimpleGraph String HS.HashSet
-playTwoDimonds2 = SimpleGraph (HS.fromList testEdges)
+playTwoDimondsSetGraph :: SimpleGraph String HS.HashSet
+playTwoDimondsSetGraph = SimpleGraph (HS.fromList testEdges)
 
 playTwoDimonds :: SimpleGraph String []
 playTwoDimonds = SimpleGraph testEdges
