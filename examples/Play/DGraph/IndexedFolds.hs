@@ -1,3 +1,7 @@
+------
+-- Examples demostrate converting D-Graph that would be slow to
+-- fast CIndex/DGraph
+------
 module Play.DGraph.IndexedFolds where
 
 import Data.Hashable
@@ -8,6 +12,11 @@ import qualified Play.DGraph.Types as T
 import qualified Play.DGraph.Samples as S (playFirstLast)
 import qualified Data.HashSet as HS
 
+------
+-- Our play example is set of setences (lines) that define implications.
+-- First word implies Last Word.  Logically Lines are edges and First-Last words are adjecent vertices
+-- Here edges are converted to pre-parsed pairs and HashMap based CIndex is used for fast calculations.
+------
 playGraph :: I.DGraphHelper T.FirstLastWord T.FirstLastLine []
 playGraph = I.buidDGraph T.firstLastWordInLine (T.firstLastWordTextLines S.playFirstLast)
 

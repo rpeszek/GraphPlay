@@ -49,9 +49,9 @@ dfsFoldM handler g logic v =
      let acc_applyVertex =  applyVertex logic v   :: a
          acc_applyEdge   =  applyEdge   logic     :: e -> a
          _recursionV     =  handle handler (dfsFoldM handler g logic)   :: v -> m a
-         _recursionE     = _recursionV . H.second' . resolveVertices            :: e -> m a
-         _recursion      = (\e -> (liftPairHelper e) . _recursionE $ e)       :: e -> m (e, a)
-         _childEdgesM    =  g `cEdgesOf` v                                    :: t e
+         _recursionE     = _recursionV . H.second' . resolveVertices    :: e -> m a
+         _recursion      = (\e -> (liftPairHelper e) . _recursionE $ e) :: e -> m (e, a)
+         _childEdgesM    =  g `cEdgesOf` v                              :: t e
          _foldedChildResults =
                         (mapM _recursion _childEdgesM) >>=
                         (foldM (\a ea -> return $ (acc_applyEdge (H.first' ea)) `mappend` (H.second' ea) `mappend` a) mempty)
@@ -64,10 +64,11 @@ dfsFoldM handler g logic v =
 -- will not work if DGraph has cycles
 --
 dfsFoldExponential :: forall g v e t a. (Monoid a, CIndex g v e t) => g -> MonoidFoldAccLogic v e a  -> v -> a
-dfsFoldExponential g logic v = let handler = RecursionHandler { handle = id } :: RecursionHandler Identity v a
+dfsFoldExponential g logic v =
+                        let handler = RecursionHandler { handle = id } :: RecursionHandler Identity v a
                         in runIdentity (dfsFoldM handler g logic v)
 
---TODO the following boilerplate is the same as in TreeFold externalize it for code reuse
+-- TODO the following boilerplate is almost the same as in TreeFold externalize it for code reuse
 --
 -- Uses memoization to assure that each vertex is visisted only once.  Will currently not work with cycles.
 --

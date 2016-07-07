@@ -1,8 +1,7 @@
 --
 -- Implements efficient fold of a tree expansion of the DGraph (DGraph d-paths)
--- where accumulation on each vertex v is computed only once and memoized.
--- each vertex v is visited pe(v) times (number of parent edges on the folded subgraph)
--- TODO: Handle cycles, this currenly works only for DAGs
+-- where accumulation on each vertex v is computed only once (and memoized).
+-- each vertex v is visited pe(v) times (number of parent edges of the folded subgraph)
 --
 
 module PolyGraph.DGraph.TreeFold where --TODO exports everything, a terrible programmer wrote it
@@ -38,6 +37,8 @@ makeLenses ''PartialFoldRes
 --
 -- polymorphic DFS graphFold function, folds any implementation of polymorphic CIndex g starting at vertex v
 -- using aggregator FoldAccLogic that aggregates to an arbitrary type a
+-- NOTE: aggregate Traversable needs to match CIndex Traversable
+-- This is done for simplicity (aggregate almost directly consumes CIndex collection of edges)
 --
 dfsFoldM :: forall m g v e t a. (Monad m, CIndex g v e t) => RecursionHandler m v a -> g ->  FoldAccLogic t v e a  -> v -> m a
 dfsFoldM handler g logic v =

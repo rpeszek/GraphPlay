@@ -1,8 +1,5 @@
 module Play.DGraph.TreeFoldOnSimpleGraph where
 
-----------------------------------------------------------------------
--- test experiments
-
 import PolyGraph.DGraph
 import PolyGraph.Helpers
 import PolyGraph.DGraph.TreeFold
@@ -12,11 +9,10 @@ import qualified Data.HashSet as HS
 import Play.DGraph.Types
 import Play.DGraph.Samples (playTwoDimondsSetGraph, playTwoDimonds)
 
--- playTwoDimonds `cEdgesOf` "a0" :: [(String, String)]
-
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)
--- this counts edges as if graph was expanded to a tree
+-- this counts edges of a tree representation of d-graph
+-- Compuation is efficient (done on the graph, not on the tree)
 --
 countTreeEdges :: FoldAccLogic [] v e Int
 countTreeEdges = FoldAccLogic {
