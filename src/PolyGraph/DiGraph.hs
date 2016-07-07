@@ -24,6 +24,8 @@
 
 module PolyGraph.DiGraph where --exports everything on purpose
 
+import PolyGraph.Graph (GraphDataSet)
+
 --
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know
 -- how to resolve edge into ordered pair of vertices
@@ -46,9 +48,7 @@ class (Traversable t, DEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (Eq v, Foldable t, DEdgeSemantics e v)  => DiGraph g v e t | g -> t, g -> v, g -> e where
-  vertices ::  g -> t v
-  edges    ::  g -> t e
+class (GraphDataSet g v e t, DEdgeSemantics e v)  => DiGraph g v e t
 
 
 --

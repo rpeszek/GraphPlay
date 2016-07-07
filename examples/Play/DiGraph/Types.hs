@@ -7,6 +7,7 @@ module Play.DiGraph.Types (
    , firstLastWordTextLines
 ) where
 
+import PolyGraph.Graph
 import PolyGraph.DiGraph
 import PolyGraph.Helpers
 import Data.List (nub, null, lines, words)
@@ -21,19 +22,21 @@ import qualified Data.HashSet as HS
 --
 newtype SimpleGraph v t = SimpleGraph { getEdges:: t (v,v)}
 
-instance  forall v . (Eq v) => (DiGraph (SimpleGraph v []) v (v,v) []) where
+instance  forall v . (Eq v) => (GraphDataSet (SimpleGraph v []) v (v,v) []) where
   vertices g =  nub . (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . getEdges $ g
   edges g  =  getEdges $ g
 
 instance forall v t. (Eq v) => (CIndex (SimpleGraph v []) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
-instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
+instance  forall v . (HASH.Hashable v, Eq v) => (GraphDataSet (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
   vertices g = (HS.foldr (\vv acc ->  (first' vv) `HS.insert` ((second' vv) `HS.insert` acc)) HS.empty) . getEdges $ g
   edges g  =  getEdges $ g
 
 instance forall v t. (Eq v) => (CIndex (SimpleGraph v HS.HashSet) v (v,v) []) where
   cEdgesOf g ver = HS.toList . HS.filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
+
+instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet)
 
 -- TODO use Text?
 newtype FirstLastLine      = FirstLastLine { getLineT:: String } deriving (Show, Eq)

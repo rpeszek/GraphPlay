@@ -16,6 +16,7 @@ import Data.Hashable
 import qualified Data.HashMap.Strict as HM
 import PolyGraph.Helpers
 import PolyGraph.DiGraph
+import PolyGraph.Graph
 
 -----------------------------------------------------------------------
 -- builders that create fast CIndex implemenations for any DiGraph   ---
@@ -117,9 +118,11 @@ data DiGraphHelper v e t = DiGraphHelper {
    helperVertices :: t v
 }
 
-instance forall e v t. (Eq v, Foldable t) => DiGraph(DiGraphHelper v e t) v (DEdgeHelper e v) t where
+instance forall e v t. (Eq v, Foldable t) => GraphDataSet(DiGraphHelper v e t) v (DEdgeHelper e v) t where
   edges    = helperEdges
   vertices = helperVertices
+
+instance forall e v t. (Eq v, Foldable t) => DiGraph(DiGraphHelper v e t) v (DEdgeHelper e v) t
 
 buidDiGraph :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
                                     (e -> (v,v)) -> t e -> DiGraphHelper v e t0
