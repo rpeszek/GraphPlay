@@ -26,7 +26,7 @@ data CIndexHelper v e t = CIndexHelper {
     helpercEdgesOf :: v -> t e
 }
 
-instance forall v e t . (Hashable v, Eq v, DEdgeSemantics e v, Traversable t) => CIndex (CIndexHelper v e t) v e t where
+instance forall v e t . (Hashable v, Eq v, DiEdgeSemantics e v, Traversable t) => CIndex (CIndexHelper v e t) v e t where
    cEdgesOf = helpercEdgesOf
 
 class (Eq k) => BuildableMap i k v | i -> k, i-> v where
@@ -74,7 +74,7 @@ instance  BuildableCollection [] where
 
 
 -----------------------------------------------------------------------------------------
---  DEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --
+--  DiEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --
 -----------------------------------------------------------------------------------------
 
 data DEdgeHelper e v = DEdgeWithIndexedSemantics {
@@ -86,7 +86,7 @@ instance forall e v.(Eq v) => Eq(DEdgeHelper e v) where
   fedge1 == fedge2 = (getVertices fedge1) == (getVertices fedge2)
 
 
-instance forall v e map. DEdgeSemantics (DEdgeHelper e v) v where
+instance forall v e map. DiEdgeSemantics (DEdgeHelper e v) v where
    resolveVertices indexedE = getVertices indexedE
 
 emptyFastDEgdes :: forall t e v . (BuildableCollection t) =>  t (DEdgeHelper e v)

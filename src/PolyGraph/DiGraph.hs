@@ -31,7 +31,7 @@ import PolyGraph.Graph (GraphDataSet)
 -- how to resolve edge into ordered pair of vertices
 -- Graph Theory term would be: incidence function
 --
-class DEdgeSemantics e v | e -> v where
+class DiEdgeSemantics e v | e -> v where
   resolveVertices ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
 
 --
@@ -39,7 +39,7 @@ class DEdgeSemantics e v | e -> v where
 -- It is less than a graph, we can ask for list of child edges at any instance of type v
 -- caller picks with Traversable to use for navigatigaging children
 --
-class (Traversable t, DEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e -> v where
+class (Traversable t, DiEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e -> v where
   cEdgesOf   ::  g -> v -> t e   -- return a list of child edges, empty if not a valid vertex or a leaf
 
 --
@@ -48,12 +48,12 @@ class (Traversable t, DEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (GraphDataSet g v e t, DEdgeSemantics e v)  => DiGraph g v e t
+class (GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
 
 
 --
 -- instances
 --
 
-instance forall v . (Eq v) => (DEdgeSemantics  (v,v) v) where
+instance forall v . (Eq v) => (DiEdgeSemantics  (v,v) v) where
   resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
