@@ -1,15 +1,15 @@
 ------
 -- Examples demostrate converting D-Graph that would be slow to
--- fast CIndex/DGraph
+-- fast CIndex/DiGraph
 ------
-module Play.DGraph.IndexedFolds where
+module Play.DiGraph.IndexedFolds where
 
 import Data.Hashable
-import qualified PolyGraph.DGraph.Indexers as I
-import PolyGraph.DGraph
-import PolyGraph.DGraph.TreeFold
-import qualified Play.DGraph.Types as T
-import qualified Play.DGraph.Samples as S (playFirstLast)
+import qualified PolyGraph.DiGraph.Indexers as I
+import PolyGraph.DiGraph
+import PolyGraph.DiGraph.TreeFold
+import qualified Play.DiGraph.Types as T
+import qualified Play.DiGraph.Samples as S (playFirstLast)
 import qualified Data.HashSet as HS
 
 ------
@@ -17,8 +17,8 @@ import qualified Data.HashSet as HS
 -- First word implies Last Word.  Logically Lines are edges and First-Last words are adjecent vertices
 -- Here edges are converted to pre-parsed pairs and HashMap based CIndex is used for fast calculations.
 ------
-playGraph :: I.DGraphHelper T.FirstLastWord T.FirstLastLine []
-playGraph = I.buidDGraph T.firstLastWordInLine (T.firstLastWordTextLines S.playFirstLast)
+playGraph :: I.DiGraphHelper T.FirstLastWord T.FirstLastLine []
+playGraph = I.buidDiGraph T.firstLastWordInLine (T.firstLastWordTextLines S.playFirstLast)
 
 playCIndex :: I.CIndexHelper T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) []
 playCIndex = I.buildHmCIndex playGraph

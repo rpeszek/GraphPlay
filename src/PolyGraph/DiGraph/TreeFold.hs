@@ -1,10 +1,10 @@
 --
--- Implements efficient fold of a tree expansion of the DGraph (DGraph d-paths)
+-- Implements efficient fold of a tree expansion of the DiGraph (DiGraph d-paths)
 -- where accumulation on each vertex v is computed only once (and memoized).
 -- each vertex v is visited pe(v) times (number of parent edges of the folded subgraph)
 --
 
-module PolyGraph.DGraph.TreeFold where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.DiGraph.TreeFold where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable (Hashable)
 import Control.Monad (liftM, forM)
@@ -13,7 +13,7 @@ import Control.Lens
 import qualified Data.HashTable.Class as HT
 import qualified PolyGraph.Helpers as H
 import PolyGraph.RecursionHelpers
-import PolyGraph.DGraph
+import PolyGraph.DiGraph
 
 
 newtype AccError = AccError String

@@ -1,7 +1,7 @@
 
-import qualified Play.DGraph.TreeFoldOnSimpleGraph as FSG
-import qualified Play.DGraph.TreeMonoidFoldOnSimpleGraph as MFSG
-import qualified Play.DGraph.IndexedFolds as IND1
+import qualified Play.DiGraph.TreeFoldOnSimpleGraph as FSG
+import qualified Play.DiGraph.TreeMonoidFoldOnSimpleGraph as MFSG
+import qualified Play.DiGraph.IndexedFolds as IND1
 
 
 main :: IO ()

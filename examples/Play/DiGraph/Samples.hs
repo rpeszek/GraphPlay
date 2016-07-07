@@ -1,6 +1,6 @@
-module Play.DGraph.Samples where
+module Play.DiGraph.Samples where
 
-import Play.DGraph.Types
+import Play.DiGraph.Types
 import qualified Data.HashSet as HS
 
 -- simple test data (list of pars that will serve as edges)

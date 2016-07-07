@@ -19,15 +19,15 @@ library
   exposed-modules:     Lib
                        , PolyGraph.Helpers
                        , PolyGraph.RecursionHelpers
-                       , PolyGraph.DGraph
-                       , PolyGraph.DGraph.TreeFold
-                       , PolyGraph.DGraph.TreeMonoidFold
-                       , PolyGraph.DGraph.Indexers
-                       , Play.DGraph.Types
-                       , Play.DGraph.Samples
-                       , Play.DGraph.TreeFoldOnSimpleGraph
-                       , Play.DGraph.TreeMonoidFoldOnSimpleGraph
-                       , Play.DGraph.IndexedFolds
+                       , PolyGraph.DiGraph
+                       , PolyGraph.DiGraph.TreeFold
+                       , PolyGraph.DiGraph.TreeMonoidFold
+                       , PolyGraph.DiGraph.Indexers
+                       , Play.DiGraph.Types
+                       , Play.DiGraph.Samples
+                       , Play.DiGraph.TreeFoldOnSimpleGraph
+                       , Play.DiGraph.TreeMonoidFoldOnSimpleGraph
+                       , Play.DiGraph.IndexedFolds
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl

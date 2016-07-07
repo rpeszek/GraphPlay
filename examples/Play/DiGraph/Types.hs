@@ -1,4 +1,4 @@
-module Play.DGraph.Types (
+module Play.DiGraph.Types (
    SimpleGraph(..)
    , FirstLastLine(..)
    , FirstLastWord(..)
@@ -7,28 +7,28 @@ module Play.DGraph.Types (
    , firstLastWordTextLines
 ) where
 
-import PolyGraph.DGraph
+import PolyGraph.DiGraph
 import PolyGraph.Helpers
 import Data.List (nub, null, lines, words)
-import qualified PolyGraph.DGraph.Indexers as INX
+import qualified PolyGraph.DiGraph.Indexers as INX
 import qualified Data.Hashable as HASH
 import qualified Data.HashSet as HS
 
 --
--- Simple implemenation of DGraph
+-- Simple implemenation of DiGraph
 -- Note: getEdges is like a getter you can obtain list of pairs encapsulated
 -- in SimpleGraph sg by calling 'getEdges sg'
 --
 newtype SimpleGraph v t = SimpleGraph { getEdges:: t (v,v)}
 
-instance  forall v . (Eq v) => (DGraph (SimpleGraph v []) v (v,v) []) where
+instance  forall v . (Eq v) => (DiGraph (SimpleGraph v []) v (v,v) []) where
   vertices g =  nub . (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . getEdges $ g
   edges g  =  getEdges $ g
 
 instance forall v t. (Eq v) => (CIndex (SimpleGraph v []) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
-instance  forall v . (HASH.Hashable v, Eq v) => (DGraph (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
+instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
   vertices g = (HS.foldr (\vv acc ->  (first' vv) `HS.insert` ((second' vv) `HS.insert` acc)) HS.empty) . getEdges $ g
   edges g  =  getEdges $ g
 
@@ -61,6 +61,6 @@ firstLastWordTextLines text =  map(FirstLastLine) . lines . getText $ text
 --instance DEdgeSemantics FirstLastLine FirstLastWord where
 --  resolveVertices  = firstLastWordInLine
 
---instance DGraph FirstLastText FirstLastLine (FirstLastWord, FirstLastWord) [] where
+--instance DiGraph FirstLastText FirstLastLine (FirstLastWord, FirstLastWord) [] where
 --  edges     = firstLastWordTextLines
 --  vertices  = firstLastWordInLine . firstLastWordTextLines

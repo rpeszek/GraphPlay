@@ -22,11 +22,12 @@
 --  Note: LANGUAGE extensions shown below are typically configured globally for a project
 --
 
-module PolyGraph.DGraph where --exports everything on purpose
+module PolyGraph.DiGraph where --exports everything on purpose
 
 --
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know
 -- how to resolve edge into ordered pair of vertices
+-- Graph Theory term would be: incidence function
 --
 class DEdgeSemantics e v | e -> v where
   resolveVertices ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
@@ -45,7 +46,7 @@ class (Traversable t, DEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (Eq v, Foldable t, DEdgeSemantics e v)  => DGraph g v e t | g -> t, g -> v, g -> e where
+class (Eq v, Foldable t, DEdgeSemantics e v)  => DiGraph g v e t | g -> t, g -> v, g -> e where
   vertices ::  g -> t v
   edges    ::  g -> t e
 

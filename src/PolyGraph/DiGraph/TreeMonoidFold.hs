@@ -1,10 +1,10 @@
 --
 -- Smilar to TreeFold but use different accumulator types based on Monoid
--- Efficient momoized fold of DGraph expanded into a Tree where each graph vertex is computed only once.
+-- Efficient momoized fold of DiGraph expanded into a Tree where each graph vertex is computed only once.
 -- TODO needs to handle cycles
 --
 
-module PolyGraph.DGraph.TreeMonoidFold where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.DiGraph.TreeMonoidFold where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable (Hashable)
 import Control.Monad (liftM, foldM)
@@ -13,7 +13,7 @@ import Control.Lens
 import qualified Data.HashTable.Class as HT
 import qualified PolyGraph.Helpers as H
 import PolyGraph.RecursionHelpers
-import PolyGraph.DGraph
+import PolyGraph.DiGraph
 
 
 newtype AccError = AccError String
@@ -61,7 +61,7 @@ dfsFoldM handler g logic v =
 
 --
 -- This walks the grah without remembering visited vertices (effectively walks a tree)
--- will not work if DGraph has cycles
+-- will not work if DiGraph has cycles
 --
 dfsFoldExponential :: forall g v e t a. (Monoid a, CIndex g v e t) => g -> MonoidFoldAccLogic v e a  -> v -> a
 dfsFoldExponential g logic v =

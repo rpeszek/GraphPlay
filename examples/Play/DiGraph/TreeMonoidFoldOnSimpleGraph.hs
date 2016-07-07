@@ -1,15 +1,15 @@
-module Play.DGraph.TreeMonoidFoldOnSimpleGraph where
+module Play.DiGraph.TreeMonoidFoldOnSimpleGraph where
 
 ----------------------------------------------------------------------
 -- test experiments
 
 import Data.Hashable
-import PolyGraph.DGraph
+import PolyGraph.DiGraph
 import PolyGraph.Helpers
-import PolyGraph.DGraph.TreeMonoidFold
+import PolyGraph.DiGraph.TreeMonoidFold
 import qualified Data.HashSet as HS
-import Play.DGraph.Types (SimpleGraph)
-import Play.DGraph.Samples (playTwoDimonds)
+import Play.DiGraph.Types (SimpleGraph)
+import Play.DiGraph.Samples (playTwoDimonds)
 
 
 -- | Numbers as Monoids under addition.

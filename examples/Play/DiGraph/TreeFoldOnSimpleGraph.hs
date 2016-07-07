@@ -1,13 +1,13 @@
-module Play.DGraph.TreeFoldOnSimpleGraph where
+module Play.DiGraph.TreeFoldOnSimpleGraph where
 
-import PolyGraph.DGraph
+import PolyGraph.DiGraph
 import PolyGraph.Helpers
-import PolyGraph.DGraph.TreeFold
+import PolyGraph.DiGraph.TreeFold
 import Data.Monoid
 import Data.Hashable
 import qualified Data.HashSet as HS
-import Play.DGraph.Types
-import Play.DGraph.Samples (playTwoDimondsSetGraph, playTwoDimonds)
+import Play.DiGraph.Types
+import Play.DiGraph.Samples (playTwoDimondsSetGraph, playTwoDimonds)
 
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)

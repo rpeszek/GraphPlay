@@ -1,10 +1,10 @@
 
-module PolyGraph.DGraph.Indexers (
+module PolyGraph.DiGraph.Indexers (
    BuildableCollection
    , CIndexHelper(..)
    , buildHmCIndex
-   , DGraphHelper(..)
-   , buidDGraph
+   , DiGraphHelper(..)
+   , buidDiGraph
    , DEdgeHelper(..)
    , buidDEdgeHelpers
 ) where
@@ -15,10 +15,10 @@ import Control.Monad.ST
 import Data.Hashable
 import qualified Data.HashMap.Strict as HM
 import PolyGraph.Helpers
-import PolyGraph.DGraph
+import PolyGraph.DiGraph
 
 -----------------------------------------------------------------------
--- builders that create fast CIndex implemenations for any DGraph   ---
+-- builders that create fast CIndex implemenations for any DiGraph   ---
 -----------------------------------------------------------------------
 
 data CIndexHelper v e t = CIndexHelper {
@@ -37,7 +37,7 @@ class (Foldable t) => BuildableCollection t  where
    prependElement  :: e -> t e -> t e
    emptyCollection :: t e
 
-buildMap :: forall g v e t0 t i. (DGraph g v e t0, BuildableCollection t, Traversable t, BuildableMap i v (t e)) => g -> i
+buildMap :: forall g v e t0 t i. (DiGraph g v e t0, BuildableCollection t, Traversable t, BuildableMap i v (t e)) => g -> i
 buildMap g =
   let gedges = edges g  :: t0 e
       i0  = emptyMap    :: i
@@ -48,10 +48,10 @@ buildMap g =
 -- specialize implementation using HashMap
 --
 
-buildHM :: forall g v e t0 t i. (Eq v, Hashable v, DGraph g v e t0, BuildableCollection t, Traversable t) => g -> HM.HashMap v (t e)
+buildHM :: forall g v e t0 t i. (Eq v, Hashable v, DiGraph g v e t0, BuildableCollection t, Traversable t) => g -> HM.HashMap v (t e)
 buildHM = buildMap
 
-buildHmCIndex :: forall g v e t0 t. (Hashable v, Eq v, DGraph g v e t0, BuildableCollection t, Traversable t) => g -> CIndexHelper v e t
+buildHmCIndex :: forall g v e t0 t. (Hashable v, Eq v, DiGraph g v e t0, BuildableCollection t, Traversable t) => g -> CIndexHelper v e t
 buildHmCIndex g =
     let hm = buildHM g :: HM.HashMap v (t e)
         cEdgesOfImpl = (\v -> HM.lookupDefault emptyCollection v hm) :: v -> t e
@@ -112,21 +112,21 @@ fastVertices = fastVertices' emptyCollection
 ------------------------------------------------------------------------------------
 -- helpers for building a graph from thigs that have slow edge resolution        ---
 ------------------------------------------------------------------------------------
-data DGraphHelper v e t = DGraphHelper {
+data DiGraphHelper v e t = DiGraphHelper {
    helperEdges    :: t (DEdgeHelper e v),
    helperVertices :: t v
 }
 
-instance forall e v t. (Eq v, Foldable t) => DGraph(DGraphHelper v e t) v (DEdgeHelper e v) t where
+instance forall e v t. (Eq v, Foldable t) => DiGraph(DiGraphHelper v e t) v (DEdgeHelper e v) t where
   edges    = helperEdges
   vertices = helperVertices
 
-buidDGraph :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
-                                    (e -> (v,v)) -> t e -> DGraphHelper v e t0
-buidDGraph _slowResolveVertices _slowEdgeCollection =
+buidDiGraph :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
+                                    (e -> (v,v)) -> t e -> DiGraphHelper v e t0
+buidDiGraph _slowResolveVertices _slowEdgeCollection =
              let _fastDedges = buidDEdgeHelpers' emptyFastDEgdes _slowResolveVertices _slowEdgeCollection :: t0 (DEdgeHelper e v)
                  _fastVertices = fastVertices _fastDedges   ::t0 v
-             in DGraphHelper {helperEdges = _fastDedges, helperVertices = _fastVertices}
+             in DiGraphHelper {helperEdges = _fastDedges, helperVertices = _fastVertices}
 
 
 --collectVertices' :: forall t t0 v . (Foldable t, BuildableCollection t0) => t0 v -> t (v,v) -> t0 v
