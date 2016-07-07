@@ -24,11 +24,11 @@ allImplications = FoldAccLogic {
        handleCycle = Right . HS.singleton
     }
 
-playAllImplications:: [String]
-playAllImplications =
+playAllImplications:: String -> [String]
+playAllImplications word =
            map (T.getWordT) . HS.toList $ dfsFold
                          playCIndex
                          (allImplications :: FoldAccLogic [] T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) (HS.HashSet T.FirstLastWord))
-                         (head $ I.helperVertices playGraph)
+                         (T.FirstLastWord(word))
 
-experiments = playAllImplications
+experiments = [playAllImplications "a", playAllImplications "d"]
