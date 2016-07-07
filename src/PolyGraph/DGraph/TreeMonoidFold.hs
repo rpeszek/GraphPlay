@@ -16,14 +16,22 @@ import PolyGraph.RecursionHelpers
 import PolyGraph.DGraph
 
 
+newtype AccError = AccError String
 --
 -- aggregator type that will be used for folding
 --
 data MonoidFoldAccLogic v e a = MonoidFoldAccLogic {
       applyVertex :: v -> a,        -- function that takes vertex and returns monoid
-      applyEdge   :: e -> a         -- function that takes an edge and returns monoid
+      applyEdge   :: e -> a,        -- function that takes an edge and returns monoid
+      handleCycle :: v -> Either AccError a    -- what to do if cycle is detected
 }
 
+defaultMonoidFoldAccLogic :: forall v e a. (Monoid a) => MonoidFoldAccLogic v e a
+defaultMonoidFoldAccLogic = MonoidFoldAccLogic {
+      applyVertex = const mempty,
+      applyEdge   = const mempty,
+      handleCycle = const $ Left (AccError "Cycle detected")
+}
 
 --
 -- helper type used internally, holds computation result for a vertex
@@ -59,17 +67,27 @@ dfsFoldExponential :: forall g v e t a. (Monoid a, CIndex g v e t) => g -> Monoi
 dfsFoldExponential g logic v = let handler = RecursionHandler { handle = id } :: RecursionHandler Identity v a
                         in runIdentity (dfsFoldM handler g logic v)
 
+--TODO the following boilerplate is the same as in TreeFold externalize it for code reuse
 --
 -- Uses memoization to assure that each vertex is visisted only once.  Will currently not work with cycles.
 --
-dfsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => HashTable s v a -> g ->  MonoidFoldAccLogic v e a  -> v -> ST s a
-dfsFoldST h     = let handler = RecursionHandler { handle = memo h } :: RecursionHandler (ST s) v a
-                  in dfsFoldM handler
+dfsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => HashTable s v Bool -> HashTable s v a -> g ->  MonoidFoldAccLogic v e a  -> v -> ST s a
+dfsFoldST htCycles htmemo g logic =
+              let  cyclesHandler :: v -> ST s a
+                   cyclesHandler v =  do
+                              let aOrError = handleCycle logic v
+                              case aOrError of Right a -> return a
+                                               Left (AccError msg) -> fail msg
 
-runDtsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => g ->  MonoidFoldAccLogic v e a  -> v -> ST s a
+                   handler = RecursionHandler { handle = (memo htmemo) . (handleReentry htCycles cyclesHandler) } :: RecursionHandler (ST s) v a
+              in dfsFoldM handler g logic
+
+
+runDtsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => g ->  MonoidFoldAccLogic  v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
-     ht <- HT.new :: ST s (HashTable s v a)
-     a <- dfsFoldST ht g logic v
+     htCycles <- HT.new :: ST s (HashTable s v Bool)
+     htmemo <- HT.new :: ST s (HashTable s v a)
+     a <- dfsFoldST htCycles htmemo g logic v
      return a
 
 dfsFoldFast :: forall g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => g ->  MonoidFoldAccLogic v e a  -> v -> a

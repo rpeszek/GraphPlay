@@ -23,9 +23,8 @@ instance Num a => Monoid (Sum a) where
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)
 --
 countTreeEdges ::  MonoidFoldAccLogic v e (Sum Int)
-countTreeEdges = MonoidFoldAccLogic {
-       applyEdge   = const (Sum 1),
-       applyVertex = const (Sum 0)
+countTreeEdges = defaultMonoidFoldAccLogic {
+       applyEdge   = const (Sum 1)
     }
 
 testDimongGraphEdgeCount:: Int
@@ -36,8 +35,7 @@ testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDimonds (countTreeEdges :: M
 -- THIS LIST will have duplicates
 --
 listChildVertices :: forall v e . (Eq v) => MonoidFoldAccLogic v e [v]
-listChildVertices = MonoidFoldAccLogic {
-       applyEdge   = const (mempty :: [v]),
+listChildVertices = defaultMonoidFoldAccLogic {
        applyVertex = (\v -> [v])
     }
 
@@ -50,9 +48,8 @@ testDimongVerices = (dfsFold playTwoDimonds  (listChildVertices :: MonoidFoldAcc
 -- One more polymorphic aggregator
 --
 countDepth :: MonoidFoldAccLogic v e (Sum Int)
-countDepth = MonoidFoldAccLogic {
-                 applyEdge   = const( Sum 1),
-                 applyVertex = const( Sum 0)
+countDepth = defaultMonoidFoldAccLogic {
+                 applyEdge   = const( Sum 1)
              }
 
 
