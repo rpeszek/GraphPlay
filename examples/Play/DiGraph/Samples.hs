@@ -32,4 +32,4 @@ playFirstLastTxt = "a implies b\n" ++
                 "d implies e\n" ++
                 "a implies f\n"
 
-playFirstLast = FirstLastText playFirstLastTxt
+playFirstLast = Theory playFirstLastTxt

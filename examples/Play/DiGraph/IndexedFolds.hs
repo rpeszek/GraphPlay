@@ -17,10 +17,10 @@ import qualified Data.HashSet as HS
 -- First word implies Last Word.  Logically Lines are edges and First-Last words are adjecent vertices
 -- Here edges are converted to pre-parsed pairs and HashMap based CIndex is used for fast calculations.
 ------
-playGraph :: I.DiGraphHelper T.FirstLastWord T.FirstLastLine []
-playGraph = I.buidDiGraph T.firstLastWordInLine (T.firstLastWordTextLines S.playFirstLast)
+playGraph :: I.DiGraphHelper T.Statement T.Implication []
+playGraph = I.buidDiGraph T.statementsInImplication (T.statementsInTheory S.playFirstLast)
 
-playCIndex :: I.CIndexHelper T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) []
+playCIndex :: I.CIndexHelper T.Statement (I.DEdgeHelper T.Implication T.Statement) []
 playCIndex = I.buildHmCIndex playGraph
 
 -- this counts edges as if graph was expanded to a tree
@@ -34,9 +34,9 @@ allImplications = FoldAccLogic {
 
 playAllImplications:: String -> [String]
 playAllImplications word =
-           map (T.getWordT) . HS.toList $ dfsFold
+           map (T.getStatementText) . HS.toList $ dfsFold
                          playCIndex
-                         (allImplications :: FoldAccLogic [] T.FirstLastWord (I.DEdgeHelper T.FirstLastLine T.FirstLastWord) (HS.HashSet T.FirstLastWord))
-                         (T.FirstLastWord(word))
+                         (allImplications :: FoldAccLogic [] T.Statement (I.DEdgeHelper T.Implication T.Statement) (HS.HashSet T.Statement))
+                         (T.Statement(word))
 
 experiments = [playAllImplications "a", playAllImplications "d"]

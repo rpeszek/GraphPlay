@@ -24,7 +24,7 @@
 
 module PolyGraph.DiGraph where --exports everything on purpose
 
-import PolyGraph.Graph (GraphDataSet, EdgeSemantics)
+import qualified PolyGraph.Graph as G (Graph, GraphDataSet, EdgeSemantics(..))
 import PolyGraph.Helpers
 
 --
@@ -49,7 +49,7 @@ class (Traversable t, DiEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, 
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
+class (G.GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
 
 
 --
@@ -58,3 +58,8 @@ class (GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
 
 instance forall v . (Eq v) => (DiEdgeSemantics  (v,v) v) where
   resolveDiEdge e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
+
+instance forall e v. DiEdgeSemantics e v => G.EdgeSemantics e v where
+   resolveEdge = resolveDiEdge
+
+instance forall g v e t. DiGraph g v e t => G.Graph g v e t

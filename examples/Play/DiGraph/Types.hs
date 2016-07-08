@@ -1,14 +1,15 @@
 module Play.DiGraph.Types (
    SimpleGraph(..)
-   , FirstLastLine(..)
-   , FirstLastWord(..)
-   , FirstLastText(..)
-   , firstLastWordInLine
-   , firstLastWordTextLines
+   , Implication(..)
+   , Statement(..)
+   , Theory(..)
+   , statementsInImplication
+   , statementsInTheory
 ) where
 
 import PolyGraph.Graph
 import PolyGraph.DiGraph
+import PolyGraph.Graph.Adjustable
 import PolyGraph.Helpers
 import Data.List (nub, null, lines, words)
 import qualified PolyGraph.DiGraph.Indexers as INX
@@ -22,6 +23,7 @@ import qualified Data.HashSet as HS
 --
 newtype SimpleGraph v t = SimpleGraph { getEdges:: t (v,v)}
 
+-- INSTANCES SimpleGraph v [] --
 instance  forall v . (Eq v) => (GraphDataSet (SimpleGraph v []) v (v,v) []) where
   vertices g =  nub . (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . getEdges $ g
   edges g  =  getEdges $ g
@@ -29,6 +31,9 @@ instance  forall v . (Eq v) => (GraphDataSet (SimpleGraph v []) v (v,v) []) wher
 instance forall v t. (Eq v) => (CIndex (SimpleGraph v []) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
+instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleGraph v []) v (v,v) [])
+
+-- INSTANCES SimpleGraph v HashSet --
 instance  forall v . (HASH.Hashable v, Eq v) => (GraphDataSet (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
   vertices g = (HS.foldr (\vv acc ->  (first' vv) `HS.insert` ((second' vv) `HS.insert` acc)) HS.empty) . getEdges $ g
   edges g  =  getEdges $ g
@@ -38,17 +43,19 @@ instance forall v t. (Eq v) => (CIndex (SimpleGraph v HS.HashSet) v (v,v) []) wh
 
 instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet)
 
+
+
 -- TODO use Text?
-newtype FirstLastLine      = FirstLastLine { getLineT:: String } deriving (Show, Eq)
-newtype FirstLastWord      = FirstLastWord { getWordT:: String } deriving (Show, Eq)
-newtype FirstLastText      = FirstLastText { getText :: String } deriving (Show, Eq)
+newtype Implication      = Implication { getImplicationText:: String } deriving (Show, Eq)
+newtype Statement      = Statement { getStatementText:: String } deriving (Show, Eq)
+newtype Theory      = Theory { getTheoryText :: String } deriving (Show, Eq)
 
-instance HASH.Hashable(FirstLastWord) where
-  hashWithSalt salt x = HASH.hashWithSalt salt (getWordT x)
+instance HASH.Hashable(Statement) where
+  hashWithSalt salt x = HASH.hashWithSalt salt (getStatementText x)
 
-firstLastWordInLine :: FirstLastLine -> (FirstLastWord, FirstLastWord)
-firstLastWordInLine line =
-          let lineTxt = getLineT line
+statementsInImplication :: Implication -> (Statement, Statement)
+statementsInImplication line =
+          let lineTxt = getImplicationText line
               wordTexts = words lineTxt
               firstWord = if (null wordTexts)
                 then ""
@@ -56,14 +63,14 @@ firstLastWordInLine line =
               lastWord  = if (null wordTexts)
                 then ""
                 else (last wordTexts)
-          in (FirstLastWord{getWordT = firstWord}, FirstLastWord{getWordT = lastWord})
+          in (Statement{getStatementText = firstWord}, Statement{getStatementText = lastWord})
 
-firstLastWordTextLines :: FirstLastText -> [FirstLastLine]
-firstLastWordTextLines text =  map(FirstLastLine) . lines . getText $ text
+statementsInTheory :: Theory -> [Implication]
+statementsInTheory text =  map(Implication) . lines . getTheoryText $ text
 
---instance DiEdgeSemantics FirstLastLine FirstLastWord where
---  resolveDiEdge  = firstLastWordInLine
+--instance DiEdgeSemantics Implication Statement where
+--  resolveDiEdge  = statementsInImplication
 
---instance DiGraph FirstLastText FirstLastLine (FirstLastWord, FirstLastWord) [] where
---  edges     = firstLastWordTextLines
---  vertices  = firstLastWordInLine . firstLastWordTextLines
+--instance DiGraph Theory Implication (Statement, Statement) [] where
+--  edges     = statementsInTheory
+--  vertices  = statementsInImplication . statementsInTheory
