@@ -24,7 +24,8 @@
 
 module PolyGraph.DiGraph where --exports everything on purpose
 
-import PolyGraph.Graph (GraphDataSet)
+import PolyGraph.Graph (GraphDataSet, EdgeSemantics)
+import PolyGraph.Helpers
 
 --
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know
@@ -32,7 +33,7 @@ import PolyGraph.Graph (GraphDataSet)
 -- Graph Theory term would be: incidence function
 --
 class DiEdgeSemantics e v | e -> v where
-  resolveVertices ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
+  resolveDiEdge ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
 
 --
 -- CIndex one who directs directed graph :) - in child direction
@@ -56,4 +57,4 @@ class (GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
 --
 
 instance forall v . (Eq v) => (DiEdgeSemantics  (v,v) v) where
-  resolveVertices e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?
+  resolveDiEdge e = e                                                   --(:t) g -> e -> (v,v), brain teaser why is that?

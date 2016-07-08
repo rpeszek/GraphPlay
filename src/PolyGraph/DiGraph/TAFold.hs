@@ -1,10 +1,14 @@
 --
--- Implements efficient fold of a tree expansion of the DiGraph (DiGraph d-paths)
--- where accumulation on each vertex v is computed only once (and memoized).
+-- This fold aggregates compulation result on each vertex
+-- by using results from all diedges starting from that vertex.  That makes the results behave
+-- as if folding was done on a tree obtained from expanding the graph.
+-- Hence TAFold = Tree-like Aggregatation Fold
+--
+-- Implementation is efficient, result on each vertex v is computed only once (and memoized).
 -- each vertex v is visited pe(v) times (number of parent edges of the folded subgraph)
 --
 
-module PolyGraph.DiGraph.TreeFold where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.DiGraph.TAFold where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable (Hashable)
 import Control.Monad (liftM, forM)
@@ -48,7 +52,7 @@ dfsFoldM handler g logic v =
         _childEdges =  g `cEdgesOf` v      :: t e
     in do
         _childTempResults <- forM _childEdges (\_childEdge -> do
-              let _childVertex= (H.second' . resolveVertices) _childEdge
+              let _childVertex= (H.second' . resolveDiEdge) _childEdge
               _childResult <- handle handler (dfsFoldM handler g logic) $ _childVertex
               return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
          )

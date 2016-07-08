@@ -62,7 +62,7 @@ firstLastWordTextLines :: FirstLastText -> [FirstLastLine]
 firstLastWordTextLines text =  map(FirstLastLine) . lines . getText $ text
 
 --instance DiEdgeSemantics FirstLastLine FirstLastWord where
---  resolveVertices  = firstLastWordInLine
+--  resolveDiEdge  = firstLastWordInLine
 
 --instance DiGraph FirstLastText FirstLastLine (FirstLastWord, FirstLastWord) [] where
 --  edges     = firstLastWordTextLines

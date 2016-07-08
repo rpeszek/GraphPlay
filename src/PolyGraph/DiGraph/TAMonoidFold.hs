@@ -1,10 +1,10 @@
 --
--- Smilar to TreeFold but use different accumulator types based on Monoid
--- Efficient momoized fold of DiGraph expanded into a Tree where each graph vertex is computed only once.
--- TODO needs to handle cycles
+-- Smilar to TAFold but use different accumulator types based on Monoid
+-- Efficient momoized fold of DiGraph which behaves as a Tree fold because of how vertices aggregate edge results.
+-- Each graph vertex is computed only once.
 --
 
-module PolyGraph.DiGraph.TreeMonoidFold where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.DiGraph.TAMonoidFold where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable (Hashable)
 import Control.Monad (liftM, foldM)
@@ -49,7 +49,7 @@ dfsFoldM handler g logic v =
      let acc_applyVertex =  applyVertex logic v   :: a
          acc_applyEdge   =  applyEdge   logic     :: e -> a
          _recursionV     =  handle handler (dfsFoldM handler g logic)   :: v -> m a
-         _recursionE     = _recursionV . H.second' . resolveVertices    :: e -> m a
+         _recursionE     = _recursionV . H.second' . resolveDiEdge    :: e -> m a
          _recursion      = (\e -> (liftPairHelper e) . _recursionE $ e) :: e -> m (e, a)
          _childEdgesM    =  g `cEdgesOf` v                              :: t e
          _foldedChildResults =

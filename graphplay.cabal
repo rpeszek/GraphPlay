@@ -20,9 +20,11 @@ library
                        , PolyGraph.Helpers
                        , PolyGraph.RecursionHelpers
                        , PolyGraph.DiGraph
-                       , PolyGraph.DiGraph.TreeFold
-                       , PolyGraph.DiGraph.TreeMonoidFold
+                       , PolyGraph.DiGraph.TAFold
+                       , PolyGraph.DiGraph.TAMonoidFold
                        , PolyGraph.DiGraph.Indexers
+                       , PolyGraph.Graph
+                       , PolyGraph.Graph.Adjustable
                        , Play.DiGraph.Types
                        , Play.DiGraph.Samples
                        , Play.DiGraph.TreeFoldOnSimpleGraph

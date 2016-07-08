@@ -43,7 +43,7 @@ buildMap g =
   let gedges = edges g  :: t0 e
       i0  = emptyMap    :: i
   in
-      foldr (\e i -> safeKeyOverValue i (first' . resolveVertices $ e) (prependElement e) emptyCollection) i0 gedges
+      foldr (\e i -> safeKeyOverValue i (first' . resolveDiEdge $ e) (prependElement e) emptyCollection) i0 gedges
 
 --
 -- specialize implementation using HashMap
@@ -87,17 +87,17 @@ instance forall e v.(Eq v) => Eq(DEdgeHelper e v) where
 
 
 instance forall v e map. DiEdgeSemantics (DEdgeHelper e v) v where
-   resolveVertices indexedE = getVertices indexedE
+   resolveDiEdge indexedE = getVertices indexedE
 
 emptyFastDEgdes :: forall t e v . (BuildableCollection t) =>  t (DEdgeHelper e v)
 emptyFastDEgdes = emptyCollection
 
 buidDEdgeHelpers' :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
                              t0 (DEdgeHelper e v) ->  (e -> (v,v)) -> t e -> t0 (DEdgeHelper e v)
-buidDEdgeHelpers' _emptyCollection _slowResolveVertices _slowEdgeCollection =
+buidDEdgeHelpers' _emptyCollection _slowresolveDiEdge _slowEdgeCollection =
         --foldr :: (a -> b -> b) -> b -> t a -> b
         foldr (\oldEdge inxEdges ->
-                  let newEdge = DEdgeWithIndexedSemantics {getDEdge = oldEdge, getVertices = _slowResolveVertices oldEdge}
+                  let newEdge = DEdgeWithIndexedSemantics {getDEdge = oldEdge, getVertices = _slowresolveDiEdge oldEdge}
                   in prependElement newEdge inxEdges) _emptyCollection _slowEdgeCollection
 
 buidDEdgeHelpers :: forall t e v t0. (Foldable t, BuildableCollection t0) => (e -> (v,v)) -> t e -> t0 (DEdgeHelper e v)
@@ -126,8 +126,8 @@ instance forall e v t. (Eq v, Foldable t) => DiGraph(DiGraphHelper v e t) v (DEd
 
 buidDiGraph :: forall t e v t0. (Foldable t, BuildableCollection t0) =>
                                     (e -> (v,v)) -> t e -> DiGraphHelper v e t0
-buidDiGraph _slowResolveVertices _slowEdgeCollection =
-             let _fastDedges = buidDEdgeHelpers' emptyFastDEgdes _slowResolveVertices _slowEdgeCollection :: t0 (DEdgeHelper e v)
+buidDiGraph _slowresolveDiEdge _slowEdgeCollection =
+             let _fastDedges = buidDEdgeHelpers' emptyFastDEgdes _slowresolveDiEdge _slowEdgeCollection :: t0 (DEdgeHelper e v)
                  _fastVertices = fastVertices _fastDedges   ::t0 v
              in DiGraphHelper {helperEdges = _fastDedges, helperVertices = _fastVertices}
 

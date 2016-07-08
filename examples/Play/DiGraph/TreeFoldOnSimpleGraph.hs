@@ -2,7 +2,7 @@ module Play.DiGraph.TreeFoldOnSimpleGraph where
 
 import PolyGraph.DiGraph
 import PolyGraph.Helpers
-import PolyGraph.DiGraph.TreeFold
+import PolyGraph.DiGraph.TAFold
 import Data.Monoid
 import Data.Hashable
 import qualified Data.HashSet as HS
