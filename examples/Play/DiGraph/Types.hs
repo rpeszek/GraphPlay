@@ -11,7 +11,7 @@ module Play.DiGraph.Types (
 
 import PolyGraph.Graph
 import PolyGraph.DiGraph
-import PolyGraph.Graph.Adjust
+import PolyGraph.Graph.PolyBuild
 import PolyGraph.Helpers
 import Data.List (nub, null, lines, words, concat)
 import qualified PolyGraph.DiGraph.Indexers as INX

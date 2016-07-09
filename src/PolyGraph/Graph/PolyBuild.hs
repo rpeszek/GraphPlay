@@ -1,4 +1,4 @@
-module PolyGraph.Graph.Adjust where
+module PolyGraph.Graph.PolyBuild where
 
 import PolyGraph.Graph
 import PolyGraph.DiGraph (DiEdgeSemantics)
@@ -47,8 +47,8 @@ class (Eq e, BuildableGraphDataSet g v e t)  => AdjustableGraphDataSet g v e t w
 addDefaultEdge :: forall g v e t . (BuildableEdgeSemantics e v, BuildableGraphDataSet g v e t ) => v -> v -> g -> g
 addDefaultEdge v1 v2 g = g ~+ (defaultEdge v1 v2)
 
-(@+->@) :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) =>  v -> v -> g -> g
-(@+->@) = addDefaultEdge
+(@+~>@) :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) =>  v -> v -> g -> g
+(@+~>@) = addDefaultEdge
 
 --(:->:)
 (^+~>^) :: forall g v e t . (H.FromString v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) =>  String -> String -> g -> g

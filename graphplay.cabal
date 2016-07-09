@@ -24,13 +24,13 @@ library
                        , PolyGraph.DiGraph.TAMonoidFold
                        , PolyGraph.DiGraph.Indexers
                        , PolyGraph.Graph
-                       , PolyGraph.Graph.Adjust
+                       , PolyGraph.Graph.PolyBuild
                        , Play.DiGraph.Types
                        , Play.DiGraph.Samples
                        , Play.DiGraph.TreeFoldOnSimpleGraph
                        , Play.DiGraph.TreeMonoidFoldOnSimpleGraph
                        , Play.DiGraph.IndexedFolds
-                       , Play.DiGraph.Adjust
+                       , Play.DiGraph.PolyBuild
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl
