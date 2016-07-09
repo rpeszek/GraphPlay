@@ -9,10 +9,12 @@ testEdges = [
         ("a0", "a02"),
         ("a01", "a1"),
         ("a02", "a1"),
+        ("a0", "a1"),
         ("a1", "a11"),
         ("a1", "a12"),
         ("a11", "a2"),
-        ("a12", "a2")
+        ("a12", "a2"),
+        ("a1",  "a2")
        ]
 
 --
@@ -21,8 +23,8 @@ testEdges = [
 playTwoDiamondsSetGraph :: SimpleSetGraph String
 playTwoDiamondsSetGraph = SimpleGraph (HS.fromList testEdges) HS.empty
 
-playTwoDimonds :: SimpleListGraph String
-playTwoDimonds = SimpleGraph testEdges []
+playTwoDiamonds :: SimpleListGraph String
+playTwoDiamonds = SimpleGraph testEdges []
 
 playFirstLastTxt:: String
 playFirstLastTxt = "a implies b\n" ++

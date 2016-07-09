@@ -88,6 +88,12 @@ newtype Statement      = Statement   { getStatementText:: String }   deriving (S
 newtype Implication    = Implication { getImplicationText:: String } deriving (Show, Eq)
 newtype Theory         = Theory      { getTheoryText :: String }     deriving (Show, Eq)
 
+toTheory :: String -> Theory
+toTheory text = Theory text
+
+--getStatementText :: Statement -> String
+--getStatementText = id
+
 instance HASH.Hashable(Statement) where
   hashWithSalt salt x = HASH.hashWithSalt salt (getStatementText x)
 
@@ -119,3 +125,12 @@ instance BuildableEdgeSemantics Implication Statement where
 instance GraphDataSet Theory Statement Implication [] where
   edges     = implicationsInTheory
   vertices  = concat . map (\(a,b) -> [a,b]) . map (statementsInImplication) . implicationsInTheory
+
+instance DiGraph Theory Statement Implication []
+
+-- TODO this can insert duplicate vertices and edges
+instance BuildableGraphDataSet Theory Statement Implication [] where
+  empty = Theory ""
+  g @+ statment    = g   -- TODO currently theory does not care about statements that do not imply anything
+  g ~+ implication = let newText = (getImplicationText implication) ++ (getTheoryText g)
+                     in Theory newText

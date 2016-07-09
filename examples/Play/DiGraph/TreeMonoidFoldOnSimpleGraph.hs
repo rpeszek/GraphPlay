@@ -8,7 +8,7 @@ import PolyGraph.DiGraph
 import PolyGraph.Helpers
 import PolyGraph.DiGraph.TAMonoidFold
 import qualified Data.HashSet as HS
-import Play.DiGraph.Samples (playTwoDimonds)
+import Play.DiGraph.Samples (playTwoDiamonds)
 
 
 -- | Numbers as Monoids under addition.
@@ -27,7 +27,7 @@ countTreeEdges = defaultMonoidFoldAccLogic {
                  }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDimonds (countTreeEdges :: MonoidFoldAccLogic v (v, v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDiamonds (countTreeEdges :: MonoidFoldAccLogic v (v, v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 --
@@ -40,7 +40,7 @@ listChildVertices = defaultMonoidFoldAccLogic {
 
 
 testDimongVerices:: [String]
-testDimongVerices = HS.toList (dfsFold playTwoDimonds (listChildVertices :: MonoidFoldAccLogic  String (String, String) (HS.HashSet String)) "a0")
+testDimongVerices = HS.toList (dfsFold playTwoDiamonds (listChildVertices :: MonoidFoldAccLogic  String (String, String) (HS.HashSet String)) "a0")
 -- :: Note need to tell compiler how to specialize polymorphic aggreagator
 -- prints all vertices
 
@@ -54,7 +54,7 @@ countDepth = defaultMonoidFoldAccLogic {
 
 
 testDimongGraphDepthCount:: Int
-testDimongGraphDepthCount = getSum $ (dfsFold playTwoDimonds (countDepth :: MonoidFoldAccLogic v (v, v) (Sum Int)) "a0") -- :: needs to define edge type
+testDimongGraphDepthCount = getSum $ (dfsFold playTwoDiamonds (countDepth :: MonoidFoldAccLogic v (v, v) (Sum Int)) "a0") -- :: needs to define edge type
 -- prints 2
 
 experiments = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]
