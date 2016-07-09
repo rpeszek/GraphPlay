@@ -1,11 +1,13 @@
 module PolyGraph.Graph.Adjust where
 
 import PolyGraph.Graph
+import PolyGraph.DiGraph (DiEdgeSemantics)
+import qualified PolyGraph.Helpers as H
 
 class BuildableEdgeSemantics e v where
   defaultEdge :: v -> v -> e
 
-instance BuildableEdgeSemantics (v,v) v where
+instance forall v. (Read v) => BuildableEdgeSemantics (v,v) v where
   defaultEdge = (,)
 
 class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
@@ -42,8 +44,22 @@ class (Eq e, BuildableGraphDataSet g v e t)  => AdjustableGraphDataSet g v e t w
   g ~- e = g ~\ (== e)
 
 -- adds edge with default semantics between vertices
-addDefaultEdge :: forall g v e t . (BuildableEdgeSemantics e v, BuildableGraphDataSet g v e t ) => g -> v -> v -> g
-addDefaultEdge g v1 v2 = g ~+ (defaultEdge v1 v2)
+addDefaultEdge :: forall g v e t . (BuildableEdgeSemantics e v, BuildableGraphDataSet g v e t ) => v -> v -> g -> g
+addDefaultEdge v1 v2 g = g ~+ (defaultEdge v1 v2)
 
-(@@+) :: forall g v e t . (BuildableEdgeSemantics e v, BuildableGraphDataSet g v e t ) => g -> v -> v -> g
-(@@+) = addDefaultEdge
+(@+->@) :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) =>  v -> v -> g -> g
+(@+->@) = addDefaultEdge
+
+--(:->:)
+(^+~>^) :: forall g v e t . (H.FromString v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) =>  String -> String -> g -> g
+(^+~>^) s1 s2 g = let v1 = H.fromString s1 :: v
+                      v2 = H.fromString s2 :: v
+                  in  addDefaultEdge v1 v2 g
+
+(@+~~@) :: forall g v e t . (BuildableEdgeSemantics e v, EdgeSemantics e v, BuildableGraphDataSet g v e t) =>  v -> v -> g -> g
+(@+~~@) = addDefaultEdge
+
+(^+~~^) :: forall g v e t . (H.FromString v, BuildableEdgeSemantics e v, EdgeSemantics e v, BuildableGraphDataSet g v e t) =>  String -> String -> g -> g
+(^+~~^) s1 s2 g = let v1 = H.fromString s1 :: v
+                      v2 = H.fromString s2 :: v
+                  in  addDefaultEdge v1 v2 g

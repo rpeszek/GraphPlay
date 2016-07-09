@@ -6,11 +6,13 @@ import qualified Play.DiGraph.Adjust as ADJ
 
 main :: IO ()
 main = do
-  print "Folds:"
+  putStrLn "Folds:"
   print FSG.experiments
-  print "Monoid Folds:"
+  putStrLn "Monoid Folds:"
   print MFSG.experiments
-  print "Indexed Folds:"
+  putStrLn "Indexed Folds:"
   print IND1.experiments
-  print "Adj 1:"
-  print ADJ.displayABCD1
+  putStrLn "Adj 1:"
+  putStrLn ADJ.showDiamondABCD1
+  putStrLn ADJ.showDiamondABCD2
+  putStrLn ADJ.showDiamondABCD3

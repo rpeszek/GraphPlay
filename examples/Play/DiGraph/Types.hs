@@ -97,6 +97,9 @@ toTheory text = Theory text
 instance HASH.Hashable(Statement) where
   hashWithSalt salt x = HASH.hashWithSalt salt (getStatementText x)
 
+instance FromString (Statement) where
+  fromString s = Statement s
+
 statementsInImplication :: Implication -> (Statement, Statement)
 statementsInImplication line =
           let lineTxt = getImplicationText line
@@ -132,5 +135,5 @@ instance DiGraph Theory Statement Implication []
 instance BuildableGraphDataSet Theory Statement Implication [] where
   empty = Theory ""
   g @+ statment    = g   -- TODO currently theory does not care about statements that do not imply anything
-  g ~+ implication = let newText = (getImplicationText implication) ++ (getTheoryText g)
+  g ~+ implication = let newText = (getImplicationText implication) ++ "\n" ++ (getTheoryText g)
                      in Theory newText
