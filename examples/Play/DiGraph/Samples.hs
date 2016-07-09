@@ -18,11 +18,11 @@ testEdges = [
 --
 -- notice SimpleGraph is not specialized to String type
 --
-playTwoDimondsSetGraph :: SimpleGraph String HS.HashSet
-playTwoDimondsSetGraph = SimpleGraph (HS.fromList testEdges)
+playTwoDimondsSetGraph :: SimpleSetGraph String
+playTwoDimondsSetGraph = SimpleGraph (HS.fromList testEdges) HS.empty
 
-playTwoDimonds :: SimpleGraph String []
-playTwoDimonds = SimpleGraph testEdges
+playTwoDimonds :: SimpleListGraph String 
+playTwoDimonds = SimpleGraph testEdges []
 
 playFirstLastTxt:: String
 playFirstLastTxt = "a implies b\n" ++

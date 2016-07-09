@@ -7,8 +7,8 @@ class BuildableSemantics e v where
 
 instance BuildableSemantics (v,v) v where
   defaultEdge = (,)
-  
-class Graph g v e t  => BuildableGraphDataSet g v e t where
+
+class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
   empty :: g
 
   -- | adds vertex, implemenation decides what to do if same vertex is added twice

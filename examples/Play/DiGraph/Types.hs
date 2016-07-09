@@ -1,5 +1,7 @@
 module Play.DiGraph.Types (
    SimpleGraph(..)
+   , SimpleListGraph
+   , SimpleSetGraph
    , Implication(..)
    , Statement(..)
    , Theory(..)
@@ -21,27 +23,49 @@ import qualified Data.HashSet as HS
 -- Note: getEdges is like a getter you can obtain list of pairs encapsulated
 -- in SimpleGraph sg by calling 'getEdges sg'
 --
-newtype SimpleGraph v t = SimpleGraph { getEdges:: t (v,v)}
+data SimpleGraph v t = SimpleGraph { getEdges:: t (v,v), getDisconnectedVertices:: t v}
+type SimpleListGraph v = SimpleGraph v []
+type SimpleSetGraph v = SimpleGraph v HS.HashSet
 
 -- INSTANCES SimpleGraph v [] --
-instance  forall v . (Eq v) => (GraphDataSet (SimpleGraph v []) v (v,v) []) where
-  vertices g =  nub . (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . getEdges $ g
+instance  forall v . (Eq v) => (GraphDataSet (SimpleListGraph v) v (v,v) []) where
+  vertices g =  let connectedVertices = (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . getEdges $ g
+                in nub $ connectedVertices ++ (getDisconnectedVertices g)
   edges g  =  getEdges $ g
 
-instance forall v t. (Eq v) => (CIndex (SimpleGraph v []) v (v,v) []) where
+instance forall v t. (Eq v) => (CIndex (SimpleListGraph v) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
-instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleGraph v []) v (v,v) [])
+instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleListGraph v) v (v,v) [])
 
 -- INSTANCES SimpleGraph v HashSet --
-instance  forall v . (HASH.Hashable v, Eq v) => (GraphDataSet (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
-  vertices g = (HS.foldr (\vv acc ->  (first' vv) `HS.insert` ((second' vv) `HS.insert` acc)) HS.empty) . getEdges $ g
+instance  forall v . (HASH.Hashable v, Eq v) => (GraphDataSet (SimpleSetGraph v) v (v,v) HS.HashSet) where
+  vertices g = let connectedVertices = (HS.foldr (\vv acc ->  (first' vv) `HS.insert` ((second' vv) `HS.insert` acc)) HS.empty) . getEdges $ g
+               in connectedVertices `HS.union` (getDisconnectedVertices g)
   edges g  =  getEdges $ g
 
-instance forall v t. (Eq v) => (CIndex (SimpleGraph v HS.HashSet) v (v,v) []) where
+instance forall v t. (Eq v) => (CIndex (SimpleSetGraph v) v (v,v) []) where
   cEdgesOf g ver = HS.toList . HS.filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
-instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet)
+instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleSetGraph v) v (v,v) HS.HashSet)
+
+-- no lenses no fun
+instance  forall v . (HASH.Hashable v, Eq v) => (BuildableGraphDataSet(SimpleSetGraph v) v (v,v) HS.HashSet) where
+   empty = SimpleGraph HS.empty HS.empty
+   g @+ v = let newVertices = HS.insert v (getDisconnectedVertices g)
+            in g {getDisconnectedVertices = newVertices}
+   g ~+ (v1,v2) =
+            let newVertices = HS.delete v1 $ HS.delete v2 (getDisconnectedVertices g)
+                newEdges = HS.insert (v1,v2) (getEdges g)
+            in g {getEdges = newEdges}
+
+instance forall v . (HASH.Hashable v, Eq v) => (AdjustableGraphDataSet (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
+   g @\ f = let newVertices = HS.filter f (getDisconnectedVertices g)
+                newEdges = HS.filter (\vv -> (f $ first' vv) && (f $ second' vv)) (getEdges g)
+            in  SimpleGraph { getEdges = newEdges, getDisconnectedVertices = newVertices}
+
+   g ~\ f = let newEdges = HS.filter f (getEdges g)
+            in  g {getEdges = newEdges}
 
 
 
