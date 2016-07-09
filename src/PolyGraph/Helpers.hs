@@ -7,7 +7,6 @@
 module PolyGraph.Helpers (
   second',
   first',
-  FromString (..),
   ToString
 ) where
 
@@ -17,8 +16,6 @@ second' (_,x) = x
 first' :: (a,b) -> a
 first' (x,_) = x
 
-class FromString a where
-  fromString :: String -> a
 
 class ToString a where
   toString :: a -> String
@@ -29,12 +26,6 @@ instance ToString String where
 
 instance forall v. (Show v, Num v) => ToString v where
   toString = show
-
-instance FromString String where
-  fromString = id
-
-instance forall v. (Read v) => FromString v where
-  fromString = read
 
 
 --liftSTHelper :: forall s m a b. (Monad m)=> (a -> b) -> m (ST s a) -> m (ST s b)

@@ -10,6 +10,15 @@ class BuildableEdgeSemantics e v where
 instance forall v. (Read v) => BuildableEdgeSemantics (v,v) v where
   defaultEdge = (,)
 
+class FromString a where
+  fromString :: String -> a
+
+instance FromString String where
+  fromString = id
+
+instance forall v. (Read v) => FromString v where
+  fromString = read
+
 class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
   empty :: g
   emptyGraph :: g
@@ -51,15 +60,15 @@ addDefaultEdge v1 v2 g = g ~+ (defaultEdge v1 v2)
 (@+~>@) = addDefaultEdge
 
 --(:->:)
-(^+~>^) :: forall g v e t . (H.FromString v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) =>  String -> String -> g -> g
-(^+~>^) s1 s2 g = let v1 = H.fromString s1 :: v
-                      v2 = H.fromString s2 :: v
+(^+~>^) :: forall g v e t . (FromString v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) =>  String -> String -> g -> g
+(^+~>^) s1 s2 g = let v1 = fromString s1 :: v
+                      v2 = fromString s2 :: v
                   in  addDefaultEdge v1 v2 g
 
 (@+~~@) :: forall g v e t . (BuildableEdgeSemantics e v, EdgeSemantics e v, BuildableGraphDataSet g v e t) =>  v -> v -> g -> g
 (@+~~@) = addDefaultEdge
 
-(^+~~^) :: forall g v e t . (H.FromString v, BuildableEdgeSemantics e v, EdgeSemantics e v, BuildableGraphDataSet g v e t) =>  String -> String -> g -> g
-(^+~~^) s1 s2 g = let v1 = H.fromString s1 :: v
-                      v2 = H.fromString s2 :: v
+(^+~~^) :: forall g v e t . (FromString v, BuildableEdgeSemantics e v, EdgeSemantics e v, BuildableGraphDataSet g v e t) =>  String -> String -> g -> g
+(^+~~^) s1 s2 g = let v1 = fromString s1 :: v
+                      v2 = fromString s2 :: v
                   in  addDefaultEdge v1 v2 g
