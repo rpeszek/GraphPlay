@@ -2,11 +2,11 @@ module Play.DiGraph.Types (
    SimpleGraph(..)
    , SimpleListGraph
    , SimpleSetGraph
-   , Implication(..)
-   , Statement(..)
-   , Theory(..)
-   , statementsInImplication
-   , implicationsInTheory
+   , FLWordSentence(..)
+   , FLWord(..)
+   , FLWordText(..)
+   , fLWordsInFLWordSentence
+   , fLWordSentencesInFLWordText
 ) where
 
 import PolyGraph.Graph
@@ -84,56 +84,60 @@ instance forall v . (HASH.Hashable v, Eq v) => (AdjustableGraphDataSet (SimpleGr
 
 
 -- TODO use Text?
-newtype Statement      = Statement   { getStatementText:: String }   deriving (Show, Eq)
-newtype Implication    = Implication { getImplicationText:: String } deriving (Show, Eq)
-newtype Theory         = Theory      { getTheoryText :: String }     deriving (Show, Eq)
+----------------------------------
+-- Text represents a graph where each sentence/line is an edge
+-- and first and last word in this line is a vertex
+----------------------------------
+newtype FLWord            = FLWord       { getFLWordText:: String }        deriving (Show, Eq)
+newtype FLWordSentence    = FLWordSentence { getFLWordSentenceText:: String }  deriving (Show, Eq)
+newtype FLWordText        = FLWordText { getFLWordTextText :: String } deriving (Show, Eq)
 
-toTheory :: String -> Theory
-toTheory text = Theory text
+toFLWordText :: String -> FLWordText
+toFLWordText text = FLWordText text
 
---getStatementText :: Statement -> String
---getStatementText = id
+--getFLWordText :: FLWord -> String
+--getFLWordText = id
 
-instance HASH.Hashable(Statement) where
-  hashWithSalt salt x = HASH.hashWithSalt salt (getStatementText x)
+instance HASH.Hashable(FLWord) where
+  hashWithSalt salt x = HASH.hashWithSalt salt (getFLWordText x)
 
-instance FromString (Statement) where
-  fromString s = Statement s
+instance FromString (FLWord) where
+  fromString s = FLWord s
 
-statementsInImplication :: Implication -> (Statement, Statement)
-statementsInImplication line =
-          let lineTxt = getImplicationText line
+fLWordsInFLWordSentence :: FLWordSentence -> (FLWord, FLWord)
+fLWordsInFLWordSentence line =
+          let lineTxt = getFLWordSentenceText line
               wordTexts = words lineTxt
-              firstWord = if (null wordTexts)
+              firstFLWord = if (null wordTexts)
                 then ""
                 else (head wordTexts)
-              lastWord  = if (null wordTexts)
+              lastFLWord  = if (null wordTexts)
                 then ""
                 else (last wordTexts)
-          in (Statement{getStatementText = firstWord}, Statement{getStatementText = lastWord})
+          in (FLWord{getFLWordText = firstFLWord}, FLWord{getFLWordText = lastFLWord})
 
-implicationsInTheory :: Theory -> [Implication]
-implicationsInTheory text =  map(Implication) . lines . getTheoryText $ text
+fLWordSentencesInFLWordText :: FLWordText -> [FLWordSentence]
+fLWordSentencesInFLWordText text =  map(FLWordSentence) . lines . getFLWordTextText $ text
 
 --
---Working with Theory directly will be slow but it is a digraph anyway
+--Working with FLWordText directly will be slow but it is a digraph anyway
 --
 
-instance DiEdgeSemantics Implication Statement where
-  resolveDiEdge  = statementsInImplication
+instance DiEdgeSemantics FLWordSentence FLWord where
+  resolveDiEdge  = fLWordsInFLWordSentence
 
-instance BuildableEdgeSemantics Implication Statement where
-  defaultEdge s1 s2 = Implication ((getStatementText s1) ++ " implies " ++ (getStatementText s2))
+instance BuildableEdgeSemantics FLWordSentence FLWord where
+  defaultEdge s1 s2 = FLWordSentence ((getFLWordText s1) ++ " implies " ++ (getFLWordText s2))
 
-instance GraphDataSet Theory Statement Implication [] where
-  edges     = implicationsInTheory
-  vertices  = concat . map (\(a,b) -> [a,b]) . map (statementsInImplication) . implicationsInTheory
+instance GraphDataSet FLWordText FLWord FLWordSentence [] where
+  edges     = fLWordSentencesInFLWordText
+  vertices  = concat . map (\(a,b) -> [a,b]) . map (fLWordsInFLWordSentence) . fLWordSentencesInFLWordText
 
-instance DiGraph Theory Statement Implication []
+instance DiGraph FLWordText FLWord FLWordSentence []
 
 -- TODO this can insert duplicate vertices and edges
-instance BuildableGraphDataSet Theory Statement Implication [] where
-  empty = Theory ""
-  g @+ statment    = g   -- TODO currently theory does not care about statements that do not imply anything
-  g ~+ implication = let newText = (getImplicationText implication) ++ "\n" ++ (getTheoryText g)
-                     in Theory newText
+instance BuildableGraphDataSet FLWordText FLWord FLWordSentence [] where
+  empty = FLWordText ""
+  g @+ statment      = g   -- TODO currently FLWordText does not care about FLWords that do not imply anything
+  g ~+ flWordSentence = let newText = (getFLWordSentenceText flWordSentence) ++ "\n" ++ (getFLWordTextText g)
+                        in FLWordText newText

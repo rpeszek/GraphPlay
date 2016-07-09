@@ -30,7 +30,7 @@ import PolyGraph.Helpers
 --
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know
 -- how to resolve edge into ordered pair of vertices
--- Graph Theory term would be: incidence function
+-- Graph FLWordText term would be: incidence function
 --
 class DiEdgeSemantics e v | e -> v where
   resolveDiEdge ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph

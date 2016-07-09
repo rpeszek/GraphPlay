@@ -32,7 +32,7 @@ showDiamondABCD2 =
                 in show (mygraph)
 
 showDiamondABCD3 =
-                let mygraph :: Theory
+                let mygraph :: FLWordText
                     mygraph = diamondABCD
                 in show (mygraph)
 
@@ -58,6 +58,6 @@ showDiamond'ABCD1 =
 
 
 showDiamond'ABCD3 =
-                let mygraph :: Theory
-                    mygraph = diamondABCD' Statement
+                let mygraph :: FLWordText
+                    mygraph = diamondABCD' FLWord
                 in show (mygraph)

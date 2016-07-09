@@ -3,7 +3,7 @@ module PolyGraph.Graph where --exports everything, a terrible programmer wrote i
 
 --
 -- e are edges v are vertices, the order of (v,v) does not imply ordering of vertices
--- Graph Theory term would be: incidence function
+-- Graph FLWordText term would be: incidence function
 --
 class EdgeSemantics e v | e -> v where
   resolveEdge      ::  e -> (v,v)

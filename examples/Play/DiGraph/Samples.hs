@@ -34,4 +34,4 @@ playFirstLastTxt = "a implies b\n" ++
                 "d implies e\n" ++
                 "a implies f\n"
 
-playFirstLast = Theory playFirstLastTxt
+playFirstLast = FLWordText playFirstLastTxt
