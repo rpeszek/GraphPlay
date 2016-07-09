@@ -1,11 +1,11 @@
-module PolyGraph.Graph.Adjustable where
+module PolyGraph.Graph.Adjust where
 
 import PolyGraph.Graph
 
-class BuildableSemantics e v where
+class BuildableEdgeSemantics e v where
   defaultEdge :: v -> v -> e
 
-instance BuildableSemantics (v,v) v where
+instance BuildableEdgeSemantics (v,v) v where
   defaultEdge = (,)
 
 class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
@@ -41,8 +41,8 @@ class (Eq e, BuildableGraphDataSet g v e t)  => AdjustableGraphDataSet g v e t w
   g ~- e = g ~\ (== e)
 
 -- adds edge with default semantics between vertices
-addDefaultEdge :: forall g v e t . (BuildableSemantics e v, BuildableGraphDataSet g v e t ) => g -> v -> v -> g
+addDefaultEdge :: forall g v e t . (BuildableEdgeSemantics e v, BuildableGraphDataSet g v e t ) => g -> v -> v -> g
 addDefaultEdge g v1 v2 = g ~+ (defaultEdge v1 v2)
 
-(@@+) :: forall g v e t . (BuildableSemantics e v, BuildableGraphDataSet g v e t ) => g -> v -> v -> g
+(@@+) :: forall g v e t . (BuildableEdgeSemantics e v, BuildableGraphDataSet g v e t ) => g -> v -> v -> g
 (@@+) = addDefaultEdge

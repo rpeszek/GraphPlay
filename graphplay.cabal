@@ -24,7 +24,7 @@ library
                        , PolyGraph.DiGraph.TAMonoidFold
                        , PolyGraph.DiGraph.Indexers
                        , PolyGraph.Graph
-                       , PolyGraph.Graph.Adjustable
+                       , PolyGraph.Graph.Adjust
                        , Play.DiGraph.Types
                        , Play.DiGraph.Samples
                        , Play.DiGraph.TreeFoldOnSimpleGraph

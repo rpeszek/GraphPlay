@@ -6,14 +6,14 @@ module Play.DiGraph.Types (
    , Statement(..)
    , Theory(..)
    , statementsInImplication
-   , statementsInTheory
+   , implicationsInTheory
 ) where
 
 import PolyGraph.Graph
 import PolyGraph.DiGraph
-import PolyGraph.Graph.Adjustable
+import PolyGraph.Graph.Adjust
 import PolyGraph.Helpers
-import Data.List (nub, null, lines, words)
+import Data.List (nub, null, lines, words, concat)
 import qualified PolyGraph.DiGraph.Indexers as INX
 import qualified Data.Hashable as HASH
 import qualified Data.HashSet as HS
@@ -70,9 +70,9 @@ instance forall v . (HASH.Hashable v, Eq v) => (AdjustableGraphDataSet (SimpleGr
 
 
 -- TODO use Text?
-newtype Implication      = Implication { getImplicationText:: String } deriving (Show, Eq)
-newtype Statement      = Statement { getStatementText:: String } deriving (Show, Eq)
-newtype Theory      = Theory { getTheoryText :: String } deriving (Show, Eq)
+newtype Statement      = Statement   { getStatementText:: String }   deriving (Show, Eq)
+newtype Implication    = Implication { getImplicationText:: String } deriving (Show, Eq)
+newtype Theory         = Theory      { getTheoryText :: String }     deriving (Show, Eq)
 
 instance HASH.Hashable(Statement) where
   hashWithSalt salt x = HASH.hashWithSalt salt (getStatementText x)
@@ -89,12 +89,19 @@ statementsInImplication line =
                 else (last wordTexts)
           in (Statement{getStatementText = firstWord}, Statement{getStatementText = lastWord})
 
-statementsInTheory :: Theory -> [Implication]
-statementsInTheory text =  map(Implication) . lines . getTheoryText $ text
+implicationsInTheory :: Theory -> [Implication]
+implicationsInTheory text =  map(Implication) . lines . getTheoryText $ text
 
---instance DiEdgeSemantics Implication Statement where
---  resolveDiEdge  = statementsInImplication
+--
+--Working with Theory directly will be slow but it is a digraph anyway
+--
 
---instance DiGraph Theory Implication (Statement, Statement) [] where
---  edges     = statementsInTheory
---  vertices  = statementsInImplication . statementsInTheory
+instance DiEdgeSemantics Implication Statement where
+  resolveDiEdge  = statementsInImplication
+
+instance BuildableEdgeSemantics Implication Statement where
+  defaultEdge s1 s2 = Implication ((getStatementText s1) ++ " implies " ++ (getStatementText s2))
+
+instance GraphDataSet Theory Statement Implication [] where
+  edges     = implicationsInTheory
+  vertices  = concat . map (\(a,b) -> [a,b]) . map (statementsInImplication) . implicationsInTheory

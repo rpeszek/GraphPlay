@@ -18,7 +18,7 @@ import qualified Data.HashSet as HS
 -- Here edges are converted to pre-parsed pairs and HashMap based CIndex is used for fast calculations.
 ------
 playGraph :: I.DiGraphHelper T.Statement T.Implication []
-playGraph = I.buidDiGraph T.statementsInImplication (T.statementsInTheory S.playFirstLast)
+playGraph = I.buidDiGraph T.statementsInImplication (T.implicationsInTheory S.playFirstLast)
 
 playCIndex :: I.CIndexHelper T.Statement (I.DEdgeHelper T.Implication T.Statement) []
 playCIndex = I.buildHmCIndex playGraph
