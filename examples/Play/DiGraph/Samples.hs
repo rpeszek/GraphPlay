@@ -18,10 +18,10 @@ testEdges = [
 --
 -- notice SimpleGraph is not specialized to String type
 --
-playTwoDimondsSetGraph :: SimpleSetGraph String
-playTwoDimondsSetGraph = SimpleGraph (HS.fromList testEdges) HS.empty
+playTwoDiamondsSetGraph :: SimpleSetGraph String
+playTwoDiamondsSetGraph = SimpleGraph (HS.fromList testEdges) HS.empty
 
-playTwoDimonds :: SimpleListGraph String 
+playTwoDimonds :: SimpleListGraph String
 playTwoDimonds = SimpleGraph testEdges []
 
 playFirstLastTxt:: String

@@ -30,6 +30,7 @@ library
                        , Play.DiGraph.TreeFoldOnSimpleGraph
                        , Play.DiGraph.TreeMonoidFoldOnSimpleGraph
                        , Play.DiGraph.IndexedFolds
+                       , Play.DiGraph.Adjust
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl

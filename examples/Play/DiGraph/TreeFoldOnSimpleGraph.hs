@@ -7,7 +7,7 @@ import Data.Monoid
 import Data.Hashable
 import qualified Data.HashSet as HS
 import Play.DiGraph.Types
-import Play.DiGraph.Samples (playTwoDimondsSetGraph, playTwoDimonds)
+import Play.DiGraph.Samples (playTwoDiamondsSetGraph, playTwoDimonds)
 
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)

@@ -17,6 +17,7 @@ import Data.List (nub, null, lines, words, concat)
 import qualified PolyGraph.DiGraph.Indexers as INX
 import qualified Data.Hashable as HASH
 import qualified Data.HashSet as HS
+import qualified Data.Foldable as F
 
 --
 -- Simple implemenation of DiGraph
@@ -26,6 +27,19 @@ import qualified Data.HashSet as HS
 data SimpleGraph v t = SimpleGraph { getEdges:: t (v,v), getDisconnectedVertices:: t v}
 type SimpleListGraph v = SimpleGraph v []
 type SimpleSetGraph v = SimpleGraph v HS.HashSet
+
+-- INSTANCES --
+--foldMap :: Monoid m => (a -> m) -> t a -> m
+instance forall v t . (Show v, Foldable t) => Show (SimpleGraph v t) where
+  show g =  let looseVerticesS = F.foldMap (\v -> show(v)++",") (getDisconnectedVertices g)
+                looseVerticesD = if looseVerticesS == ","
+                                 then ""
+                                 else "Loose Vertices: " ++ looseVerticesS ++ "\n"
+                edgesS = F.foldMap (\vv -> " " ++ show(vv)++ "\n") (getEdges g)
+                edgesD = if edgesS == []
+                         then "No Edges"
+                         else "Edges: \n" ++ edgesS
+            in looseVerticesD ++ edgesD
 
 -- INSTANCES SimpleGraph v [] --
 instance  forall v . (Eq v) => (GraphDataSet (SimpleListGraph v) v (v,v) []) where

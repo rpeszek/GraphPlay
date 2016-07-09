@@ -10,7 +10,8 @@ instance BuildableEdgeSemantics (v,v) v where
 
 class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
   empty :: g
-
+  emptyGraph :: g
+  emptyGraph = empty
   -- | adds vertex, implemenation decides what to do if same vertex is added twice
   (@+) :: g -> v -> g
 
