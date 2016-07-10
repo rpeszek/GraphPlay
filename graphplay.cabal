@@ -17,16 +17,19 @@ library
   hs-source-dirs:      src
                        , examples
   exposed-modules:     Lib
-                       , PolyGraph.Helpers
-                       , PolyGraph.RecursionHelpers
-                       , PolyGraph.DiGraph
-                       , PolyGraph.DiGraph.TAFold
-                       , PolyGraph.DiGraph.TAMonoidFold
-                       , PolyGraph.DiGraph.Optimize.HashMapCIndex
-                       , PolyGraph.DiGraph.Optimize.MaterializedDiEdge
-                       , PolyGraph.DiGraph.Optimize.MaterializedDiGraph
-                       , PolyGraph.Graph
-                       , PolyGraph.Graph.PolyBuild
+                       , PolyGraph.Common.Helpers
+                       , PolyGraph.Common.RecursionHelpers
+                       , PolyGraph.ReadOnly.DiGraph
+                       , PolyGraph.ReadOnly.DiGraph.Fold.TAFold
+                       , PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
+                       , PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex
+                       , PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiEdge
+                       , PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiGraph
+                       , PolyGraph.ReadOnly.Graph
+                       , PolyGraph.Buildable.GDSBuild
+                       , PolyGraph.Buildable.GBuild
+                       , PolyGraph.Buildable.DiGBuild
+                       , PolyGraph.Adjustable.GDSAdjust
                        , Play.DiGraph.SampleInstances.FirstLastWord
                        , Play.DiGraph.SampleInstances.SimpleGraph
                        , Play.DiGraph.SampleData

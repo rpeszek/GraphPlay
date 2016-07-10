@@ -1,15 +1,15 @@
 
-module PolyGraph.DiGraph.Optimize.MaterializedDiGraph (
+module PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiGraph (
    DiGraphHelper(..)
    , buidDiGraph
 ) where
 
-import PolyGraph.Helpers
-import PolyGraph.DiGraph
-import PolyGraph.Graph
-import PolyGraph.DiGraph.Optimize.HashMapCIndex (BuildableCollection)
-import PolyGraph.DiGraph.Optimize.MaterializedDiEdge
-import qualified PolyGraph.Graph.PolyBuild as PB
+import PolyGraph.Common.Helpers
+import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.ReadOnly.Graph
+import PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex (BuildableCollection)
+import PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiEdge
+import qualified PolyGraph.Buildable.GDSBuild as PB
 
 ------------------------------------------------------------------------------------
 -- helpers for building a graph from thigs that have slow edge resolution        ---

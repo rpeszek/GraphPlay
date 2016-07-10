@@ -3,9 +3,10 @@ module Play.DiGraph.PolyBuild where
 
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified Play.DiGraph.SampleInstances.SimpleGraph as SG
-import PolyGraph.DiGraph
-import PolyGraph.Graph.PolyBuild
-import qualified PolyGraph.Helpers as H
+import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable.DiGBuild
+import qualified PolyGraph.Common.Helpers as H
 
 
 -------

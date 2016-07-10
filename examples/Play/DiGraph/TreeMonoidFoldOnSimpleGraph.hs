@@ -4,9 +4,9 @@ module Play.DiGraph.TreeMonoidFoldOnSimpleGraph where
 -- test experiments
 
 import Data.Hashable
-import PolyGraph.DiGraph
-import PolyGraph.Helpers
-import PolyGraph.DiGraph.TAMonoidFold
+import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.Common.Helpers
+import PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
 import qualified Data.HashSet as HS
 import Play.DiGraph.SampleData (playTwoDiamonds)
 

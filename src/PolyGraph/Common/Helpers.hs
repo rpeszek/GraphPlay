@@ -4,7 +4,7 @@
 -- various helpers (typically exist defined somewhere else but wanted to limit library dependencies)
 --
 
-module PolyGraph.Helpers (
+module PolyGraph.Common.Helpers (
   second',
   first',
   ToString

@@ -4,16 +4,16 @@
 -- Each graph vertex is computed only once.
 --
 
-module PolyGraph.DiGraph.TAMonoidFold where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold where --TODO exports everything, a terrible programmer wrote it
 
 import Data.Hashable (Hashable)
 import Control.Monad (liftM, foldM)
 import Control.Monad.ST (ST, runST)
 import Control.Lens
 import qualified Data.HashTable.Class as HT
-import qualified PolyGraph.Helpers as H
-import PolyGraph.RecursionHelpers
-import PolyGraph.DiGraph
+import qualified PolyGraph.Common.Helpers as H
+import PolyGraph.Common.RecursionHelpers
+import PolyGraph.ReadOnly.DiGraph
 
 
 newtype AccError = AccError String

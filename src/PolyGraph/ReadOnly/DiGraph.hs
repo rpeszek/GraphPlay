@@ -22,10 +22,10 @@
 --  Note: LANGUAGE extensions shown below are typically configured globally for a project
 --
 
-module PolyGraph.DiGraph where --exports everything on purpose
+module PolyGraph.ReadOnly.DiGraph where --exports everything on purpose
 
-import qualified PolyGraph.Graph as G (Graph, GraphDataSet, EdgeSemantics(..))
-import PolyGraph.Helpers
+import qualified PolyGraph.ReadOnly.Graph as G (Graph, GraphDataSet, EdgeSemantics(..))
+import PolyGraph.Common.Helpers
 
 --
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know

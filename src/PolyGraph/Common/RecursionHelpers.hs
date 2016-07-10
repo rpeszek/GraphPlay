@@ -1,5 +1,5 @@
 
-module PolyGraph.RecursionHelpers (
+module PolyGraph.Common.RecursionHelpers (
                HashTable,
                memo,
                noReentry,

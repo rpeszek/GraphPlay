@@ -1,5 +1,5 @@
 
-module PolyGraph.DiGraph.Optimize.HashMapCIndex (
+module PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex (
    BuildableCollection (..)
    , CIndexHelper(..)
    , buildHmCIndex
@@ -10,9 +10,9 @@ import Control.Monad
 import Control.Monad.ST
 import Data.Hashable
 import qualified Data.HashMap.Strict as HM
-import PolyGraph.Helpers
-import PolyGraph.DiGraph
-import PolyGraph.Graph
+import PolyGraph.Common.Helpers
+import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.ReadOnly.Graph
 
 -----------------------------------------------------------------------
 -- builders that create fast CIndex implemenations for any DiGraph  ---

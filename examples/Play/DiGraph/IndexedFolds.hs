@@ -5,11 +5,11 @@
 module Play.DiGraph.IndexedFolds where
 
 import Data.Hashable
-import qualified PolyGraph.DiGraph.Optimize.HashMapCIndex as I
-import qualified PolyGraph.DiGraph.Optimize.MaterializedDiGraph as MG
-import qualified PolyGraph.DiGraph.Optimize.MaterializedDiEdge as ME
-import PolyGraph.DiGraph
-import PolyGraph.DiGraph.TAFold
+import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex as I
+import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiGraph as MG
+import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiEdge as ME
+import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.ReadOnly.DiGraph.Fold.TAFold
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as T
 import qualified Play.DiGraph.SampleData as S (playFirstLast)
 import qualified Data.HashSet as HS

@@ -1,5 +1,5 @@
 
-module PolyGraph.DiGraph.Optimize.MaterializedDiEdge (
+module PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiEdge (
    DiEdgeHelper(..)
    , buidDiEdgeHelpers
    , appendDiEdgeHelpers
@@ -9,10 +9,10 @@ module PolyGraph.DiGraph.Optimize.MaterializedDiEdge (
 
 import qualified Data.Maybe as MB
 import qualified Data.HashMap.Strict as HM
-import PolyGraph.Helpers
-import PolyGraph.DiGraph
-import PolyGraph.Graph
-import PolyGraph.DiGraph.Optimize.HashMapCIndex (BuildableCollection(..))
+import PolyGraph.Common.Helpers
+import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.ReadOnly.Graph
+import PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex (BuildableCollection(..))
 
 ------------------------------------------------------------------------------------------
 --  DiEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --

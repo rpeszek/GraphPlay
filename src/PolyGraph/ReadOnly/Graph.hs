@@ -1,5 +1,5 @@
 
-module PolyGraph.Graph where --exports everything, a terrible programmer wrote it
+module PolyGraph.ReadOnly.Graph where --exports everything, a terrible programmer wrote it
 
 --
 -- e are edges v are vertices, the order of (v,v) does not imply ordering of vertices
