@@ -19,7 +19,9 @@ import PolyGraph.DiGraph
 import PolyGraph.Graph
 
 -----------------------------------------------------------------------
--- builders that create fast CIndex implemenations for any DiGraph   ---
+-- builders that create fast CIndex implemenations for any DiGraph  ---
+-- somewhat flexible implementation allowing to swap HashMap        ---
+-- implementation of HashMap                                        ---
 -----------------------------------------------------------------------
 
 data CIndexHelper v e t = CIndexHelper {
@@ -73,9 +75,10 @@ instance  BuildableCollection [] where
   emptyCollection = []
 
 
------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
 --  DiEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --
------------------------------------------------------------------------------------------
+-- for example is e -> (v,v) needs to parse a text to lookup vertices                   --
+------------------------------------------------------------------------------------------
 
 data DEdgeHelper e v = DEdgeWithIndexedSemantics {
     getDEdge      :: e,
@@ -112,6 +115,9 @@ fastVertices = fastVertices' emptyCollection
 
 ------------------------------------------------------------------------------------
 -- helpers for building a graph from thigs that have slow edge resolution        ---
+-- this basically allows for creating a d-graph if you have a slow               ---
+-- e-> (v,v) function and a slow Foldable with a list of all edges               ---
+-- created graph will not contain any loose vertices                             ---
 ------------------------------------------------------------------------------------
 data DiGraphHelper v e t = DiGraphHelper {
    helperEdges    :: t (DEdgeHelper e v),
