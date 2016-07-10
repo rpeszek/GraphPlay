@@ -6,8 +6,8 @@ import PolyGraph.DiGraph.TAFold
 import Data.Monoid
 import Data.Hashable
 import qualified Data.HashSet as HS
-import Play.DiGraph.Types
-import Play.DiGraph.Samples (playTwoDiamondsSetGraph, playTwoDiamonds)
+import Play.DiGraph.SampleInstances.SimpleGraph
+import Play.DiGraph.SampleData (playTwoDiamondsSetGraph, playTwoDiamonds)
 
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)

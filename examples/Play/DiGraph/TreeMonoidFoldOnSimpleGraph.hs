@@ -8,7 +8,7 @@ import PolyGraph.DiGraph
 import PolyGraph.Helpers
 import PolyGraph.DiGraph.TAMonoidFold
 import qualified Data.HashSet as HS
-import Play.DiGraph.Samples (playTwoDiamonds)
+import Play.DiGraph.SampleData (playTwoDiamonds)
 
 
 -- | Numbers as Monoids under addition.

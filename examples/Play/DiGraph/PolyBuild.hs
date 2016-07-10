@@ -1,7 +1,8 @@
 
 module Play.DiGraph.PolyBuild where
 
-import Play.DiGraph.Types
+import qualified Play.DiGraph.SampleInstances.FLWordText as FL
+import qualified Play.DiGraph.SampleInstances.SimpleGraph as SG
 import PolyGraph.DiGraph
 import PolyGraph.Graph.PolyBuild
 import qualified PolyGraph.Helpers as H
@@ -22,17 +23,17 @@ diamondABCD :: forall g v e t . (FromString v, BuildableEdgeSemantics e v, DiEdg
 diamondABCD = diamond "10" "11" "12" "20"
 
 showDiamondABCD1 =
-                let mygraph:: SimpleSetGraph String
+                let mygraph:: SG.SimpleSetGraph String
                     mygraph = diamondABCD
                 in  show (mygraph)
 
 showDiamondABCD2 =
-                let mygraph :: SimpleSetGraph Int
+                let mygraph :: SG.SimpleSetGraph Int
                     mygraph = diamondABCD
                 in show (mygraph)
 
 showDiamondABCD3 =
-                let mygraph :: FLWordText
+                let mygraph :: FL.FLWordText
                     mygraph = diamondABCD
                 in show (mygraph)
 
@@ -52,12 +53,12 @@ diamondABCD' :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e 
 diamondABCD' f = diamond' (f "10") (f "11") (f "12") (f "20")
 
 showDiamond'ABCD1 =
-                let mygraph:: SimpleSetGraph String
+                let mygraph:: SG.SimpleSetGraph String
                     mygraph = diamondABCD' id
                 in  show (mygraph)
 
 
 showDiamond'ABCD3 =
-                let mygraph :: FLWordText
-                    mygraph = diamondABCD' FLWord
+                let mygraph :: FL.FLWordText
+                    mygraph = diamondABCD' FL.FLWord
                 in show (mygraph)

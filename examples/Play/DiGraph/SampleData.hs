@@ -1,6 +1,7 @@
-module Play.DiGraph.Samples where
+module Play.DiGraph.SampleData where
 
-import Play.DiGraph.Types
+import qualified Play.DiGraph.SampleInstances.SimpleGraph as SG
+import qualified Play.DiGraph.SampleInstances.FLWordText as FL
 import qualified Data.HashSet as HS
 
 -- simple test data (list of pars that will serve as edges)
@@ -20,11 +21,11 @@ testEdges = [
 --
 -- notice SimpleGraph is not specialized to String type
 --
-playTwoDiamondsSetGraph :: SimpleSetGraph String
-playTwoDiamondsSetGraph = SimpleGraph (HS.fromList testEdges) HS.empty
+playTwoDiamondsSetGraph :: SG.SimpleSetGraph String
+playTwoDiamondsSetGraph = SG.SimpleGraph (HS.fromList testEdges) HS.empty
 
-playTwoDiamonds :: SimpleListGraph String
-playTwoDiamonds = SimpleGraph testEdges []
+playTwoDiamonds :: SG.SimpleListGraph String
+playTwoDiamonds = SG.SimpleGraph testEdges []
 
 playFirstLastTxt:: String
 playFirstLastTxt = "a implies b\n" ++
@@ -34,4 +35,4 @@ playFirstLastTxt = "a implies b\n" ++
                 "d implies e\n" ++
                 "a implies f\n"
 
-playFirstLast = FLWordText playFirstLastTxt
+playFirstLast = FL.FLWordText playFirstLastTxt
