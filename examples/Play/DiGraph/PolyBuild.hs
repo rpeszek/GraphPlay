@@ -1,7 +1,7 @@
 
 module Play.DiGraph.PolyBuild where
 
-import qualified Play.DiGraph.SampleInstances.FLWordText as FL
+import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified Play.DiGraph.SampleInstances.SimpleGraph as SG
 import PolyGraph.DiGraph
 import PolyGraph.Graph.PolyBuild

@@ -8,7 +8,7 @@ import Data.Hashable
 import qualified PolyGraph.DiGraph.Indexers as I
 import PolyGraph.DiGraph
 import PolyGraph.DiGraph.TAFold
-import qualified Play.DiGraph.SampleInstances.FLWordText as T
+import qualified Play.DiGraph.SampleInstances.FirstLastWord as T
 import qualified Play.DiGraph.SampleData as S (playFirstLast)
 import qualified Data.HashSet as HS
 

@@ -25,7 +25,7 @@ library
                        , PolyGraph.DiGraph.Indexers
                        , PolyGraph.Graph
                        , PolyGraph.Graph.PolyBuild
-                       , Play.DiGraph.SampleInstances.FLWordText
+                       , Play.DiGraph.SampleInstances.FirstLastWord
                        , Play.DiGraph.SampleInstances.SimpleGraph
                        , Play.DiGraph.SampleData
                        , Play.DiGraph.TreeFoldOnSimpleGraph
