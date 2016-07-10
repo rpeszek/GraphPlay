@@ -9,7 +9,7 @@ import PolyGraph.DiGraph
 import PolyGraph.Graph.PolyBuild
 import PolyGraph.Helpers
 import Data.List (nub, null, lines, words, concat)
-import qualified PolyGraph.DiGraph.Indexers as INX
+import qualified PolyGraph.DiGraph.Optimize.HashMapCIndex as INX
 import qualified Data.Hashable as HASH
 import qualified Data.HashSet as HS
 import qualified Data.Foldable as F

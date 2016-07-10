@@ -22,7 +22,9 @@ library
                        , PolyGraph.DiGraph
                        , PolyGraph.DiGraph.TAFold
                        , PolyGraph.DiGraph.TAMonoidFold
-                       , PolyGraph.DiGraph.Indexers
+                       , PolyGraph.DiGraph.Optimize.HashMapCIndex
+                       , PolyGraph.DiGraph.Optimize.MaterializedDiEdge
+                       , PolyGraph.DiGraph.Optimize.MaterializedDiGraph
                        , PolyGraph.Graph
                        , PolyGraph.Graph.PolyBuild
                        , Play.DiGraph.SampleInstances.FirstLastWord
