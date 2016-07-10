@@ -66,6 +66,21 @@ instance forall k v. (Hashable k, Eq k) => BuildableMap (HM.HashMap k v) k v whe
   emptyMap = HM.empty
   safeLookup hm k v = HM.lookupDefault v k hm
 
-instance  BuildableCollection [] where
+instance BuildableCollection [] where
   prependElement = (:)
   emptyCollection = []
+
+-- HashMap itself is naturally a DiGraph --
+-- TODO finish this and add HM to the CIndexHelper, externalize this to own module
+{-
+instance forall e v t. (Eq v, Hashable v, BuildableCollection t) => PB.BuildableGraphDataSet(HM.HashMap v (t e)) v e t where
+  PB.empty = HM.empty
+  --PB.(@+) :: g -> v -> g
+  g PB.@+ v  =
+              let newVertices =  v `prependElement` (helperVertices g)
+              in g {helperVertices = newVertices}
+
+  g PB.(~+) e =
+               let newEdges = e `helperEdges` (helperEdges g)
+                   newVertices = undefined -- TODO we need something like BuildableUniqueCollection aka HashSet
+-}
