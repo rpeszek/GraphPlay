@@ -25,7 +25,7 @@ type SimpleListGraph v = SimpleGraph v []
 type SimpleSetGraph v  = SimpleGraph v HS.HashSet
 
 -- INSTANCES --
--- TODO needs more reusable instance logic
+-- TODO needs more reusable instance logic, use common.helpers.BuildableDependentCollection
 --foldMap :: Monoid m => (a -> m) -> t a -> m
 instance forall v t . (Show v, Foldable t) => Show (SimpleGraph v t) where
   show g =  let looseVerticesS = F.foldMap (\v -> show(v)++",") (getDisconnectedVertices g)

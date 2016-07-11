@@ -1,4 +1,6 @@
-
+------
+-- TODO optimized index should use PolyGraph.Instances.HashMapAsDiGraph
+------
 module PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex (
    BuildableCollection (..)
    , CIndexHelper(..)
@@ -32,6 +34,7 @@ class (Eq k) => BuildableMap i k v | i -> k, i-> v where
    emptyMap ::  i
    safeLookup ::  i -> k -> v -> v
 
+-- TODO Depreciated, replace with Common.Helpers.BuildableDependentCollection --
 class (Foldable t) => BuildableCollection t  where
    prependElement  :: e -> t e -> t e
    emptyCollection :: t e

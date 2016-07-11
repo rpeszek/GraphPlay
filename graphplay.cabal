@@ -18,6 +18,7 @@ library
                        , examples
   exposed-modules:     Lib
                        , PolyGraph.Common.Helpers
+                       , PolyGraph.Common.InstanceHelpers
                        , PolyGraph.Common.RecursionHelpers
                        , PolyGraph.ReadOnly.DiGraph
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAFold
@@ -30,6 +31,7 @@ library
                        , PolyGraph.Buildable.GBuild
                        , PolyGraph.Buildable.DiGBuild
                        , PolyGraph.Adjustable.GDSAdjust
+                       , PolyGraph.Instances.HashMapAsDiGraph
                        , Play.DiGraph.SampleInstances.FirstLastWord
                        , Play.DiGraph.SampleInstances.SimpleGraph
                        , Play.DiGraph.SampleData

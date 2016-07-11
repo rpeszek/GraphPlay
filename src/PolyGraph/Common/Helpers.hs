@@ -6,26 +6,16 @@
 
 module PolyGraph.Common.Helpers (
   second',
-  first',
-  ToString
+  first'
 ) where
 
+-- helper funtions ---
 second' :: (a,b) -> b
 second' (_,x) = x
 
 first' :: (a,b) -> a
 first' (x,_) = x
 
-
-class ToString a where
-  toString :: a -> String
-
-
-instance ToString String where
-  toString = id
-
-instance forall v. (Show v, Num v) => ToString v where
-  toString = show
 
 
 --liftSTHelper :: forall s m a b. (Monad m)=> (a -> b) -> m (ST s a) -> m (ST s b)
