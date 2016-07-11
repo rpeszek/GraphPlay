@@ -40,6 +40,10 @@ instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, 
            (HM.insertWith (\old new -> old) v2 emptyDependentCollection) .
            (HM.insertWith (\old new -> prependDependentElement e old) v1 (singletonDependentCollection e)) .
             getHashMap $ g
+   union g1 g2 =
+              let mergeF :: te e -> te e -> te e
+                  mergeF edges1 edges2 = unionDependentCollection edges1 edges2
+              in DiGraphHashMap $ HM.unionWith mergeF (getHashMap g1) (getHashMap g2)
 
 -- this will be a bit slow but not too bad
 instance forall v e te. (Eq v, Hashable v, Eq e, Traversable te, DiEdgeSemantics e v, AdjustableDependentCollection (te e) e) =>
@@ -52,6 +56,8 @@ instance forall v e te. (Eq v, Hashable v, Eq e, Traversable te, DiEdgeSemantics
                               in (f v1) && (f v2)
              in DiGraphHashMap . HM.map (filterDependentCollection edgeFilter) . getHashMap $ verticesTrimmed
    --map :: (v1 -> v2) -> HashMap k v1 -> HashMap k v2
-   g ~\ f =
+   filterEdges strict g f =
              let edgesTrimmed = DiGraphHashMap . HM.map (filterDependentCollection f) . getHashMap $ g
-             in  DiGraphHashMap . HM.filter (not . F.null) . getHashMap $ edgesTrimmed
+             in if strict
+                then DiGraphHashMap . HM.filter (not . F.null) . getHashMap $ edgesTrimmed
+                else edgesTrimmed

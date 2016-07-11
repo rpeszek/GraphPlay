@@ -69,11 +69,17 @@ instance  forall v . (HASH.Hashable v, Eq v) => (BuildableGraphDataSet(SimpleSet
             let newVertices = HS.delete v1 $ HS.delete v2 (getDisconnectedVertices g)
                 newEdges = HS.insert (v1,v2) (getEdges g)
             in g {getEdges = newEdges}
+   union g1 g2 =
+            let newEdges = (getEdges g1) `HS.union` (getEdges g2)
+                newVertices = (getDisconnectedVertices g1) `HS.union` (getDisconnectedVertices g2)
+            in g1 {getEdges = newEdges, getDisconnectedVertices = newVertices}
 
 instance forall v . (HASH.Hashable v, Eq v) => (AdjustableGraphDataSet (SimpleGraph v HS.HashSet) v (v,v) HS.HashSet) where
    g @\ f = let newVertices = HS.filter f (getDisconnectedVertices g)
                 newEdges = HS.filter (\vv -> (f $ first' vv) && (f $ second' vv)) (getEdges g)
             in  SimpleGraph { getEdges = newEdges, getDisconnectedVertices = newVertices}
 
-   g ~\ f = let newEdges = HS.filter f (getEdges g)
-            in  g {getEdges = newEdges}
+   filterEdges strict g f = let newEdges = HS.filter f (getEdges g)
+            in if strict
+               then g {getEdges = newEdges}
+               else g {getEdges = newEdges, getDisconnectedVertices = HS.empty}

@@ -13,8 +13,8 @@ main = do
   putStrLn "Indexed Folds:"
   print IND1.experiments
   putStrLn "Adj 1:"
-  putStrLn ADJ.showDiamondABCD1
-  putStrLn ADJ.showDiamondABCD2
-  putStrLn ADJ.showDiamondABCD3
-  putStrLn ADJ.showDiamondABDC4
-  putStrLn ADJ.showDiamond'ABCD1
+  putStrLn ADJ.showDiamond0123_1
+  putStrLn ADJ.showDiamond0123_2
+  putStrLn ADJ.showDiamond0123_3
+  putStrLn ADJ.showDiamond0123_4
+  putStrLn ADJ.showDiamond'0123_1

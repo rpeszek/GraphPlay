@@ -21,6 +21,7 @@ instance forall v. (Read v) => FromString v where
 
 class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
   empty :: g
+
   emptyGraph :: g
   emptyGraph = empty
   -- | adds vertex, implemenation decides what to do if same vertex is added twice
@@ -37,6 +38,7 @@ class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
   g ~++ []     = g
   g ~++ (e:es) = g ~+ e ~++ es
 
+  union :: g -> g -> g
 
 -- adds edge with default semantics between vertices
 addDefaultEdge :: forall g v e t . (BuildableEdgeSemantics e v, BuildableGraphDataSet g v e t ) => v -> v -> g -> g

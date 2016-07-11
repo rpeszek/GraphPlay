@@ -21,27 +21,27 @@ diamond s1 s11 s12 s2 =  ( s1 ^+~>^ s2  ) .
                          ( s11 ^+~>^ s2 ) .
                          ( s12 ^+~>^ s2 ) $ emptyGraph
 
-diamondABCD :: forall g v e t . (FromString v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) => g
-diamondABCD = diamond "10" "11" "12" "20"
+diamond0123 :: forall g v e t . (FromString v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) => g
+diamond0123 = diamond "0" "1" "2" "3"
 
-showDiamondABCD1 =
+showDiamond0123_1 =
                 let mygraph:: SG.SimpleSetGraph String
-                    mygraph = diamondABCD
+                    mygraph = diamond0123
                 in  show (mygraph)
 
-showDiamondABCD2 =
+showDiamond0123_2 =
                 let mygraph :: SG.SimpleSetGraph Int
-                    mygraph = diamondABCD
+                    mygraph = diamond0123
                 in show (mygraph)
 
-showDiamondABCD3 =
+showDiamond0123_3 =
                 let mygraph :: FL.FLWordText
-                    mygraph = diamondABCD
+                    mygraph = diamond0123
                 in show (mygraph)
 
-showDiamondABDC4 =
+showDiamond0123_4 =
                 let mygraph :: HM.DiGraphHashMap String (String,String) []
-                    mygraph = diamondABCD
+                    mygraph = diamond0123
                 in show (mygraph)
 
 -----------------------------------------
@@ -55,17 +55,21 @@ diamond' v1 v11 v12 v2 =  ( v1  @+~>@ v2 ) .
                           ( v11 @+~>@ v2 ) .
                           ( v12 @+~>@ v2 ) $ emptyGraph
 
-diamondABCD' :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t)
+diamond0123' :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t)
                            => (String -> v) -> g
-diamondABCD' f = diamond' (f "10") (f "11") (f "12") (f "20")
+diamond0123' f = diamond' (f "0") (f "1") (f "2") (f "3")
 
-showDiamond'ABCD1 =
+showDiamond'0123_1 =
                 let mygraph:: SG.SimpleSetGraph String
-                    mygraph = diamondABCD' id
+                    mygraph = diamond0123' id
                 in  show (mygraph)
 
 
-showDiamond'ABCD3 =
+showDiamond'0123_3 =
                 let mygraph :: FL.FLWordText
-                    mygraph = diamondABCD' FL.FLWord
+                    mygraph = diamond0123' FL.FLWord
                 in show (mygraph)
+
+-------------------------------------------------------
+--- Back to diamond0123                              ---
+-------------------------------------------------------

@@ -19,16 +19,21 @@ import Data.List (nub, filter)
 class BuildableDependentCollection t e | t -> e where
    prependDependentElement  :: e -> t -> t
    emptyDependentCollection :: t
+
    singletonDependentCollection :: e -> t
    singletonDependentCollection e = prependDependentElement e emptyDependentCollection
 
+   unionDependentCollection :: t -> t -> t
+
 instance forall e. BuildableDependentCollection [e] e where
-   prependDependentElement = (:)
+   prependDependentElement  = (:)
    emptyDependentCollection = []
+   unionDependentCollection = (++)
 
 instance forall e hs. (Eq e, Hashable e) => BuildableDependentCollection (HS.HashSet e) e where
    prependDependentElement   = HS.insert
    emptyDependentCollection  = HS.empty
+   unionDependentCollection  = HS.union
 
 --Example usage:---
 testF :: forall t0 e. (Foldable t0, BuildableDependentCollection (t0 e) e) => t0 e
