@@ -3,6 +3,7 @@ module Play.DiGraph.PolyBuild where
 
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified Play.DiGraph.SampleInstances.SimpleGraph as SG
+import qualified PolyGraph.Instances.HashMapAsDiGraph as HM
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Buildable.DiGBuild
@@ -35,6 +36,11 @@ showDiamondABCD2 =
 
 showDiamondABCD3 =
                 let mygraph :: FL.FLWordText
+                    mygraph = diamondABCD
+                in show (mygraph)
+
+showDiamondABDC4 =
+                let mygraph :: HM.DiGraphHashMap String (String,String) []
                     mygraph = diamondABCD
                 in show (mygraph)
 

@@ -16,4 +16,5 @@ main = do
   putStrLn ADJ.showDiamondABCD1
   putStrLn ADJ.showDiamondABCD2
   putStrLn ADJ.showDiamondABCD3
+  putStrLn ADJ.showDiamondABDC4
   putStrLn ADJ.showDiamond'ABCD1

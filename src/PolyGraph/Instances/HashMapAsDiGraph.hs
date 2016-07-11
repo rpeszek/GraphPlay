@@ -1,3 +1,5 @@
+-- TODO work in progress, almost works
+
 module PolyGraph.Instances.HashMapAsDiGraph where
 
 import Data.Hashable
