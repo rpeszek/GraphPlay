@@ -37,8 +37,8 @@ instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, 
    g ~+ e =
         let (v1,v2) = resolveDiEdge e
         in DiGraphHashMap .
-           (HM.insertWith (\old new -> old) v2 emptyDependentCollection) .
-           (HM.insertWith (\old new -> prependDependentElement e old) v1 (singletonDependentCollection e)) .
+           (HM.insertWith (\new old -> old) v2 emptyDependentCollection) .
+           (HM.insertWith (\new old -> prependDependentElement e old) v1 (singletonDependentCollection e)) .
             getHashMap $ g
    union g1 g2 =
               let mergeF :: te e -> te e -> te e
