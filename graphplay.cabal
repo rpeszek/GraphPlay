@@ -25,7 +25,6 @@ library
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
                        , PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex
                        , PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiEdge
-                       , PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiGraph
                        , PolyGraph.ReadOnly.Graph
                        , PolyGraph.Buildable.GDSBuild
                        , PolyGraph.Buildable.GBuild

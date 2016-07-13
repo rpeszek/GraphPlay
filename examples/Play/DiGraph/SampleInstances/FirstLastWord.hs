@@ -64,13 +64,12 @@ instance BuildableEdgeSemantics FLWordSentence FLWord where
 
 instance GraphDataSet FLWordText FLWord FLWordSentence [] where
   edges     = fLWordSentencesInFLWordText
-  vertices  = concat . map (\(a,b) -> [a,b]) . map (fLWordsInFLWordSentence) . fLWordSentencesInFLWordText
+  isolatedVertices  = const []  -- in this graph there are no isolated vertices each word comes from a sentence
 
 instance DiGraph FLWordText FLWord FLWordSentence []
 
--- TODO this can insert duplicate vertices and edges
 instance BuildableGraphDataSet FLWordText FLWord FLWordSentence [] where
   empty = FLWordText ""
-  g @+ statment      = g   -- TODO currently FLWordText does not care about FLWords that do not imply anything
+  g @+ statment       = g   -- TODO currently FLWordText does not care about FLWords that do not imply anything
   g ~+ flWordSentence = let newText = (getFLWordSentenceText flWordSentence) ++ "\n" ++ (getFLWordTextText g)
                         in FLWordText newText

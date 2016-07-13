@@ -40,9 +40,8 @@ instance forall v t . (Show v, Foldable t) => Show (SimpleGraph v t) where
 
 -- INSTANCES SimpleGraph v [] --
 instance  forall v . (Eq v) => (GraphDataSet (SimpleListGraph v) v (v,v) []) where
-  vertices g =  let connectedVertices = (foldr (\vv acc ->  (first' vv) : (second' vv) : acc) []) . getEdges $ g
-                in nub $ connectedVertices ++ (getDisconnectedVertices g)
-  edges g  =  getEdges $ g
+  isolatedVertices g = getDisconnectedVertices g
+  edges g  =  getEdges g
 
 instance forall v t. (Eq v) => (CIndex (SimpleListGraph v) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
@@ -51,9 +50,8 @@ instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleListGraph v) v (
 
 -- INSTANCES SimpleGraph v HashSet --
 instance  forall v . (HASH.Hashable v, Eq v) => (GraphDataSet (SimpleSetGraph v) v (v,v) HS.HashSet) where
-  vertices g = let connectedVertices = (HS.foldr (\vv acc ->  (first' vv) `HS.insert` ((second' vv) `HS.insert` acc)) HS.empty) . getEdges $ g
-               in connectedVertices `HS.union` (getDisconnectedVertices g)
-  edges g  =  getEdges $ g
+  isolatedVertices g = getDisconnectedVertices g
+  edges g  =  getEdges g
 
 instance forall v t. (Eq v) => (CIndex (SimpleSetGraph v) v (v,v) []) where
   cEdgesOf g ver = HS.toList . HS.filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
@@ -63,6 +61,8 @@ instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleSetGraph v) v (v
 -- no lenses no fun
 instance  forall v . (HASH.Hashable v, Eq v) => (BuildableGraphDataSet(SimpleSetGraph v) v (v,v) HS.HashSet) where
    empty = SimpleGraph HS.empty HS.empty
+
+   --TODO fix this issue: adds vertex even if it already exists in the graph
    g @+ v = let newVertices = HS.insert v (getDisconnectedVertices g)
             in g {getDisconnectedVertices = newVertices}
    g ~+ (v1,v2) =

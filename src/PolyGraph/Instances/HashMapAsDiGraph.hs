@@ -20,7 +20,7 @@ newtype DiGraphHashMap v e t = DiGraphHashMap { getHashMap :: HM.HashMap v (t e)
 ------------------------------------------------------------------------------------------
 instance forall v e te. (Eq v, Hashable v, Traversable te) =>
                                            (GraphDataSet (DiGraphHashMap v e te) v e []) where
-  vertices =  HM.keys . getHashMap
+  isolatedVertices =  HM.keys . HM.filter (F.null) . getHashMap
   edges    =  concat . map (F.toList) . HM.elems . getHashMap
 
 instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableDependentCollection (te e) e) =>

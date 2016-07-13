@@ -6,7 +6,6 @@ module Play.DiGraph.IndexedFolds where
 
 import Data.Hashable
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex as I
-import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiGraph as MG
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiEdge as ME
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.ReadOnly.DiGraph.Fold.TAFold
@@ -19,6 +18,7 @@ import qualified Data.HashSet as HS
 -- First word implies Last FLWord.  Logically Lines are edges and First-Last words are adjecent vertices
 -- Here edges are converted to pre-parsed pairs and HashMap based CIndex is used for fast calculations.
 ------
+{-}
 playGraph :: MG.DiGraphHelper T.FLWord T.FLWordSentence []
 playGraph = MG.buidDiGraph T.fLWordsInFLWordSentence (T.fLWordSentencesInFLWordText S.playFirstLast)
 
@@ -42,3 +42,6 @@ playAllFLWordSentences word =
                          (T.FLWord(word))
 
 experiments = [playAllFLWordSentences "a", playAllFLWordSentences "d"]
+-}
+
+experiments = "TODO"

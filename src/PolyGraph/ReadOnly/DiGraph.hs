@@ -24,7 +24,7 @@
 
 module PolyGraph.ReadOnly.DiGraph where --exports everything on purpose
 
-import qualified PolyGraph.ReadOnly.Graph as G (Graph, GraphDataSet, EdgeSemantics(..))
+import qualified PolyGraph.ReadOnly.Graph as G
 import PolyGraph.Common.Helpers
 
 --
@@ -49,7 +49,7 @@ class (Traversable t, DiEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, 
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (G.GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
+class (G.GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t 
 
 
 --
