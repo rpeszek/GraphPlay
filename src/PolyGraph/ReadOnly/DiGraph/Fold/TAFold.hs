@@ -39,12 +39,12 @@ data PartialFoldRes v e a = PartialFoldRes {_rvertex:: v, _redge:: e, _raccumula
 makeLenses ''PartialFoldRes
 
 --
--- polymorphic DFS graphFold function, folds any implementation of polymorphic CIndex g starting at vertex v
+-- polymorphic DFS graphFold function, folds any implementation of polymorphic DiAdjacencyIndex g starting at vertex v
 -- using aggregator FoldAccLogic that aggregates to an arbitrary type a
--- NOTE: aggregate Traversable needs to match CIndex Traversable
--- This is done for simplicity (aggregate almost directly consumes CIndex collection of edges)
+-- NOTE: aggregate Traversable needs to match DiAdjacencyIndex Traversable
+-- This is done for simplicity (aggregate almost directly consumes DiAdjacencyIndex collection of edges)
 --
-dfsFoldM :: forall m g v e t a. (Monad m, CIndex g v e t) => RecursionHandler m v a -> g ->  FoldAccLogic t v e a  -> v -> m a
+dfsFoldM :: forall m g v e t a. (Monad m, DiAdjacencyIndex g v e t) => RecursionHandler m v a -> g ->  FoldAccLogic t v e a  -> v -> m a
 dfsFoldM handler g logic v =
     let _aggregate = aggregate logic       :: t a -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
@@ -63,14 +63,14 @@ dfsFoldM handler g logic v =
 --
 -- This walks the grah without remembering visited vertices (effectively walks a tree)
 --
-dfsFoldExponential :: forall g v e t a. (CIndex g v e t) => g -> FoldAccLogic t v e a  -> v -> a
+dfsFoldExponential :: forall g v e t a. (DiAdjacencyIndex g v e t) => g -> FoldAccLogic t v e a  -> v -> a
 dfsFoldExponential g logic v = let handler = RecursionHandler { handle = id } :: RecursionHandler Identity v a
                         in runIdentity (dfsFoldM handler g logic v)
 
 --
 -- Uses memoization to assure that each vertex is visisted only once.  Will currently not work with cycles.
 --
-dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => HashTable s v Bool -> HashTable s v a -> g ->  FoldAccLogic t v e a  -> v -> ST s a
+dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, DiAdjacencyIndex g v e t) => HashTable s v Bool -> HashTable s v a -> g ->  FoldAccLogic t v e a  -> v -> ST s a
 dfsFoldST htCycles htmemo g logic =
               let  cyclesHandler :: v -> ST s a
                    cyclesHandler v =  do
@@ -81,15 +81,15 @@ dfsFoldST htCycles htmemo g logic =
                    handler = RecursionHandler { handle = (memo htmemo) . (handleReentry htCycles cyclesHandler) } :: RecursionHandler (ST s) v a
               in dfsFoldM handler g logic
 
-runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  FoldAccLogic t v e a  -> v -> ST s a
+runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, DiAdjacencyIndex g v e t) => g ->  FoldAccLogic t v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
      htCycles <- HT.new :: ST s (HashTable s v Bool)
      htmemo <- HT.new :: ST s (HashTable s v a)
      a <- dfsFoldST htCycles htmemo g logic v
      return a
 
-dfsFoldFast :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  FoldAccLogic t v e a  -> v -> a
+dfsFoldFast :: forall g v e t a. (Eq v, Hashable v, DiAdjacencyIndex g v e t) => g ->  FoldAccLogic t v e a  -> v -> a
 dfsFoldFast g agg v = runST $ runDtsFoldST g agg v
 
-dfsFold :: forall g v e t a. (Eq v, Hashable v, CIndex g v e t) => g ->  FoldAccLogic t v e a  -> v -> a
+dfsFold :: forall g v e t a. (Eq v, Hashable v, DiAdjacencyIndex g v e t) => g ->  FoldAccLogic t v e a  -> v -> a
 dfsFold = dfsFoldFast

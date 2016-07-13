@@ -3,7 +3,7 @@ module Play.DiGraph.PolyBuild where
 
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified Play.DiGraph.SampleInstances.SimpleGraph as SG
-import qualified PolyGraph.Instances.HashMapAsDiGraph as HM
+import qualified PolyGraph.Instances.DiGraph.HashMapAsDiGraph as HM
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Buildable.DiGBuild

@@ -1,10 +1,10 @@
 ------
--- TODO optimized index should use PolyGraph.Instances.HashMapAsDiGraph
+-- TODO optimized index should use PolyGraph.Instances.DiGraph.HashMapAsDiGraph
 ------
-module PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex (
+module PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion (
    buildDiGraphHashMap
-   --, CIndexHelper(..)
-   --, buildHmCIndex
+   --, DiAdjacencyIndexHelper(..)
+   --, buildHmDiAdjacencyIndex
 ) where
 
 import qualified Data.Maybe as MB
@@ -12,7 +12,7 @@ import Control.Monad
 import Control.Monad.ST
 import Data.Hashable
 import qualified Data.HashMap.Strict as HM
-import PolyGraph.Instances.HashMapAsDiGraph
+import PolyGraph.Instances.DiGraph.HashMapAsDiGraph
 import PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge
 import PolyGraph.Common.Helpers
 import PolyGraph.ReadOnly.DiGraph
@@ -20,7 +20,7 @@ import PolyGraph.ReadOnly.Graph
 import PolyGraph.Common.InstanceHelpers
 
 -----------------------------------------------------------------------
--- builders that create fast DiGraph and CIndex for a DiGraph       ---
+-- builders that create fast DiGraph and DiAdjacencyIndex for a DiGraph       ---
 -----------------------------------------------------------------------
 
 buildDiGraphHashMap :: forall g v e tg th .
@@ -43,11 +43,11 @@ buildDiGraphHashMap slowSemantics g =
 
 
 
-data CIndexHelper v e t = CIndexHelper {
+data DiAdjacencyIndexHelper v e t = DiAdjacencyIndexHelper {
     helpercEdgesOf :: v -> t e
 }
 
-instance forall v e t . (Hashable v, Eq v, DiEdgeSemantics e v, Traversable t) => CIndex (CIndexHelper v e t) v e t where
+instance forall v e t . (Hashable v, Eq v, DiEdgeSemantics e v, Traversable t) => DiAdjacencyIndex (DiAdjacencyIndexHelper v e t) v e t where
    cEdgesOf = helpercEdgesOf
 
 class (Eq k) => BuildableMap i k v | i -> k, i-> v where
@@ -74,13 +74,13 @@ buildMap g =
 buildHM :: forall g v e t0 t i. (Eq v, Hashable v, DiGraph g v e t0, BuildableCollection t, Traversable t) => g -> HM.HashMap v (t e)
 buildHM = buildMap
 
-buildHmCIndex :: forall g v e t0 t. (Hashable v, Eq v, DiGraph g v e t0, BuildableCollection t, Traversable t) => g -> CIndexHelper v e t
-buildHmCIndex g =
+buildHmDiAdjacencyIndex :: forall g v e t0 t. (Hashable v, Eq v, DiGraph g v e t0, BuildableCollection t, Traversable t) => g -> DiAdjacencyIndexHelper v e t
+buildHmDiAdjacencyIndex g =
     let hm = buildHM g :: HM.HashMap v (t e)
         cEdgesOfImpl = (\v -> HM.lookupDefault emptyCollection v hm) :: v -> t e
-    in CIndexHelper { helpercEdgesOf = cEdgesOfImpl}
+    in DiAdjacencyIndexHelper { helpercEdgesOf = cEdgesOfImpl}
 
---- Helper instances For CIndexing work ---
+--- Helper instances For DiAdjacencyIndexing work ---
 
 instance forall k v. (Hashable k, Eq k) => BuildableMap (HM.HashMap k v) k v where
   safeKeyOverValue hm k f defaultV =
@@ -95,7 +95,7 @@ instance BuildableCollection [] where
   emptyCollection = []
 
 -- HashMap itself is naturally a DiGraph --
--- TODO finish this and add HM to the CIndexHelper, externalize this to own module
+-- TODO finish this and add HM to the DiAdjacencyIndexHelper, externalize this to own module
 {-
 instance forall e v t. (Eq v, Hashable v, BuildableCollection t) => PB.BuildableGraphDataSet(HM.HashMap v (t e)) v e t where
   PB.empty = HM.empty

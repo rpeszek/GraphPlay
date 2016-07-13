@@ -23,14 +23,15 @@ library
                        , PolyGraph.ReadOnly.DiGraph
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAFold
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
-                       , PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex
+                       , PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion
                        , PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge
                        , PolyGraph.ReadOnly.Graph
                        , PolyGraph.Buildable.GDSBuild
                        , PolyGraph.Buildable.GBuild
                        , PolyGraph.Buildable.DiGBuild
                        , PolyGraph.Adjustable.GDSAdjust
-                       , PolyGraph.Instances.HashMapAsDiGraph
+                       , PolyGraph.Instances.DiGraph.HashMapAsDiGraph
+                       , PolyGraph.Instances.DiGraph.DiAdjacencyMatrix
                        , Play.DiGraph.SampleInstances.FirstLastWord
                        , Play.DiGraph.SampleInstances.SimpleGraph
                        , Play.DiGraph.SampleData
@@ -45,6 +46,7 @@ library
                       , hashtables
                       , containers
                       , unordered-containers
+                      , matrix
   default-language:    Haskell2010
   extensions:          TemplateHaskell
                       , ScopedTypeVariables

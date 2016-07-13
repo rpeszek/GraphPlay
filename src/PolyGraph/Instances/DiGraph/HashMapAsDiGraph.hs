@@ -1,6 +1,6 @@
 -- TODO work in progress, almost works
 
-module PolyGraph.Instances.HashMapAsDiGraph where
+module PolyGraph.Instances.DiGraph.HashMapAsDiGraph where
 
 import Data.Hashable
 import PolyGraph.ReadOnly.Graph
@@ -24,7 +24,7 @@ instance forall v e te. (Eq v, Hashable v, Traversable te) =>
   edges    =  concat . map (F.toList) . HM.elems . getHashMap
 
 instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableDependentCollection (te e) e) =>
-                                           (CIndex (DiGraphHashMap v e te) v e te) where
+                                           (DiAdjacencyIndex (DiGraphHashMap v e te) v e te) where
     cEdgesOf g v =  HM.lookupDefault emptyDependentCollection v (getHashMap g)
 
 instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableDependentCollection (te e) e) =>

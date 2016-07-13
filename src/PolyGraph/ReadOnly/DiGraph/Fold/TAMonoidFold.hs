@@ -44,7 +44,7 @@ liftPairHelper e1 =  liftM $ (,) e1
 
 --
 --
-dfsFoldM :: forall m g v e t a. (Monoid a, Monad m, CIndex g v e t) => RecursionHandler m v a -> g ->  MonoidFoldAccLogic v e a  -> v -> m a
+dfsFoldM :: forall m g v e t a. (Monoid a, Monad m, DiAdjacencyIndex g v e t) => RecursionHandler m v a -> g ->  MonoidFoldAccLogic v e a  -> v -> m a
 dfsFoldM handler g logic v =
      let acc_applyVertex =  applyVertex logic v   :: a
          acc_applyEdge   =  applyEdge   logic     :: e -> a
@@ -63,7 +63,7 @@ dfsFoldM handler g logic v =
 -- This walks the grah without remembering visited vertices (effectively walks a tree)
 -- will not work if DiGraph has cycles
 --
-dfsFoldExponential :: forall g v e t a. (Monoid a, CIndex g v e t) => g -> MonoidFoldAccLogic v e a  -> v -> a
+dfsFoldExponential :: forall g v e t a. (Monoid a, DiAdjacencyIndex g v e t) => g -> MonoidFoldAccLogic v e a  -> v -> a
 dfsFoldExponential g logic v =
                         let handler = RecursionHandler { handle = id } :: RecursionHandler Identity v a
                         in runIdentity (dfsFoldM handler g logic v)
@@ -72,7 +72,7 @@ dfsFoldExponential g logic v =
 --
 -- Uses memoization to assure that each vertex is visisted only once.  Will currently not work with cycles.
 --
-dfsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => HashTable s v Bool -> HashTable s v a -> g ->  MonoidFoldAccLogic v e a  -> v -> ST s a
+dfsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, DiAdjacencyIndex g v e t) => HashTable s v Bool -> HashTable s v a -> g ->  MonoidFoldAccLogic v e a  -> v -> ST s a
 dfsFoldST htCycles htmemo g logic =
               let  cyclesHandler :: v -> ST s a
                    cyclesHandler v =  do
@@ -84,15 +84,15 @@ dfsFoldST htCycles htmemo g logic =
               in dfsFoldM handler g logic
 
 
-runDtsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => g ->  MonoidFoldAccLogic  v e a  -> v -> ST s a
+runDtsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, DiAdjacencyIndex g v e t) => g ->  MonoidFoldAccLogic  v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
      htCycles <- HT.new :: ST s (HashTable s v Bool)
      htmemo <- HT.new :: ST s (HashTable s v a)
      a <- dfsFoldST htCycles htmemo g logic v
      return a
 
-dfsFoldFast :: forall g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => g ->  MonoidFoldAccLogic v e a  -> v -> a
+dfsFoldFast :: forall g v e t a. (Monoid a, Eq v, Hashable v, DiAdjacencyIndex g v e t) => g ->  MonoidFoldAccLogic v e a  -> v -> a
 dfsFoldFast g agg v = runST $ runDtsFoldST g agg v
 
-dfsFold :: forall g v e t a. (Monoid a, Eq v, Hashable v, CIndex g v e t) => g ->  MonoidFoldAccLogic v e a  -> v -> a
+dfsFold :: forall g v e t a. (Monoid a, Eq v, Hashable v, DiAdjacencyIndex g v e t) => g ->  MonoidFoldAccLogic v e a  -> v -> a
 dfsFold = dfsFoldFast

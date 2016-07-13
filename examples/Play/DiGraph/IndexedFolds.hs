@@ -1,15 +1,15 @@
 ------
 -- Examples demostrate converting D-Graph that would be slow to
--- fast CIndex/DiGraph
+-- fast DiAdjacencyIndex/DiGraph
 ------
 module Play.DiGraph.IndexedFolds where
 
 import Data.Hashable
-import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex as I
+import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion as I
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge as ME
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.ReadOnly.DiGraph.Fold.TAFold
-import qualified PolyGraph.Instances.HashMapAsDiGraph as HTG
+import qualified PolyGraph.Instances.DiGraph.HashMapAsDiGraph as HTG
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as T
 import qualified Play.DiGraph.SampleData as S (playFirstLast)
 import qualified Data.HashSet as HS
@@ -17,7 +17,7 @@ import qualified Data.HashSet as HS
 ------
 -- Our play example is set of setences (lines) that define FLWordSentences.
 -- First word implies Last FLWord.  Logically Lines are edges and First-Last words are adjecent vertices
--- Here edges are converted to pre-parsed pairs and HashMap based CIndex is used for fast calculations.
+-- Here edges are converted to pre-parsed pairs and HashMap based DiAdjacencyIndex is used for fast calculations.
 ------
 
 playGraph :: HTG.DiGraphHashMap T.FLWord (ME.EdgeHelper T.FLWordSentence T.FLWord) []

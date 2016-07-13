@@ -10,7 +10,7 @@ import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Adjustable.GDSAdjust
 import PolyGraph.Common.Helpers
 import Data.List (nub, null, lines, words, concat)
-import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapCIndex as INX
+import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion as INX
 import qualified Data.Hashable as HASH
 import qualified Data.HashSet as HS
 import qualified Data.Foldable as F
@@ -43,7 +43,7 @@ instance  forall v . (Eq v) => (GraphDataSet (SimpleListGraph v) v (v,v) []) whe
   isolatedVertices g = getDisconnectedVertices g
   edges g  =  getEdges g
 
-instance forall v t. (Eq v) => (CIndex (SimpleListGraph v) v (v,v) []) where
+instance forall v t. (Eq v) => (DiAdjacencyIndex (SimpleListGraph v) v (v,v) []) where
   cEdgesOf g ver = filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
 instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleListGraph v) v (v,v) [])
@@ -53,7 +53,7 @@ instance  forall v . (HASH.Hashable v, Eq v) => (GraphDataSet (SimpleSetGraph v)
   isolatedVertices g = getDisconnectedVertices g
   edges g  =  getEdges g
 
-instance forall v t. (Eq v) => (CIndex (SimpleSetGraph v) v (v,v) []) where
+instance forall v t. (Eq v) => (DiAdjacencyIndex (SimpleSetGraph v) v (v,v) []) where
   cEdgesOf g ver = HS.toList . HS.filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
 instance  forall v . (HASH.Hashable v, Eq v) => (DiGraph (SimpleSetGraph v) v (v,v) HS.HashSet)

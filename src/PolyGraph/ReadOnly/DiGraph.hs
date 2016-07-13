@@ -36,11 +36,11 @@ class DiEdgeSemantics e v | e -> v where
   resolveDiEdge ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
 
 --
--- CIndex one who directs directed graph :) - in child direction
+-- DiAdjacencyIndex one who directs directed graph :) - in child direction
 -- It is less than a graph, we can ask for list of child edges at any instance of type v
 -- caller picks with Traversable to use for navigatigaging children
 --
-class (Traversable t, DiEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, e -> v where
+class (Traversable t, DiEdgeSemantics e v)  => DiAdjacencyIndex g v e t | g -> t, g -> v, e -> v where
   cEdgesOf   ::  g -> v -> t e   -- return a list of child edges, empty if not a valid vertex or a leaf
 
 --
@@ -49,7 +49,7 @@ class (Traversable t, DiEdgeSemantics e v)  => CIndex g v e t | g -> t, g -> v, 
 -- caller can pick which collection type to use as set (Haskell Data.Set is not really a math Set as it requries Ord)
 -- Note: Data.Set is not a good representaiton of set since it requires Ord on elements
 --
-class (G.GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t 
+class (G.GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
 
 
 --
