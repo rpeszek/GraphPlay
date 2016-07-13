@@ -1,6 +1,6 @@
 
-module PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedDiEdge (
-   DiEdgeHelper(..)
+module PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge (
+   EdgeHelper(..)
 ) where
 
 import qualified Data.Foldable as F
@@ -15,14 +15,20 @@ import PolyGraph.ReadOnly.Graph
 -- for example is e -> (v,v) needs to parse a text to lookup vertices                   --
 ------------------------------------------------------------------------------------------
 
-data DiEdgeHelper e v = DEdgeWithIndexedSemantics {
-    getDEdge      :: e,
+data EdgeHelper e v = EdgeHelper {
+    getEdge      :: e,
     getVertices   :: (v,v)
-}
+} deriving Show
 
-instance forall e v.(Eq v) => Eq(DiEdgeHelper e v) where
+instance forall e v.(Eq v) => Eq(EdgeHelper e v) where
   fedge1 == fedge2 = (getVertices fedge1) == (getVertices fedge2)
 
 
-instance forall v e map. DiEdgeSemantics (DiEdgeHelper e v) v where
+instance forall v e map. DiEdgeSemantics (EdgeHelper e v) v where
    resolveDiEdge indexedE = getVertices indexedE
+
+instance forall v e map. EdgeSemantics (EdgeHelper e v) v where
+   resolveEdge indexedE = getVertices indexedE
+
+convertToEdgeHelper :: forall e v . (e -> (v,v)) -> e -> EdgeHelper e v
+convertToEdgeHelper f e = EdgeHelper { getEdge = e, getVertices = f e }

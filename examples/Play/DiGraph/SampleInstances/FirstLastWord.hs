@@ -73,3 +73,4 @@ instance BuildableGraphDataSet FLWordText FLWord FLWordSentence [] where
   g @+ statment       = g   -- TODO currently FLWordText does not care about FLWords that do not imply anything
   g ~+ flWordSentence = let newText = (getFLWordSentenceText flWordSentence) ++ "\n" ++ (getFLWordTextText g)
                         in FLWordText newText
+  union g1 g2 = FLWordText $ (getFLWordTextText g1) ++ (getFLWordTextText g2)
