@@ -1,5 +1,13 @@
 
-module PolyGraph.ReadOnly.Graph where --exports everything, a terrible programmer wrote it
+module PolyGraph.ReadOnly.Graph (
+   EdgeSemantics(..)
+   , GraphDataSet(..)
+   , Graph (..)
+   , defaultVertexCount
+   , GMorphism (..)
+   --, isValidMorphism
+   , fGMorphism
+) where --exports everything, a terrible programmer wrote it
 
 import Data.List (nub, length)
 import PolyGraph.Common.Helpers
@@ -8,8 +16,9 @@ import PolyGraph.Common.Helpers
 -- e are edges v are vertices, the order of (v,v) does not imply ordering of vertices
 -- Graph FLWordText term would be: incidence function
 --
-class EdgeSemantics e v | e -> v where
+class EdgeSemantics e v  where
   resolveEdge      ::  e -> (v,v)
+
 
 class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
   isolatedVertices ::  g -> t v
@@ -32,17 +41,32 @@ defaultVertexCount f g =
          nonIsolatedVCount = length . nub $ foldr appendVertices [] (edges g)
      in  isolatedVCount + nonIsolatedVCount
 
--- where
---  degree  :: g -> v -> Int
---  degree  = degreeSlow
 
+--
+data GMorphism v0 e0 v1 e1 = GMorphism {
+   vTrans :: v0 -> v1,
+   eTrans :: e0 -> e1
+}
 
--- degreeSlow :: forall g v e t . (EdgeSemantics e v, GraphDataSet g v e t) => g -> v -> Int
--- degreeSlow = undefined
+fGMorphism :: forall v0 v1 f . (Functor f) => (v0 -> v1) -> GMorphism v0 (f v0) v1 (f v1)
+fGMorphism fn = GMorphism {
+     vTrans = fn,
+     eTrans = fmap fn
+ }
 
--- ?? union ::
--- ?? intersection ::
+-- TODO implement check
+-- to be valid eTrans and resolveEdge needs to commute with the vTrans
+isValidMorphism :: forall g v0 e0 t v1 e1 . (GraphDataSet g v0 e0 t, EdgeSemantics e0 v0, EdgeSemantics e1 v1) =>
+                               g -> GMorphism v0 e0 v1 e1 -> Bool
+isValidMorphism = undefined
 
---TODO make DiEdgeSemantics EdgeSemantics or have common ancestor
-  --     make DiGraph a Graph
-  --     byparite
+{-
+-- not needed, use functors directly with fGMorphism
+class Functor e => FunctorialEdgeSemantics e where
+   --liftToE :: (v0 -> v1) -> e v0 -> e v1
+   toMorphism :: (v0 -> v1) -> GMorphism v0 (e v0) v1 (e v1)
+   toMorphism f = GMorphism {
+        vTrans = f,
+        eTrans = fmap f
+    }
+-}

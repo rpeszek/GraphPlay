@@ -32,7 +32,7 @@ import PolyGraph.Common.Helpers
 -- how to resolve edge into ordered pair of vertices
 -- Graph FLWordText term would be: incidence function
 --
-class DiEdgeSemantics e v | e -> v where
+class DiEdgeSemantics e v  where
   resolveDiEdge ::  e -> (v,v)  -- semantically resolves vertices edge does not need to be in the graph
 
 --
@@ -40,7 +40,7 @@ class DiEdgeSemantics e v | e -> v where
 -- It is less than a graph, we can ask for list of child edges at any instance of type v
 -- caller picks with Traversable to use for navigatigaging children
 --
-class (Traversable t, DiEdgeSemantics e v)  => DiAdjacencyIndex g v e t | g -> t, g -> v, e -> v where
+class (Traversable t, DiEdgeSemantics e v)  => DiAdjacencyIndex g v e t | g -> t, g -> v, g -> e where
   cEdgesOf   ::  g -> v -> t e   -- return a list of child edges, empty if not a valid vertex or a leaf
 
 --

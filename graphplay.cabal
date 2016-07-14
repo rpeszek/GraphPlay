@@ -30,7 +30,7 @@ library
                        , PolyGraph.Buildable.GBuild
                        , PolyGraph.Buildable.DiGBuild
                        , PolyGraph.Buildable.PolyRebuild
-                       , PolyGraph.Adjustable.GDSAdjust
+                       , PolyGraph.Buildable.PolyMorth
                        , PolyGraph.Instances.DiGraph.HashMapAsDiGraph
                        , PolyGraph.Instances.DiGraph.DiAdjacencyMatrix
                        , Play.DiGraph.SampleInstances.FirstLastWord
