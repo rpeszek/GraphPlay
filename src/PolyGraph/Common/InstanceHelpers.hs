@@ -39,30 +39,30 @@ instance forall e hs. (Eq e, Hashable e) => BuildableDependentCollection (HS.Has
 testF :: forall t0 e. (Foldable t0, BuildableDependentCollection (t0 e) e) => t0 e
 testF = emptyDependentCollection
 
-class BuildableUniqueDependentCollection t e | t -> e  where
+class BuildableDependentCollection t e => BuildableUniqueDependentCollection t e  where
    addUniqueElement  :: e -> t  -> t
-   emptyUniqueCollection :: t
    uniqueCollectionFromList :: [e] -> t
 
 instance forall e . (Eq e ) => BuildableUniqueDependentCollection [e] e where
    addUniqueElement e list = nub (e: list)
-   emptyUniqueCollection = []
    uniqueCollectionFromList = nub
 
 instance forall e . (Eq e, Hashable e) => BuildableUniqueDependentCollection (HS.HashSet e) e where
    addUniqueElement = HS.insert
-   emptyUniqueCollection = HS.empty
    uniqueCollectionFromList = HS.fromList
 
 
-class BuildableDependentCollection t e => AdjustableDependentCollection t e  where
+class (Eq e, BuildableUniqueDependentCollection t e) => AdjustableDependentCollection t e  where
    filterDependentCollection :: (e -> Bool) -> t -> t
+   deleteFromDependentCollection :: e -> t -> t
+   deleteFromDependentCollection e t = filterDependentCollection (== e) t
 
-instance forall e . AdjustableDependentCollection [e] e where
+instance forall e . (Eq e) => AdjustableDependentCollection [e] e where
    filterDependentCollection = filter
 
 instance forall e . (Eq e, Hashable e) => AdjustableDependentCollection (HS.HashSet e) e where
    filterDependentCollection = HS.filter
+   deleteFromDependentCollection = HS.delete
 
 
 class ToString a where
