@@ -52,6 +52,7 @@ instance  forall v t. (Eq v, Foldable t) => (GraphDataSet (SimpleGraph v t) v (v
   edges g  =  getEdges g
 
 --
+-- TODO
 -- this basically forces [] as Index type, can be genralized but will currently cause ambiguities
 -- HashSet is not a Traversable so this would not be sufficient for HashSet if the same type was used
 --
