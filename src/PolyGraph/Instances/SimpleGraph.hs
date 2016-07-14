@@ -61,9 +61,9 @@ instance forall v t. (Eq v, Foldable t, BuildableDependentCollection (t (v,v)) (
                 let addEdge :: (v,v) -> t (v,v) -> t (v,v)
                     addEdge vv tvv =
                            if (first' vv == ver)
-                           then prependDependentElement vv tvv
+                           then addBuildableElement vv tvv
                            else tvv
-                in F.toList $ foldr addEdge emptyDependentCollection (getEdges g)
+                in F.toList $ foldr addEdge emptyBuildableCollection (getEdges g)
 
 --
 -- NOTE:
@@ -87,18 +87,18 @@ instance  forall v t . (Eq v,
                         AdjustableDependentCollection (t v) v
                         ) => BuildableGraphDataSet(SimpleGraph v t) v (v,v) t where
 
-   empty = SimpleGraph (emptyDependentCollection :: t (v,v)) (emptyDependentCollection :: t v)
+   empty = SimpleGraph (emptyBuildableCollection :: t (v,v)) (emptyBuildableCollection :: t v)
 
-   g @+ v = let newVertices = addUniqueElement v (getDisconnectedVertices g)
+   g @+ v = let newVertices = addUniqueBuildableElement v (getDisconnectedVertices g)
             in g {getDisconnectedVertices = newVertices}
    g ~+ (v1,v2) =
-            let newVertices = deleteFromDependentCollection v1 $
-                              deleteFromDependentCollection v2 (getDisconnectedVertices g)
-                newEdges = addUniqueElement (v1,v2) (getEdges g)
+            let newVertices = deleteBuildableElement v1 $
+                              deleteBuildableElement v2 (getDisconnectedVertices g)
+                newEdges = addUniqueBuildableElement (v1,v2) (getEdges g)
             in g {getEdges = newEdges}
    union g1 g2 =
-            let newEdges = (getEdges g1) `unionDependentCollection` (getEdges g2)
-                newVertices = (getDisconnectedVertices g1) `unionDependentCollection` (getDisconnectedVertices g2)
+            let newEdges = (getEdges g1) `unionBuildableCollections` (getEdges g2)
+                newVertices = (getDisconnectedVertices g1) `unionBuildableCollections` (getDisconnectedVertices g2)
             in g1 {getEdges = newEdges, getDisconnectedVertices = newVertices}
 
 --------------------------------------------
@@ -110,11 +110,11 @@ instance  forall v t . (Eq v,
                         AdjustableDependentCollection (t v) v
                         ) => AdjustableGraphDataSet(SimpleGraph v t) v (v,v) t where
 
-   g @\ f = let newVertices = filterDependentCollection f (getDisconnectedVertices g)
-                newEdges = filterDependentCollection (\vv -> (f $ first' vv) && (f $ second' vv)) (getEdges g)
+   g @\ f = let newVertices = filterBuildableCollection f (getDisconnectedVertices g)
+                newEdges = filterBuildableCollection (\vv -> (f $ first' vv) && (f $ second' vv)) (getEdges g)
             in  SimpleGraph { getEdges = newEdges, getDisconnectedVertices = newVertices}
 
-   filterEdges strict g f = let newEdges = filterDependentCollection f (getEdges g)
+   filterEdges strict g f = let newEdges = filterBuildableCollection f (getEdges g)
             in if strict
                then g {getEdges = newEdges}
-               else g {getEdges = newEdges, getDisconnectedVertices = emptyDependentCollection}
+               else g {getEdges = newEdges, getDisconnectedVertices = emptyBuildableCollection}

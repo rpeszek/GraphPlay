@@ -31,11 +31,11 @@ buildDiGraphHashMap slowSemantics g =
      let gedges = edges g                         :: tg e
          ginsolatedVertices  = isolatedVertices g :: tg v
          emptyMap = HM.empty                      :: HM.HashMap v (th (EdgeHelper e v))
-         emptyEdges = emptyDependentCollection    :: th (EdgeHelper e v)
+         emptyEdges = emptyBuildableCollection    :: th (EdgeHelper e v)
          addEdge e hm =
              let (v1,v2) = slowSemantics e
-             in (HM.insertWith (\new old -> old) v2 emptyDependentCollection) .
-                (HM.insertWith (\new old -> prependDependentElement (EdgeHelper e (v1,v2)) old) v1 (singletonDependentCollection (EdgeHelper e (v1,v2)))) $ hm
+             in (HM.insertWith (\new old -> old) v2 emptyBuildableCollection) .
+                (HM.insertWith (\new old -> addBuildableElement (EdgeHelper e (v1,v2)) old) v1 (singletonBuildableCollection (EdgeHelper e (v1,v2)))) $ hm
 
          verticesInserted = foldr(\v hm -> HM.insert v emptyEdges hm) emptyMap ginsolatedVertices
      in

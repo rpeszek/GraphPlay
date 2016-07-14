@@ -17,52 +17,52 @@ import Data.List (nub, filter)
 
 -- helper classes  ---
 class BuildableDependentCollection t e | t -> e where
-   prependDependentElement  :: e -> t -> t
-   emptyDependentCollection :: t
+   addBuildableElement  :: e -> t -> t
+   emptyBuildableCollection :: t
 
-   singletonDependentCollection :: e -> t
-   singletonDependentCollection e = prependDependentElement e emptyDependentCollection
+   singletonBuildableCollection :: e -> t
+   singletonBuildableCollection e = addBuildableElement e emptyBuildableCollection
 
-   unionDependentCollection :: t -> t -> t
+   unionBuildableCollections :: t -> t -> t
 
 instance forall e. BuildableDependentCollection [e] e where
-   prependDependentElement  = (:)
-   emptyDependentCollection = []
-   unionDependentCollection = (++)
+   addBuildableElement  = (:)
+   emptyBuildableCollection = []
+   unionBuildableCollections = (++)
 
 instance forall e hs. (Eq e, Hashable e) => BuildableDependentCollection (HS.HashSet e) e where
-   prependDependentElement   = HS.insert
-   emptyDependentCollection  = HS.empty
-   unionDependentCollection  = HS.union
+   addBuildableElement   = HS.insert
+   emptyBuildableCollection  = HS.empty
+   unionBuildableCollections  = HS.union
 
 --Example usage:---
 testF :: forall t0 e. (Foldable t0, BuildableDependentCollection (t0 e) e) => t0 e
-testF = emptyDependentCollection
+testF = emptyBuildableCollection
 
 class BuildableDependentCollection t e => BuildableUniqueDependentCollection t e  where
-   addUniqueElement  :: e -> t  -> t
-   uniqueCollectionFromList :: [e] -> t
+   addUniqueBuildableElement  :: e -> t  -> t
+   uniqueBuildableCollectionFromList :: [e] -> t
 
 instance forall e . (Eq e ) => BuildableUniqueDependentCollection [e] e where
-   addUniqueElement e list = nub (e: list)
-   uniqueCollectionFromList = nub
+   addUniqueBuildableElement e list = nub (e: list)
+   uniqueBuildableCollectionFromList = nub
 
 instance forall e . (Eq e, Hashable e) => BuildableUniqueDependentCollection (HS.HashSet e) e where
-   addUniqueElement = HS.insert
-   uniqueCollectionFromList = HS.fromList
+   addUniqueBuildableElement = HS.insert
+   uniqueBuildableCollectionFromList = HS.fromList
 
 
 class (Eq e, BuildableUniqueDependentCollection t e) => AdjustableDependentCollection t e  where
-   filterDependentCollection :: (e -> Bool) -> t -> t
-   deleteFromDependentCollection :: e -> t -> t
-   deleteFromDependentCollection e t = filterDependentCollection (== e) t
+   filterBuildableCollection :: (e -> Bool) -> t -> t
+   deleteBuildableElement :: e -> t -> t
+   deleteBuildableElement e t = filterBuildableCollection (== e) t
 
 instance forall e . (Eq e) => AdjustableDependentCollection [e] e where
-   filterDependentCollection = filter
+   filterBuildableCollection = filter
 
 instance forall e . (Eq e, Hashable e) => AdjustableDependentCollection (HS.HashSet e) e where
-   filterDependentCollection = HS.filter
-   deleteFromDependentCollection = HS.delete
+   filterBuildableCollection = HS.filter
+   deleteBuildableElement = HS.delete
 
 
 class ToString a where
