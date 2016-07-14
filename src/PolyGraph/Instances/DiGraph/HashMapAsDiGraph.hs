@@ -7,7 +7,7 @@ import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Adjustable.GDSAdjust
-import PolyGraph.Common.InstanceHelpers
+import PolyGraph.Common.BuildableCollection
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Foldable as F
 
@@ -23,14 +23,14 @@ instance forall v e te. (Eq v, Hashable v, Traversable te) =>
   isolatedVertices =  HM.keys . HM.filter (F.null) . getHashMap
   edges    =  concat . map (F.toList) . HM.elems . getHashMap
 
-instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableDependentCollection (te e) e) =>
+instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableCollection (te e) e) =>
                                            (DiAdjacencyIndex (DiGraphHashMap v e te) v e te) where
     cEdgesOf g v =  HM.lookupDefault emptyBuildableCollection v (getHashMap g)
 
-instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableDependentCollection (te e) e) =>
+instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableCollection (te e) e) =>
                                            (DiGraph (DiGraphHashMap v e te) v e [])
 
-instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableDependentCollection (te e) e) =>
+instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableCollection (te e) e) =>
                                   (BuildableGraphDataSet(DiGraphHashMap v e te) v e []) where
    empty = DiGraphHashMap HM.empty
    g @+ v = DiGraphHashMap . (HM.insertWith (\old new -> old) v emptyBuildableCollection) . getHashMap $ g
@@ -46,7 +46,7 @@ instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, 
               in DiGraphHashMap $ HM.unionWith mergeF (getHashMap g1) (getHashMap g2)
 
 -- this will be a bit slow but not too bad
-instance forall v e te. (Eq v, Hashable v, Eq e, Traversable te, DiEdgeSemantics e v, AdjustableDependentCollection (te e) e) =>
+instance forall v e te. (Eq v, Hashable v, Eq e, Traversable te, DiEdgeSemantics e v, AdjustableCollection (te e) e) =>
                                   (AdjustableGraphDataSet(DiGraphHashMap v e te) v e []) where
    g @\ f =
              let verticesTrimmed = DiGraphHashMap . (HM.filterWithKey (\v _ -> f v)) . getHashMap $ g

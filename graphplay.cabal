@@ -18,7 +18,7 @@ library
                        , examples
   exposed-modules:     Lib
                        , PolyGraph.Common.Helpers
-                       , PolyGraph.Common.InstanceHelpers
+                       , PolyGraph.Common.BuildableCollection
                        , PolyGraph.Common.RecursionHelpers
                        , PolyGraph.ReadOnly.DiGraph
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAFold

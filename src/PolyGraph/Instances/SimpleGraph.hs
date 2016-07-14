@@ -19,7 +19,7 @@ import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Adjustable.GDSAdjust
 import PolyGraph.Common.Helpers
-import PolyGraph.Common.InstanceHelpers
+import PolyGraph.Common.BuildableCollection
 import Data.List (nub, null, lines, words, concat)
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion as INX
 import qualified Data.Hashable as HASH
@@ -31,7 +31,7 @@ type SimpleListGraph v = SimpleGraph v []
 type SimpleSetGraph v  = SimpleGraph v HS.HashSet
 
 -- INSTANCES --
--- TODO needs more reusable instance logic, use common.helpers.BuildableDependentCollection
+-- TODO needs more reusable instance logic, use common.helpers.BuildableCollection
 --foldMap :: Monoid m => (a -> m) -> t a -> m
 instance forall v t. (Show v, Foldable t) => Show (SimpleGraph v t) where
   show g =  let looseVerticesS = F.foldMap (\v -> show(v)++",") (getDisconnectedVertices g)
@@ -55,7 +55,7 @@ instance  forall v t. (Eq v, Foldable t) => (GraphDataSet (SimpleGraph v t) v (v
 -- this basically forces [] as Index type, can be genralized but will currently cause ambiguities
 -- HashSet is not a Traversable so this would not be sufficient for HashSet if the same type was used
 --
-instance forall v t. (Eq v, Foldable t, BuildableDependentCollection (t (v,v)) (v,v)) =>
+instance forall v t. (Eq v, Foldable t, BuildableCollection (t (v,v)) (v,v)) =>
                                                       (DiAdjacencyIndex (SimpleGraph v t) v (v,v) []) where
   cEdgesOf g ver =
                 let addEdge :: (v,v) -> t (v,v) -> t (v,v)
@@ -83,8 +83,8 @@ instance  forall v t. (Eq v, Foldable t) => (Graph (SimpleGraph v t) v (v,v) t)
 
 instance  forall v t . (Eq v,
                         Foldable t,
-                        AdjustableDependentCollection (t (v,v)) (v,v),
-                        AdjustableDependentCollection (t v) v
+                        AdjustableCollection (t (v,v)) (v,v),
+                        AdjustableCollection (t v) v
                         ) => BuildableGraphDataSet(SimpleGraph v t) v (v,v) t where
 
    empty = SimpleGraph (emptyBuildableCollection :: t (v,v)) (emptyBuildableCollection :: t v)
@@ -106,8 +106,8 @@ instance  forall v t . (Eq v,
 --------------------------------------------
 instance  forall v t . (Eq v,
                         Foldable t,
-                        AdjustableDependentCollection (t (v,v)) (v,v),
-                        AdjustableDependentCollection (t v) v
+                        AdjustableCollection (t (v,v)) (v,v),
+                        AdjustableCollection (t v) v
                         ) => AdjustableGraphDataSet(SimpleGraph v t) v (v,v) t where
 
    g @\ f = let newVertices = filterBuildableCollection f (getDisconnectedVertices g)
