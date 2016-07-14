@@ -30,3 +30,5 @@ morth trans gs = (morthEdges trans gs) . (morthIsolatedVertices trans gs) $ empt
 fmorth :: forall f g0 v0 e0 t0 g1 v1 e1 t1. (Functor f, GraphDataSet g0 v0 (f v0) t0, BuildableGraphDataSet g1 v1 (f v1) t1) =>
                 (v0 -> v1) -> g0 -> g1
 fmorth f = morth (fGMorphism f)
+
+-- instance (Functor f) => Functor BuildableGraphDataSet g1 v1 (f v1) t1

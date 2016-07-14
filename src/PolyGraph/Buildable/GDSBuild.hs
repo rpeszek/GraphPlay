@@ -43,3 +43,5 @@ class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
 -- adds edge with default semantics between vertices
 addDefaultEdge :: forall g v e t . (BuildableEdgeSemantics e v, BuildableGraphDataSet g v e t ) => v -> v -> g -> g
 addDefaultEdge v1 v2 g = g ~+ (defaultEdge v1 v2)
+
+-- class (Functor f, BuildableGraphDataSet g v (f v) t) => BuildableGraphDataSetAsFunctor g v t f
