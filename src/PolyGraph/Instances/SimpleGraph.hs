@@ -8,7 +8,7 @@
   Assumption that graph has no multiple edges is viewed as: edge does not contribute
   more information than 2 vertices it joins.  Hence edge can be simply represented as a pair.
 -}
-module Play.DiGraph.SampleInstances.SimpleGraph (
+module PolyGraph.Instances.SimpleGraph (
      SimpleGraph(..)
    , SimpleListGraph
    , SimpleSetGraph
@@ -86,9 +86,9 @@ instance  forall v t . (Eq v,
                         AdjustableDependentCollection (t (v,v)) (v,v),
                         AdjustableDependentCollection (t v) v
                         ) => BuildableGraphDataSet(SimpleGraph v t) v (v,v) t where
+
    empty = SimpleGraph (emptyDependentCollection :: t (v,v)) (emptyDependentCollection :: t v)
 
-   --TODO continue here
    g @+ v = let newVertices = addUniqueElement v (getDisconnectedVertices g)
             in g {getDisconnectedVertices = newVertices}
    g ~+ (v1,v2) =
@@ -101,27 +101,15 @@ instance  forall v t . (Eq v,
                 newVertices = (getDisconnectedVertices g1) `unionDependentCollection` (getDisconnectedVertices g2)
             in g1 {getEdges = newEdges, getDisconnectedVertices = newVertices}
 
-{-
-instance  forall v . (HASH.Hashable v, Eq v) => (BuildableGraphDataSet(SimpleSetGraph v) v (v,v) HS.HashSet) where
-   empty = SimpleGraph HS.empty HS.empty
-
-   --TODO fix this issue: adds vertex even if it already exists in the graph
-   g @+ v = let newVertices = HS.insert v (getDisconnectedVertices g)
-            in g {getDisconnectedVertices = newVertices}
-   g ~+ (v1,v2) =
-            let newVertices = HS.delete v1 $ HS.delete v2 (getDisconnectedVertices g)
-                newEdges = HS.insert (v1,v2) (getEdges g)
-            in g {getEdges = newEdges}
-   union g1 g2 =
-            let newEdges = (getEdges g1) `HS.union` (getEdges g2)
-                newVertices = (getDisconnectedVertices g1) `HS.union` (getDisconnectedVertices g2)
-            in g1 {getEdges = newEdges, getDisconnectedVertices = newVertices}
--}
+--------------------------------------------
+-- Adjustable Graph instance              --
+--------------------------------------------
 instance  forall v t . (Eq v,
                         Foldable t,
                         AdjustableDependentCollection (t (v,v)) (v,v),
                         AdjustableDependentCollection (t v) v
                         ) => AdjustableGraphDataSet(SimpleGraph v t) v (v,v) t where
+
    g @\ f = let newVertices = filterDependentCollection f (getDisconnectedVertices g)
                 newEdges = filterDependentCollection (\vv -> (f $ first' vv) && (f $ second' vv)) (getEdges g)
             in  SimpleGraph { getEdges = newEdges, getDisconnectedVertices = newVertices}
@@ -130,15 +118,3 @@ instance  forall v t . (Eq v,
             in if strict
                then g {getEdges = newEdges}
                else g {getEdges = newEdges, getDisconnectedVertices = emptyDependentCollection}
-
-{-
-instance forall v . (HASH.Hashable v, Eq v) => (AdjustableGraphDataSet (SimpleSetGraph v) v (v,v) HS.HashSet) where
-   g @\ f = let newVertices = HS.filter f (getDisconnectedVertices g)
-                newEdges = HS.filter (\vv -> (f $ first' vv) && (f $ second' vv)) (getEdges g)
-            in  SimpleGraph { getEdges = newEdges, getDisconnectedVertices = newVertices}
-
-   filterEdges strict g f = let newEdges = HS.filter f (getEdges g)
-            in if strict
-               then g {getEdges = newEdges}
-               else g {getEdges = newEdges, getDisconnectedVertices = HS.empty}
--}

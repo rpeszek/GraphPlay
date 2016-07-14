@@ -1,6 +1,6 @@
 module Play.DiGraph.SampleData where
 
-import qualified Play.DiGraph.SampleInstances.SimpleGraph as SG
+import qualified PolyGraph.Instances.SimpleGraph as SG
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified Data.HashSet as HS
 

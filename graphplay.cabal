@@ -33,7 +33,7 @@ library
                        , PolyGraph.Instances.DiGraph.HashMapAsDiGraph
                        , PolyGraph.Instances.DiGraph.DiAdjacencyMatrix
                        , Play.DiGraph.SampleInstances.FirstLastWord
-                       , Play.DiGraph.SampleInstances.SimpleGraph
+                       , PolyGraph.Instances.SimpleGraph
                        , Play.DiGraph.SampleData
                        , Play.DiGraph.TreeFoldOnSimpleGraph
                        , Play.DiGraph.TreeMonoidFoldOnSimpleGraph
