@@ -40,6 +40,7 @@ library
                        , Play.DiGraph.TreeMonoidFoldOnSimpleGraph
                        , Play.DiGraph.IndexedFolds
                        , Play.DiGraph.PolyBuild
+                       , Play.DiGraph.PolyRebuild
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl
