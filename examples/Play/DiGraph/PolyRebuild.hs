@@ -34,6 +34,16 @@ diamondChain =  foldr (\i g -> g `union` (pmorth (+i) diamond0123Simple)) empty 
 toHashMapHelper :: forall g t . (BuildableGraphDataSet g Int (Int, Int) t)
                                 => g -> HM.DiGraphHashMap Int (Int,Int) []
 toHashMapHelper gr =   gr
+
+-- NOTE this does not make logical sense!
+f :: forall a . (Num a) => a -> Int
+f a = a
+
+-- but this does, x is 'forall' in above f acts on arbitry Num:
+x :: (Num a) => a
+x = 1
+y:: Int
+y = x
 -}
 
 --
