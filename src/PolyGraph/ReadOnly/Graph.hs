@@ -6,6 +6,7 @@ module PolyGraph.ReadOnly.Graph (
    , defaultVertexCount
    , GMorphism (..)
    --, isValidMorphism
+   , pairGMorphism
    , fGMorphism
 ) where --exports everything, a terrible programmer wrote it
 
@@ -54,19 +55,27 @@ fGMorphism fn = GMorphism {
      eTrans = fmap fn
  }
 
+-- Pair (a,a) is not Funtor in the list sense
+pairGMorphism :: forall v0 v1 f . (v0 -> v1) -> GMorphism v0 (v0, v0) v1 (v1, v1)
+pairGMorphism fn = GMorphism {
+     vTrans = fn,
+     eTrans = (\(v1,v2) -> (fn v1, fn v2))
+ }
+
 -- TODO implement check
 -- to be valid eTrans and resolveEdge needs to commute with the vTrans
 isValidMorphism :: forall g v0 e0 t v1 e1 . (GraphDataSet g v0 e0 t, EdgeSemantics e0 v0, EdgeSemantics e1 v1) =>
                                g -> GMorphism v0 e0 v1 e1 -> Bool
 isValidMorphism = undefined
 
+
 {-
 -- not needed, use functors directly with fGMorphism
-class Functor e => FunctorialEdgeSemantics e where
-   --liftToE :: (v0 -> v1) -> e v0 -> e v1
+class FunctorialEdgeSemantics e where
+   liftToEdge :: (v0 -> v1) -> e v0 -> e v1
    toMorphism :: (v0 -> v1) -> GMorphism v0 (e v0) v1 (e v1)
    toMorphism f = GMorphism {
         vTrans = f,
-        eTrans = fmap f
+        eTrans = liftToEdge f
     }
 -}

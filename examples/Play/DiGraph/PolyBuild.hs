@@ -1,4 +1,6 @@
-
+{-
+ Polymorphic production with specialized consumption example.
+-}
 module Play.DiGraph.PolyBuild where
 
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
@@ -11,7 +13,7 @@ import qualified PolyGraph.Common.Helpers as H
 
 
 -------
--- convenient but bad code, prevents typechecked to do its job
+-- convenient, but bad, code prevents typechecked to do its job
 -------
 diamond :: forall g v e t . (FromString v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t)
                            => String -> String -> String -> String -> g
@@ -45,7 +47,7 @@ showDiamond0123_4 =
                 in show (mygraph)
 
 -----------------------------------------
--- better code, lock on type I want   ---
+-- better code, locks on type I want   ---
 -----------------------------------------
 diamond' :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t)
                            => v -> v -> v -> v -> g

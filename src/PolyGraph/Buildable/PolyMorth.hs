@@ -31,4 +31,17 @@ fmorth :: forall f g0 v0 e0 t0 g1 v1 e1 t1. (Functor f, GraphDataSet g0 v0 (f v0
                 (v0 -> v1) -> g0 -> g1
 fmorth f = morth (fGMorphism f)
 
--- instance (Functor f) => Functor BuildableGraphDataSet g1 v1 (f v1) t1
+-- | special case for graphs using pairs
+pmorth :: forall f g0 v0 e0 t0 g1 v1 e1 t1. (GraphDataSet g0 v0 (v0, v0) t0, BuildableGraphDataSet g1 v1 (v1, v1) t1) =>
+                (v0 -> v1) -> g0 -> g1
+pmorth f = morth (pairGMorphism f)
+
+
+--------------
+-- TODO this does not compile need to read more on FD type classes
+-- is it possible?
+--------------
+--class (Functor f, BuildableGraphDataSet g v (f v) t) => BuildableGraphDataSetAsFunctor g t f v
+--
+--instance Functor(BuildableGraphDataSetAsFunctor g t f) where
+--   fmap = fmorth
