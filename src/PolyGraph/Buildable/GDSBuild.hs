@@ -13,11 +13,12 @@ instance forall v. (Read v) => BuildableEdgeSemantics (v,v) v where
 class FromString a where
   fromString :: String -> a
 
-instance FromString String where
-  fromString = id
 
-instance forall v. (Read v) => FromString v where
+instance {-# OVERLAPPABLE #-} forall v. (Read v) => FromString v where
   fromString = read
+
+instance {-# OVERLAPPING #-} FromString String where
+    fromString = id
 
 class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
   empty :: g

@@ -58,7 +58,7 @@ library
                       , FlexibleContexts
                       , FlexibleInstances
                       , UndecidableInstances
-                      , OverlappingInstances
+                      --, OverlappingInstances
                       , RankNTypes
                       -- GADT
 
