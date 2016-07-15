@@ -31,12 +31,11 @@ diamondChain =  foldr (\i g -> g `union` (pmorth (+i) diamond0123Simple)) empty 
 
 -- TODO does not work, why?
 {-
-showAsHashMapHelper :: forall g t . (BuildableGraphDataSet g Int (Int, Int) t) => g -> String
-showAsHashMapHelper gr =
-                        let mygraph :: HM.DiGraphHashMap Int (Int,Int) []
-                            mygraph = gr
-                        in  show (mygraph)
+toHashMapHelper :: forall g t . (BuildableGraphDataSet g Int (Int, Int) t)
+                                => g -> HM.DiGraphHashMap Int (Int,Int) []
+toHashMapHelper gr =   gr
 -}
+
 --
 showDiamond0123AsHashMap = let mygraph :: HM.DiGraphHashMap Int (Int,Int) []
                                mygraph = diamond0123

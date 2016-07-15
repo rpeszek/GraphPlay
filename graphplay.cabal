@@ -33,6 +33,7 @@ library
                        , PolyGraph.Buildable.PolyMorth
                        , PolyGraph.Instances.DiGraph.HashMapAsDiGraph
                        , PolyGraph.Instances.DiGraph.DiAdjacencyMatrix
+                       , PolyGraph.Instances.ListGraphs
                        , Play.DiGraph.SampleInstances.FirstLastWord
                        , PolyGraph.Instances.SimpleGraph
                        , Play.DiGraph.SampleData
@@ -61,6 +62,8 @@ library
                       , RankNTypes
                       -- GADT
 
+-- change OverlappingInstances to OVERLAPPING/OVERLAPPABLE/OVERLAPS
+-- https://mail.haskell.org/pipermail/ghc-devs/2014-July/005830.html
 
 -- executable graphplay-exe
 --   hs-source-dirs:      app
