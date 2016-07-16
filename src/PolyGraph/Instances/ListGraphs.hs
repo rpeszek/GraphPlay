@@ -52,4 +52,36 @@ instance  forall v e . (Eq v, Eq e, EdgeSemantics e v) => AdjustableGraphDataSet
 
    filterEdges strict g f = g
 
--- TODO finish this for Edges
+-- Edges intances ------
+instance  forall v. (Eq v) => (GraphDataSet (Edges v) v (HPair v) []) where
+  isolatedVertices g = []
+  edges g  =  getEdges g
+
+instance forall v. (Eq v) => (DiAdjacencyIndex (Edges v) v (HPair v) []) where
+  cEdgesOf g ver =  filter(\e -> let HPair(v1,x) = e in v1==ver ) $ getEdges g
+
+instance  forall v. (Eq v) => (DiGraph (Edges v ) v (HPair v) [])
+
+instance  forall v. (Eq v) => (Graph (Edges v ) v (HPair v) [])
+
+--
+instance  forall v . (Eq v) => BuildableGraphDataSet (Edges v ) v (HPair v) [] where
+
+   empty = Edges []
+
+   g @+ v = g
+
+   g ~+ e = Edges ( e : (getEdges g))
+
+   union g1 g2 = Edges ((getEdges g1) ++ (getEdges g2))
+
+--------------------------------------------
+-- Adjustable Graph instance              --
+--------------------------------------------
+instance  forall v . (Eq v) => AdjustableGraphDataSet (Edges v ) v (HPair v) [] where
+
+   g @\ f = g
+
+   filterEdges strict g f =
+                     let newEdges = filter f (getEdges g)
+                     in g {getEdges = newEdges}
