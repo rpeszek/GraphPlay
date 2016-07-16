@@ -19,6 +19,8 @@ import PolyGraph.Common.Helpers
 class EdgeSemantics e v  where
   resolveEdge      ::  e -> HPair v
 
+instance forall v . (Eq v) => (EdgeSemantics (HPair v) v) where
+  resolveEdge e = e   
 
 class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
   isolatedVertices ::  g -> t v

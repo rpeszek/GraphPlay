@@ -35,8 +35,7 @@ instance  forall v e. (Eq v, DiEdgeSemantics e v) => (DiGraph (Vertices v e) v e
 instance  forall v e. (Eq v, EdgeSemantics e v) => (Graph (Vertices v e) v e [])
 
 -- adding edge simply ignores edge and adds vertex
--- TODO this should be only EdgeSemantics but it does not compile, why?
-instance  forall v e . (Eq v, DiEdgeSemantics e v) => BuildableGraphDataSet (Vertices v e) v e [] where
+instance  forall v e . (Eq v, EdgeSemantics e v) => BuildableGraphDataSet (Vertices v e) v e [] where
 
    empty = Vertices []
 
@@ -47,12 +46,10 @@ instance  forall v e . (Eq v, DiEdgeSemantics e v) => BuildableGraphDataSet (Ver
 
    union g1 g2 = Vertices ((getVertices g1) ++ (getVertices g2))
 
---------------------------------------------
--- Adjustable Graph instance              --
---------------------------------------------
--- TODO - see above note about DiEdgeSemantics
-instance  forall v e . (Eq v, Eq e, DiEdgeSemantics e v) => AdjustableGraphDataSet (Vertices v e) v e [] where
+instance  forall v e . (Eq v, Eq e, EdgeSemantics e v) => AdjustableGraphDataSet (Vertices v e) v e [] where
 
    g @\ f = Vertices ( filter f (getVertices g) )
 
    filterEdges strict g f = g
+
+-- TODO finish this for Edges

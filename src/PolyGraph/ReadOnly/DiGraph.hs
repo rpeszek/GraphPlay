@@ -59,10 +59,12 @@ class (G.GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
 instance forall v . (Eq v) => (DiEdgeSemantics  (HPair v) v) where
   resolveDiEdge e = e                                                   --(:t) g -> e -> (HPair v), brain teaser why is that?
 
-instance forall v . (Eq v) => (DiEdgeSemantics  (v,v) v) where
-  resolveDiEdge e = HPair e                                                   --(:t) g -> e -> (HPair v), brain teaser why is that?
+-- no longer used
+--instance forall v . (Eq v) => (DiEdgeSemantics  (v,v) v) where
+--  resolveDiEdge e = HPair e                                                   --(:t) g -> e -> (HPair v), brain teaser why is that?
 
-instance forall e v. DiEdgeSemantics e v => G.EdgeSemantics e v where
-   resolveEdge = resolveDiEdge
+-- THESE create problems:
+--instance forall e v. DiEdgeSemantics e v => G.EdgeSemantics e v where
+--   resolveEdge = resolveDiEdge
 
-instance forall g v e t. DiGraph g v e t => G.Graph g v e t
+--instance forall g v e t. DiGraph g v e t => G.Graph g v e t
