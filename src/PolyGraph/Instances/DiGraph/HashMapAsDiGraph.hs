@@ -1,4 +1,7 @@
--- TODO work in progress, almost works
+{-
+  HashMap representation of Di-Graph where vertices are keys and collection of di-adjecent edges
+  is stored as a value.  Efficient for traversing algorithms.
+-}
 
 module PolyGraph.Instances.DiGraph.HashMapAsDiGraph where
 
@@ -56,6 +59,7 @@ instance forall v e te. (Eq v, Hashable v, Eq e, Traversable te, DiEdgeSemantics
                               let HPair (v1,v2) = resolveDiEdge e
                               in (f v1) && (f v2)
              in DiGraphHashMap . HM.map (filterBuildableCollection edgeFilter) . getHashMap $ verticesTrimmed
+
    --map :: (v1 -> v2) -> HashMap k v1 -> HashMap k v2
    filterEdges strict g f =
              let edgesTrimmed = DiGraphHashMap . HM.map (filterBuildableCollection f) . getHashMap $ g

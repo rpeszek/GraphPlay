@@ -1,7 +1,8 @@
 {-
   Simple Graph in math is graph without loops and no multiple edges.
-  This implementation does not prevent loops and prevenents multiple edges only if used
-  with a Set collection (SimpleSetGraph v).
+  This implementation does not prevent loops but it has this forgetfulness property:
+  it ignores multiple edges treating
+  them as one edge (even if used with a list).
 
   This data type treats no-multiple edges requirement on the type level.
 

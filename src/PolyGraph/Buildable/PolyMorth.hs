@@ -32,11 +32,8 @@ fmorth :: forall f g0 v0 e0 t0 g1 v1 e1 t1. (Functor f, GraphDataSet g0 v0 (f v0
 fmorth f = morth (fGMorphism f)
 
 
---------------
--- TODO this does not compile need to read more on FD type classes
--- is it possible?
---------------
---class (Functor f, BuildableGraphDataSet g v (f v) t) => BuildableGraphDataSetAsFunctor g t f v
 --
---instance Functor(BuildableGraphDataSetAsFunctor g t f) where
---   fmap = fmorth
+-- NOTE this type of expression will not compile with functionally dependent types because g has a wrong kind
+--
+-- instance (Functor f, BuildableGraphDataSet g v (f v) t) => Functor g where
+--  fmap = fmorth

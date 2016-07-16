@@ -1,7 +1,7 @@
 {-
-  Convenience graphs that can be used to build more complex graphs or to examine
+  Convenience forgetful graphs that can be used to build more complex graphs or to examine
   edge or vertex aspect of polymorphic graph.
-  Even simpler than SimpleGraph,  List of vertices and List of pair-edges are defined as graphs
+  Vertices Graph forgets edges,  Edges graph forgets isolatedVertices.   
 -}
 module PolyGraph.Instances.ListGraphs (
   Vertices (..)
