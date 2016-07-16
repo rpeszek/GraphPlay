@@ -12,12 +12,12 @@ import PolyGraph.ReadOnly.Graph
 
 ------------------------------------------------------------------------------------------
 --  DiEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --
--- for example is e -> (v,v) needs to parse a text to lookup vertices                   --
+-- for example is e -> (HPair v) needs to parse a text to lookup vertices                   --
 ------------------------------------------------------------------------------------------
 
 data EdgeHelper e v = EdgeHelper {
     getEdge      :: e,
-    getVertices   :: (v,v)
+    getVertices   :: HPair v
 } deriving Show
 
 instance forall e v.(Eq v) => Eq(EdgeHelper e v) where
@@ -30,5 +30,5 @@ instance forall v e map. DiEdgeSemantics (EdgeHelper e v) v where
 instance forall v e map. EdgeSemantics (EdgeHelper e v) v where
    resolveEdge indexedE = getVertices indexedE
 
-convertToEdgeHelper :: forall e v . (e -> (v,v)) -> e -> EdgeHelper e v
+convertToEdgeHelper :: forall e v . (e -> (HPair v)) -> e -> EdgeHelper e v
 convertToEdgeHelper f e = EdgeHelper { getEdge = e, getVertices = f e }

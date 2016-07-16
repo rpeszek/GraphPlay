@@ -42,7 +42,7 @@ showDiamond0123_3 =
                 in show (mygraph)
 
 showDiamond0123_4 =
-                let mygraph :: HM.DiGraphHashMap String (String,String) []
+                let mygraph :: HM.DiGraphHashMap String (H.HPair String) []
                     mygraph = diamond0123
                 in show (mygraph)
 

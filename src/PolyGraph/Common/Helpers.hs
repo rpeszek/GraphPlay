@@ -6,10 +6,32 @@
 
 module PolyGraph.Common.Helpers (
   second',
-  first'
+  first',
+  first,
+  second,
+  HPair (..)
 ) where
 
+import Data.Hashable
+
+-- helper type for both ordered and un-ordered pairs of the same type (homologous)
+-- I need that to make it a Functor
+newtype HPair a = HPair (a,a) deriving (Eq, Show)
+
+instance forall v. Hashable v => Hashable (HPair v) where
+  hashWithSalt salt (HPair (v1,v2)) = hashWithSalt salt (v1,v2)
+
+instance Functor (HPair) where
+    fmap f (HPair (x,y)) = HPair (f x, f y)
+
+
 -- helper funtions ---
+second :: HPair v -> v
+second (HPair (_,x)) = x
+
+first :: HPair v -> v
+first (HPair (x,_)) = x
+
 second' :: (a,b) -> b
 second' (_,x) = x
 

@@ -37,7 +37,7 @@ instance HASH.Hashable(FLWord) where
 instance FromString (FLWord) where
   fromString s = FLWord s
 
-fLWordsInFLWordSentence :: FLWordSentence -> (FLWord, FLWord)
+fLWordsInFLWordSentence :: FLWordSentence -> HPair FLWord
 fLWordsInFLWordSentence line =
           let lineTxt = getFLWordSentenceText line
               wordTexts = words lineTxt
@@ -47,7 +47,7 @@ fLWordsInFLWordSentence line =
               lastFLWord  = if (null wordTexts)
                 then ""
                 else (last wordTexts)
-          in (FLWord{getFLWordText = firstFLWord}, FLWord{getFLWordText = lastFLWord})
+          in HPair (FLWord{getFLWordText = firstFLWord}, FLWord{getFLWordText = lastFLWord})
 
 fLWordSentencesInFLWordText :: FLWordText -> [FLWordSentence]
 fLWordSentencesInFLWordText text =  map(FLWordSentence) . lines . getFLWordTextText $ text

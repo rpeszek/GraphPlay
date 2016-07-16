@@ -26,7 +26,7 @@ import qualified Data.Hashable as HASH
 import qualified Data.HashSet as HS
 import qualified Data.Foldable as F
 
-data SimpleGraph v t   = SimpleGraph { getEdges:: t (v,v), getDisconnectedVertices:: t v}
+data SimpleGraph v t   = SimpleGraph { getEdges:: t (HPair v), getDisconnectedVertices:: t v}
 type SimpleListGraph v = SimpleGraph v []
 type SimpleSetGraph v  = SimpleGraph v HS.HashSet
 
@@ -47,7 +47,7 @@ instance forall v t. (Show v, Foldable t) => Show (SimpleGraph v t) where
 ----------------------------------------------
 -- ReadOnly Graph INSTANCES SimpleGraph v t --
 ----------------------------------------------
-instance  forall v t. (Eq v, Foldable t) => (GraphDataSet (SimpleGraph v t) v (v,v) t) where
+instance  forall v t. (Eq v, Foldable t) => (GraphDataSet (SimpleGraph v t) v (HPair v) t) where
   isolatedVertices g = getDisconnectedVertices g
   edges g  =  getEdges g
 
@@ -56,12 +56,12 @@ instance  forall v t. (Eq v, Foldable t) => (GraphDataSet (SimpleGraph v t) v (v
 -- this basically forces [] as Index type, can be genralized but will currently cause ambiguities
 -- HashSet is not a Traversable so this would not be sufficient for HashSet if the same type was used
 --
-instance forall v t. (Eq v, Foldable t, BuildableCollection (t (v,v)) (v,v)) =>
-                                                      (DiAdjacencyIndex (SimpleGraph v t) v (v,v) []) where
+instance forall v t. (Eq v, Foldable t, BuildableCollection (t (HPair v)) (HPair v)) =>
+                                                      (DiAdjacencyIndex (SimpleGraph v t) v (HPair v) []) where
   cEdgesOf g ver =
-                let addEdge :: (v,v) -> t (v,v) -> t (v,v)
+                let addEdge :: (HPair v) -> t (HPair v) -> t (HPair v)
                     addEdge vv tvv =
-                           if (first' vv == ver)
+                           if (first vv == ver)
                            then addBuildableElement vv tvv
                            else tvv
                 in F.toList $ foldr addEdge emptyBuildableCollection (getEdges g)
@@ -70,12 +70,12 @@ instance forall v t. (Eq v, Foldable t, BuildableCollection (t (v,v)) (v,v)) =>
 -- NOTE:
 -- Seems I do an override with faster implementation? like so:
 --
-instance forall v t. (Eq v) => (DiAdjacencyIndex (SimpleSetGraph v) v (v,v) []) where
-  cEdgesOf g ver = HS.toList . HS.filter (\vv -> first' vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
+instance forall v t. (Eq v) => (DiAdjacencyIndex (SimpleSetGraph v) v (HPair v) []) where
+  cEdgesOf g ver = HS.toList . HS.filter (\vv -> first vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
-instance  forall v t. (Eq v, Foldable t) => (DiGraph (SimpleGraph v t) v (v,v) t)
+instance  forall v t. (Eq v, Foldable t) => (DiGraph (SimpleGraph v t) v (HPair v) t)
 
-instance  forall v t. (Eq v, Foldable t) => (Graph (SimpleGraph v t) v (v,v) t)
+instance  forall v t. (Eq v, Foldable t) => (Graph (SimpleGraph v t) v (HPair v) t)
 
 ------------------------------
 -- Buildable Graph instance --
@@ -84,18 +84,18 @@ instance  forall v t. (Eq v, Foldable t) => (Graph (SimpleGraph v t) v (v,v) t)
 
 instance  forall v t . (Eq v,
                         Foldable t,
-                        AdjustableCollection (t (v,v)) (v,v),
+                        AdjustableCollection (t (HPair v)) (HPair v),
                         AdjustableCollection (t v) v
-                        ) => BuildableGraphDataSet(SimpleGraph v t) v (v,v) t where
+                        ) => BuildableGraphDataSet(SimpleGraph v t) v (HPair v) t where
 
-   empty = SimpleGraph (emptyBuildableCollection :: t (v,v)) (emptyBuildableCollection :: t v)
+   empty = SimpleGraph (emptyBuildableCollection :: t (HPair v)) (emptyBuildableCollection :: t v)
 
    g @+ v = let newVertices = addUniqueBuildableElement v (getDisconnectedVertices g)
             in g {getDisconnectedVertices = newVertices}
-   g ~+ (v1,v2) =
+   g ~+ HPair (v1,v2) =
             let newVertices = deleteBuildableElement v1 $
                               deleteBuildableElement v2 (getDisconnectedVertices g)
-                newEdges = addUniqueBuildableElement (v1,v2) (getEdges g)
+                newEdges = addUniqueBuildableElement (HPair (v1,v2)) (getEdges g)
             in g {getEdges = newEdges}
    union g1 g2 =
             let newEdges = (getEdges g1) `unionBuildableCollections` (getEdges g2)
@@ -107,12 +107,12 @@ instance  forall v t . (Eq v,
 --------------------------------------------
 instance  forall v t . (Eq v,
                         Foldable t,
-                        AdjustableCollection (t (v,v)) (v,v),
+                        AdjustableCollection (t (HPair v)) (HPair v),
                         AdjustableCollection (t v) v
-                        ) => AdjustableGraphDataSet(SimpleGraph v t) v (v,v) t where
+                        ) => AdjustableGraphDataSet(SimpleGraph v t) v (HPair v) t where
 
    g @\ f = let newVertices = filterBuildableCollection f (getDisconnectedVertices g)
-                newEdges = filterBuildableCollection (\vv -> (f $ first' vv) && (f $ second' vv)) (getEdges g)
+                newEdges = filterBuildableCollection (\vv -> (f $ first vv) && (f $ second vv)) (getEdges g)
             in  SimpleGraph { getEdges = newEdges, getDisconnectedVertices = newVertices}
 
    filterEdges strict g f = let newEdges = filterBuildableCollection f (getEdges g)

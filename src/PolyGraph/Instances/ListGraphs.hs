@@ -20,7 +20,7 @@ import Data.List (nub, null, lines, words, concat)
 newtype Vertices v e = Vertices { getVertices :: [v]} deriving Show
 
 -- | this graph has no isolatedVertices
-newtype Edges v = Edges { getEdges :: [(v,v)]} deriving Show
+newtype Edges v = Edges { getEdges :: [HPair v]} deriving Show
 
 -- instances --
 instance  forall v e. (Eq v)=> (GraphDataSet (Vertices v e) v e []) where

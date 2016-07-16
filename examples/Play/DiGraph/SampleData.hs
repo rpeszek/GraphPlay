@@ -1,11 +1,12 @@
 module Play.DiGraph.SampleData where
 
+import PolyGraph.Common.Helpers
 import qualified PolyGraph.Instances.SimpleGraph as SG
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified Data.HashSet as HS
 
 -- simple test data (list of pars that will serve as edges)
-testEdges = [
+testEdges = map(HPair) [
         ("a0", "a01"),
         ("a0", "a02"),
         ("a01", "a1"),

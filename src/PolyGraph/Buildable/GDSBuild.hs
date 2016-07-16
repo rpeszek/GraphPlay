@@ -7,8 +7,8 @@ import qualified PolyGraph.Common.Helpers as H
 class BuildableEdgeSemantics e v where
   defaultEdge :: v -> v -> e
 
-instance forall v. (Read v) => BuildableEdgeSemantics (v,v) v where
-  defaultEdge = (,)
+instance forall v. (Read v) => BuildableEdgeSemantics (H.HPair v) v where
+  defaultEdge v1 v2 = H.HPair (v1,v2)
 
 class FromString a where
   fromString :: String -> a

@@ -3,6 +3,7 @@
 module PolyGraph.Instances.DiGraph.HashMapAsDiGraph where
 
 import Data.Hashable
+import PolyGraph.Common.Helpers
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
@@ -35,7 +36,7 @@ instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, 
    empty = DiGraphHashMap HM.empty
    g @+ v = DiGraphHashMap . (HM.insertWith (\old new -> old) v emptyBuildableCollection) . getHashMap $ g
    g ~+ e =
-        let (v1,v2) = resolveDiEdge e
+        let HPair (v1,v2) = resolveDiEdge e
         in DiGraphHashMap .
            (HM.insertWith (\new old -> old) v2 emptyBuildableCollection) .
            (HM.insertWith (\new old -> addBuildableElement e old) v1 (singletonBuildableCollection e)) .
@@ -52,7 +53,7 @@ instance forall v e te. (Eq v, Hashable v, Eq e, Traversable te, DiEdgeSemantics
              let verticesTrimmed = DiGraphHashMap . (HM.filterWithKey (\v _ -> f v)) . getHashMap $ g
                  edgeFilter :: e -> Bool
                  edgeFilter e =
-                              let (v1,v2) = resolveDiEdge e
+                              let HPair (v1,v2) = resolveDiEdge e
                               in (f v1) && (f v2)
              in DiGraphHashMap . HM.map (filterBuildableCollection edgeFilter) . getHashMap $ verticesTrimmed
    --map :: (v1 -> v2) -> HashMap k v1 -> HashMap k v2
