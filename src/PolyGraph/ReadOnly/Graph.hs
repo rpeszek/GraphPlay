@@ -6,7 +6,6 @@ module PolyGraph.ReadOnly.Graph (
    , defaultVertexCount
    , GMorphism (..)
    --, isValidMorphism
-   , pairGMorphism
    , fGMorphism
 ) where --exports everything, a terrible programmer wrote it
 
@@ -52,13 +51,6 @@ fGMorphism :: forall v0 v1 f . (Functor f) => (v0 -> v1) -> GMorphism v0 (f v0) 
 fGMorphism fn = GMorphism {
      vTrans = fn,
      eTrans = fmap fn
- }
-
--- Pair (a,a) is not Funtor in the list sense
-pairGMorphism :: forall v0 v1 f . (v0 -> v1) -> GMorphism v0 (v0, v0) v1 (v1, v1)
-pairGMorphism fn = GMorphism {
-     vTrans = fn,
-     eTrans = (\(v1,v2) -> (fn v1, fn v2))
  }
 
 -- TODO implement check
