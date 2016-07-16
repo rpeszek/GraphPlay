@@ -25,40 +25,8 @@ diamond3456 = pmorth (+3) diamond0123Simple
 diamondChain :: forall g t . (BuildableGraphDataSet g Int (Int, Int) t) =>  g
 diamondChain =  foldr (\i g -> g `union` (pmorth (+i) diamond0123Simple)) empty (map (*3) [0..5])
 
--- specialized consumption
--- use it as something else
+-- specialized type consumption
 
-
--- TODO does not work, why?
-{-
-toHashMapHelper :: forall g t . (BuildableGraphDataSet g Int (Int, Int) t)
-                                => g -> HM.DiGraphHashMap Int (Int,Int) []
-toHashMapHelper gr =   gr
-
--- NOTE this does not make logical sense!
-f :: forall a . (Num a) => a -> Int
-f a = a
-
--- but this does, x is 'forall' in above f acts on arbitry Num:
-x :: (Num a) => a
-x = 1
-y:: Int
-y = x
--}
-
---
-showDiamond0123AsHashMap = let mygraph :: HM.DiGraphHashMap Int (Int,Int) []
-                               mygraph = diamond0123
-                           in  show (mygraph)
-
---showDiamond0123AsHashMap = showAsHashMapHelper diamond0123
-
-
-showDiamond3456AsHashMap = let mygraph :: HM.DiGraphHashMap Int (Int,Int) []
-                               mygraph = diamond3456
-                           in  show (mygraph)
-
-
-showDiamondChainAsHashMap  = let mygraph :: HM.DiGraphHashMap Int (Int,Int) []
-                                 mygraph = diamondChain
-                              in  show (mygraph)
+showDiamond0123AsHashMap  = show (diamond0123  :: HM.DiGraphHashMap Int (Int,Int) [])
+showDiamond3456AsHashMap  = show (diamond3456  :: HM.DiGraphHashMap Int (Int,Int) [])
+showDiamondChainAsHashMap = show (diamondChain :: HM.DiGraphHashMap Int (Int,Int) [])
