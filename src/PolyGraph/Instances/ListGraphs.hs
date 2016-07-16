@@ -1,7 +1,10 @@
 {-
   Convenience forgetful graphs that can be used to build more complex graphs or to examine
   edge or vertex aspect of polymorphic graph.
-  Vertices Graph forgets edges,  Edges graph forgets isolatedVertices.   
+  Vertices Graph forgets edges,
+  Edges graph forgets isolatedVertices.
+
+  Unlike SimpleGraph Edges allow duplicate edges in the list representing muliple edges on a graph   
 -}
 module PolyGraph.Instances.ListGraphs (
   Vertices (..)

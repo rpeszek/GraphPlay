@@ -20,6 +20,7 @@ library
                        , PolyGraph.Common.Helpers
                        , PolyGraph.Common.BuildableCollection
                        , PolyGraph.Common.RecursionHelpers
+                       , PolyGraph.Common.BuildableMatrix
                        , PolyGraph.ReadOnly.DiGraph
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAFold
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
