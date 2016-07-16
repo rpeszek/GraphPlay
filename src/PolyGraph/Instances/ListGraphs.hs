@@ -29,3 +29,5 @@ instance  forall v e. (Eq v)=> (GraphDataSet (Vertices v e) v e []) where
 
 instance forall v e. (DiEdgeSemantics e v) => (DiAdjacencyIndex (Vertices v e) v e []) where
    cEdgesOf g ver = []
+
+-- TODO continue
