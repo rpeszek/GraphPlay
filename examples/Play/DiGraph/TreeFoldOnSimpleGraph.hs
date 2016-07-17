@@ -54,7 +54,7 @@ countDepth = FoldAccLogic {
 
 --
 -- finds largest element (that is why we have Ord constraint)
--- for oPairFirst argument if that one is larger
+-- for first argument if that one is larger
 -- NOTICE Haskell elegant pattern matching
 --
 safeListMax :: (Ord a) => a -> [a] -> a

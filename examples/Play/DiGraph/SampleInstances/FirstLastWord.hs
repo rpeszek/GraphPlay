@@ -19,7 +19,7 @@ import qualified Data.Foldable as F
 -- TODO use Text?
 ----------------------------------
 -- Text represents a graph where each sentence/line is an edge
--- and oPairFirst and last word in this line is a vertex
+-- and first and last word in this line is a vertex
 ----------------------------------
 newtype FLWord            = FLWord       { getFLWordText:: String }        deriving (Show, Eq)
 newtype FLWordSentence    = FLWordSentence { getFLWordSentenceText:: String }  deriving (Show, Eq)
@@ -41,13 +41,13 @@ fLWordsInFLWordSentence :: FLWordSentence -> OPair FLWord
 fLWordsInFLWordSentence line =
           let lineTxt = getFLWordSentenceText line
               wordTexts = words lineTxt
-              oPairFirstFLWord = if (null wordTexts)
+              firstFLWord = if (null wordTexts)
                 then ""
                 else (head wordTexts)
               lastFLWord  = if (null wordTexts)
                 then ""
                 else (last wordTexts)
-          in OPair (FLWord{getFLWordText = oPairFirstFLWord}, FLWord{getFLWordText = lastFLWord})
+          in OPair (FLWord{getFLWordText = firstFLWord}, FLWord{getFLWordText = lastFLWord})
 
 fLWordSentencesInFLWordText :: FLWordText -> [FLWordSentence]
 fLWordSentencesInFLWordText text =  map(FLWordSentence) . lines . getFLWordTextText $ text

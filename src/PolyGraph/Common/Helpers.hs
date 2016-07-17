@@ -7,14 +7,12 @@
 module PolyGraph.Common.Helpers (
   pairSecond
   , pairFirst
-  , oPairFirst
-  , oPairSecond
+  , first
+  , second
   , OPair (..)
   , UOPair (..)
   , PairLike (..)
   , oneElementPair
-  , first
-  , second
 ) where
 
 import Data.Hashable
@@ -70,13 +68,6 @@ instance Functor (UOPair) where
     fmap f (UOPair (x,y)) = UOPair (f x, f y)
 
 
-
--- helper funtions ---
-oPairSecond :: OPair v -> v
-oPairSecond (OPair (_,x)) = x
-
-oPairFirst :: OPair v -> v
-oPairFirst (OPair (x,_)) = x
 
 pairSecond :: (a,b) -> b
 pairSecond (_,x) = x

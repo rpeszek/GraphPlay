@@ -52,7 +52,7 @@ dfsFoldM handler g logic v =
         _childEdges =  g `cEdgesOf` v      :: t e
     in do
         _childTempResults <- forM _childEdges (\_childEdge -> do
-              let _childVertex= (H.oPairSecond . resolveDiEdge) _childEdge
+              let _childVertex= (H.second . resolveDiEdge) _childEdge
               _childResult <- handle handler (dfsFoldM handler g logic) $ _childVertex
               return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
          )

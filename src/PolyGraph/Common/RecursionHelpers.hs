@@ -36,7 +36,7 @@ memo ht f a = do
    return b
 
 --
--- result function returns f1 (oPairSecond fn arg) function result on oPairFirst call and f2 (oPairFirst fn arg) afterwords
+-- result function returns f1 (second fn arg) function result on first call and f2 (first fn arg) afterwords
 -- this is a re-entry handler
 --
 handleReentry :: (Eq a, Hashable a) => HashTable s a Bool -> (a -> ST s b) -> (a -> ST s b) -> (a -> ST s b)

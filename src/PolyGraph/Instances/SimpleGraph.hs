@@ -1,10 +1,8 @@
 {-
   Simple Graph in math is graph without loops and no multiple edges.
   This implementation does not prevent loops but it has this forgetfulness property:
-  for di-graph it ignores multiple edges treating
+  it ignores multiple edges treating
   them as one edge (even if used with a list).
-
-  TODO Needs work/rethinking to achieve the same forgetfullness for non-di graphs.
 
   This data type treats no-multiple edges requirement on the type level.
 
@@ -15,6 +13,8 @@ module PolyGraph.Instances.SimpleGraph (
      SimpleGraph(..)
    , SimpleListDiGraph
    , SimpleSetDiGraph
+   , SimpleListGraph
+   , SimpleSetGraph
 ) where
 
 import PolyGraph.ReadOnly.Graph
@@ -29,9 +29,11 @@ import qualified Data.Hashable as HASH
 import qualified Data.HashSet as HS
 import qualified Data.Foldable as F
 
-data SimpleGraph  v e t   = SimpleGraph { getEdges:: t e, getDisconnectedVertices:: t v}
-type SimpleListDiGraph v = SimpleGraph v (OPair v) []
-type SimpleSetDiGraph v  = SimpleGraph v (OPair v) HS.HashSet
+data SimpleGraph  v e t  = SimpleGraph { getEdges:: t e, getDisconnectedVertices:: t v}
+type SimpleListDiGraph v = SimpleGraph v (OPair v)  []
+type SimpleSetDiGraph v  = SimpleGraph v (OPair v)  HS.HashSet
+type SimpleListGraph v   = SimpleGraph v (UOPair v) []
+type SimpleSetGraph v    = SimpleGraph v (UOPair v) HS.HashSet
 
 -- INSTANCES --
 -- TODO needs more reusable instance logic, use common.helpers.BuildableCollection
@@ -64,17 +66,17 @@ instance forall v t. (Eq v, Foldable t, BuildableCollection (t (OPair v)) (OPair
   cEdgesOf g ver =
                 let addEdge :: (OPair v) -> t (OPair v) -> t (OPair v)
                     addEdge vv tvv =
-                           if (oPairFirst vv == ver)
+                           if (first vv == ver)
                            then addBuildableElement vv tvv
                            else tvv
                 in F.toList $ foldr addEdge emptyBuildableCollection (getEdges g)
 
 --
 -- NOTE:
--- Seems I do an override with faster implementation? like so:
+-- I do an override with faster implementation without OVERLAPPING hint like so:
 --
 instance forall v t. (Eq v) => (DiAdjacencyIndex (SimpleSetDiGraph v) v (OPair v) []) where
-  cEdgesOf g ver = HS.toList . HS.filter (\vv -> oPairFirst vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
+  cEdgesOf g ver = HS.toList . HS.filter (\vv -> first vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
 instance  forall v t. (Eq v, Foldable t) => (Graph (SimpleGraph v (UOPair v) t) v (UOPair v) t)
 
