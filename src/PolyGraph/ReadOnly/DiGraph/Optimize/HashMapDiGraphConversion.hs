@@ -24,16 +24,16 @@ import PolyGraph.Common.BuildableCollection
 buildDiGraphHashMap :: forall g v e tg th .
       (Eq v, Hashable v, GraphDataSet g v e tg,
              Traversable th, BuildableCollection (th (EdgeHelper e v)) (EdgeHelper e v)) =>
-                      (e -> (HPair v)) -> g -> DiGraphHashMap v (EdgeHelper e v) th
+                      (e -> (OPair v)) -> g -> DiGraphHashMap v (EdgeHelper e v) th
 buildDiGraphHashMap slowSemantics g =
      let gedges = edges g                         :: tg e
          ginsolatedVertices  = isolatedVertices g :: tg v
          emptyMap = HM.empty                      :: HM.HashMap v (th (EdgeHelper e v))
          emptyEdges = emptyBuildableCollection    :: th (EdgeHelper e v)
          addEdge e hm =
-             let HPair (v1,v2) = slowSemantics e
+             let OPair (v1,v2) = slowSemantics e
              in (HM.insertWith (\new old -> old) v2 emptyBuildableCollection) .
-                (HM.insertWith (\new old -> addBuildableElement (EdgeHelper e (HPair (v1,v2))) old) v1 (singletonBuildableCollection (EdgeHelper e (HPair (v1,v2))))) $ hm
+                (HM.insertWith (\new old -> addBuildableElement (EdgeHelper e (OPair (v1,v2))) old) v1 (singletonBuildableCollection (EdgeHelper e (OPair (v1,v2))))) $ hm
 
          verticesInserted = foldr(\v hm -> HM.insert v emptyEdges hm) emptyMap ginsolatedVertices
      in

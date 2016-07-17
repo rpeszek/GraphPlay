@@ -23,7 +23,7 @@ countTreeEdges = FoldAccLogic {
     }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = (dfsFold playTwoDiamonds (countTreeEdges :: FoldAccLogic [] v (HPair v) Int) "a0") -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = (dfsFold playTwoDiamonds (countTreeEdges :: FoldAccLogic [] v (OPair v) Int) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 --
@@ -38,7 +38,7 @@ listChildVertices = FoldAccLogic {
     }
 
 testDimongVerices:: [String]
-testDimongVerices = HS.toList (dfsFold playTwoDiamonds  (listChildVertices :: FoldAccLogic [] String (HPair String) (HS.HashSet String)) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
+testDimongVerices = HS.toList (dfsFold playTwoDiamonds  (listChildVertices :: FoldAccLogic [] String (OPair String) (HS.HashSet String)) "a0") -- :: tells compiler how to specialize polymorphic aggreagator
 -- prints ["a0","a01","a3","a02"]
 
 --
@@ -54,7 +54,7 @@ countDepth = FoldAccLogic {
 
 --
 -- finds largest element (that is why we have Ord constraint)
--- for first argument if that one is larger
+-- for oPairFirst argument if that one is larger
 -- NOTICE Haskell elegant pattern matching
 --
 safeListMax :: (Ord a) => a -> [a] -> a
@@ -62,7 +62,7 @@ safeListMax a []     = a                        -- for empty list
 safeListMax a (x:xs) = max x (safeListMax a xs) -- for non-emtpy list starting with x
 
 testDimongGraphDepthCount:: Int
-testDimongGraphDepthCount = (dfsFold playTwoDiamonds (countDepth :: FoldAccLogic [] v (HPair v) Int) "a0") -- :: needs to define edge type
+testDimongGraphDepthCount = (dfsFold playTwoDiamonds (countDepth :: FoldAccLogic [] v (OPair v) Int) "a0") -- :: needs to define edge type
 -- prints 2
 
 experiments = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]

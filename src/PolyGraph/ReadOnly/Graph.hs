@@ -13,13 +13,13 @@ import Data.List (nub, length)
 import PolyGraph.Common.Helpers
 
 --
--- e are edges v are vertices, the order of (HPair v) does not imply ordering of vertices
+-- e are edges v are vertices, the order of (OPair v) does not imply ordering of vertices
 -- Graph FLWordText term would be: incidence function
 --
 class EdgeSemantics e v  where
-  resolveEdge      ::  e -> UnorderedHPair v
+  resolveEdge      ::  e -> UOPair v
 
-instance forall v . (Eq v) => (EdgeSemantics (UnorderedHPair v) v) where
+instance forall v . (Eq v) => (EdgeSemantics (UOPair v) v) where
   resolveEdge e = e
 
 class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
@@ -32,12 +32,12 @@ class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
 
 class (EdgeSemantics e v, GraphDataSet g v e t) => Graph g v e t
 
-defaultVertexCount :: forall g v e t. (GraphDataSet g v e t) => (e -> HPair v) -> g -> Int
+defaultVertexCount :: forall g v e t. (GraphDataSet g v e t) => (e -> OPair v) -> g -> Int
 defaultVertexCount f g =
      let isolatedVCount = length . isolatedVertices $ g
          appendVertices :: e -> [v] -> [v]
          appendVertices e list =
-                              let HPair (v1, v2) = f e
+                              let OPair (v1, v2) = f e
                               in  v1 : v2 : list
          nonIsolatedVCount = length . nub $ foldr appendVertices [] (edges g)
      in  isolatedVCount + nonIsolatedVCount

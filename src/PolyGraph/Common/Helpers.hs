@@ -5,84 +5,84 @@
 --
 
 module PolyGraph.Common.Helpers (
-  second'
-  , first'
+  pairSecond
+  , pairFirst
+  , oPairFirst
+  , oPairSecond
+  , OPair (..)
+  , UOPair (..)
+  , PairLike (..)
+  , oneElementPair
   , first
   , second
-  , HPair (..)
-  , UnorderedHPair (..)
-  , HPairLike (..)
-  , oneElPair
-  , hPairFirst
-  , hPairSecond
 ) where
 
 import Data.Hashable
 
 -- Helper class and types --
-class HPairLike a b | a-> b where
+class PairLike a b | a-> b where
   toPair :: a -> (b,b)
   fromPair :: (b,b) -> a
 
-oneElPair :: (Eq v, HPairLike e v) => e -> Bool
-oneElPair pair =
+oneElementPair :: (Eq v, PairLike e v) => e -> Bool
+oneElementPair pair =
         let (v1,v2) = toPair pair
         in v1 == v2
 
-hPairFirst :: (HPairLike e v) => e -> v
-hPairFirst e = first' . toPair $ e
+first :: (PairLike e v) => e -> v
+first e = pairFirst . toPair $ e
 
-hPairSecond :: (HPairLike e v) => e -> v
-hPairSecond e = second' . toPair $ e
+second :: (PairLike e v) => e -> v
+second e = pairSecond . toPair $ e
 
 --
 -- helper type for ordered and pairs of the same type (homologous)
 -- I need that to make it a Functor
 --
-newtype HPair a = HPair (a,a) deriving (Eq, Show)
+newtype OPair a = OPair (a,a) deriving (Eq, Show)
 
--- HPair instances --
-instance forall v . HPairLike (HPair v) v where
-  toPair (HPair (a1,a2)) = (a1,a2)
-  fromPair = HPair
+-- OPair instances --
+instance forall v . PairLike (OPair v) v where
+  toPair (OPair (a1,a2)) = (a1,a2)
+  fromPair = OPair
 
-instance forall v. Hashable v => Hashable (HPair v) where
-  hashWithSalt salt (HPair (v1,v2)) = hashWithSalt salt (v1,v2)
+instance forall v. Hashable v => Hashable (OPair v) where
+  hashWithSalt salt (OPair (v1,v2)) = hashWithSalt salt (v1,v2)
 
-instance Functor (HPair) where
-    fmap f (HPair (x,y)) = HPair (f x, f y)
+instance Functor (OPair) where
+    fmap f (OPair (x,y)) = OPair (f x, f y)
 
 
 -- UnorderdPair used for resolving Graph edges --
-newtype UnorderedHPair v = UnorderedHPair (v,v) deriving Show
+newtype UOPair v = UOPair (v,v) deriving Show
 
-instance forall v . HPairLike (UnorderedHPair v) v where
-  toPair (UnorderedHPair (a1,a2)) = (a1,a2)
-  fromPair = UnorderedHPair
+instance forall v . PairLike (UOPair v) v where
+  toPair (UOPair (a1,a2)) = (a1,a2)
+  fromPair = UOPair
 
-instance forall v . (Eq v) => Eq(UnorderedHPair v) where
-  UnorderedHPair (a1,a2) == UnorderedHPair (b1,b2) = (a1 == b1 && a2 == b2) || (a1 == b2 && a2 == b1)
+instance forall v . (Eq v) => Eq(UOPair v) where
+  UOPair (a1,a2) == UOPair (b1,b2) = (a1 == b1 && a2 == b2) || (a1 == b2 && a2 == b1)
 
-instance forall v. Hashable v => Hashable (UnorderedHPair v) where
-  hashWithSalt salt (UnorderedHPair (v1,v2)) = (hashWithSalt salt v1) + (hashWithSalt salt v2)
+instance forall v. Hashable v => Hashable (UOPair v) where
+  hashWithSalt salt (UOPair (v1,v2)) = (hashWithSalt salt v1) + (hashWithSalt salt v2)
 
-instance Functor (UnorderedHPair) where
-    fmap f (UnorderedHPair (x,y)) = UnorderedHPair (f x, f y)
+instance Functor (UOPair) where
+    fmap f (UOPair (x,y)) = UOPair (f x, f y)
 
 
 
 -- helper funtions ---
-second :: HPair v -> v
-second (HPair (_,x)) = x
+oPairSecond :: OPair v -> v
+oPairSecond (OPair (_,x)) = x
 
-first :: HPair v -> v
-first (HPair (x,_)) = x
+oPairFirst :: OPair v -> v
+oPairFirst (OPair (x,_)) = x
 
-second' :: (a,b) -> b
-second' (_,x) = x
+pairSecond :: (a,b) -> b
+pairSecond (_,x) = x
 
-first' :: (a,b) -> a
-first' (x,_) = x
+pairFirst :: (a,b) -> a
+pairFirst (x,_) = x
 
 
 

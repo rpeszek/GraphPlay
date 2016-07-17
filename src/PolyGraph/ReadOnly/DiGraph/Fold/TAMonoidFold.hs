@@ -49,12 +49,12 @@ dfsFoldM handler g logic v =
      let acc_applyVertex =  applyVertex logic v   :: a
          acc_applyEdge   =  applyEdge   logic     :: e -> a
          _recursionV     =  handle handler (dfsFoldM handler g logic)   :: v -> m a
-         _recursionE     = _recursionV . H.second . resolveDiEdge    :: e -> m a
+         _recursionE     = _recursionV . H.oPairSecond . resolveDiEdge    :: e -> m a
          _recursion      = (\e -> (liftPairHelper e) . _recursionE $ e) :: e -> m (e, a)
          _childEdgesM    =  g `cEdgesOf` v                              :: t e
          _foldedChildResults =
                         (mapM _recursion _childEdgesM) >>=
-                        (foldM (\a ea -> return $ (acc_applyEdge (H.first' ea)) `mappend` (H.second' ea) `mappend` a) mempty)
+                        (foldM (\a ea -> return $ (acc_applyEdge (H.pairFirst ea)) `mappend` (H.pairSecond ea) `mappend` a) mempty)
          _finalResult = (liftM (mappend acc_applyVertex)) _foldedChildResults  :: m a
      in
          _finalResult

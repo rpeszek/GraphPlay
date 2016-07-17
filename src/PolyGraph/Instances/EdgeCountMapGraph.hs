@@ -22,33 +22,33 @@ import qualified Data.Sequence as S
 -- HashMap (v0,v0) 1 represents loop
 -- HashMap (v0,v1) 2 represents 2 edges from v0 to v1
 --
--- Default Eq implementation defines DiGraph equality for HPair and Graph equality
--- for UnorderedHPair.  2 graphs are considered equal if for each of the verices they
+-- Default Eq implementation defines DiGraph equality for OPair and Graph equality
+-- for UOPair.  2 graphs are considered equal if for each of the verices they
 -- have the same number of adjacent edges
 --
 data EdgeCountMap e = EdgeCountMap {
     getMap :: HM.HashMap e Int
 } deriving (Show, Eq)
 
-type DiGraphEdgeCountMap v = EdgeCountMap (HPair v)
-type GraphEdgeCountMap v   = EdgeCountMap (UnorderedHPair v)
+type DiGraphEdgeCountMap v = EdgeCountMap (OPair v)
+type GraphEdgeCountMap v   = EdgeCountMap (UOPair v)
 
 -- INSTANCES --
-instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, HPairLike e v) =>
+instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
                               (GraphDataSet (EdgeCountMap e) v e S.Seq) where
 
   --filterWithKey :: forall k v. (k -> v -> Bool) -> HashMap k v -> HashMap k vSource
   isolatedVertices g =
                     let zeroCountFilter :: e -> Int -> Bool
-                        zeroCountFilter edge count = (count == 0) && oneElPair edge
+                        zeroCountFilter edge count = (count == 0) && oneElementPair edge
                         allverticesWithoutLoops :: HS.HashSet v
-                        allverticesWithoutLoops = HS.fromList . map (first' . toPair) . HM.keys . HM.filterWithKey zeroCountFilter . getMap $ g
+                        allverticesWithoutLoops = HS.fromList . map (pairFirst . toPair) . HM.keys . HM.filterWithKey zeroCountFilter . getMap $ g
                         -- HM.foldrWithKey :: (k -> v -> a -> a) -> a -> HashMap k v -> a
                         isolatedVertices = undefined :: HS.HashSet v
                     in S.fromList . HS.toList $ isolatedVertices
 
   --foldrWithKey :: (k -> v -> a -> a) -> a -> HashMap k v -> a
-  -- | edges replay same HPair several times for multiedge graphs
+  -- | edges replay same OPair several times for multiedge graphs
   edges g  =
               let  foldF :: e -> Int -> S.Seq e -> S.Seq e
                    foldF edge count res =
@@ -59,13 +59,13 @@ instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, HPairLike e v) =>
 -- No DiAdjacencyIndex instance, probably not needed
 --
 instance  forall v. (Eq v, Hashable v) =>
-                                 (DiGraph (EdgeCountMap (HPair v)) v (HPair v) S.Seq)
+                                 (DiGraph (EdgeCountMap (OPair v)) v (OPair v) S.Seq)
 
 instance  forall v. (Eq v, Hashable v) =>
-                                 (Graph (EdgeCountMap (UnorderedHPair v)) v (UnorderedHPair v) S.Seq)
+                                 (Graph (EdgeCountMap (UOPair v)) v (UOPair v) S.Seq)
 
 --
-instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, HPairLike e v) =>
+instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
                               (BuildableGraphDataSet (EdgeCountMap e) v e S.Seq) where
 
    empty = EdgeCountMap HM.empty

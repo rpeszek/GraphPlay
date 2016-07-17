@@ -9,7 +9,7 @@ The goal is to play and experiment with polymorphism in Haskell language and use
 
 I started plying with polymorphism by using class types with functional dependencies.
 When I get to it, I will want to try other approaches like using Free. Doing polymorphism without
-much language support is just so intriguing. 
+much language support is just so intriguing.
 
 Project uses somewhat unusual folder structure:  
 * src - contains PolyGraph.xyz modules with mostly polymorphic type class level

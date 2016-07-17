@@ -27,7 +27,7 @@ countTreeEdges = defaultMonoidFoldAccLogic {
                  }
 
 testDimongGraphEdgeCount:: Int
-testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDiamonds (countTreeEdges :: MonoidFoldAccLogic v (HPair v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
+testDimongGraphEdgeCount = getSum $ (dfsFold playTwoDiamonds (countTreeEdges :: MonoidFoldAccLogic v (OPair v) (Sum Int)) "a0") -- :: tells compiler how to specialize polymorphic aggregator
 -- prints 4
 
 --
@@ -40,7 +40,7 @@ listChildVertices = defaultMonoidFoldAccLogic {
 
 
 testDimongVerices:: [String]
-testDimongVerices = HS.toList (dfsFold playTwoDiamonds (listChildVertices :: MonoidFoldAccLogic  String (HPair String) (HS.HashSet String)) "a0")
+testDimongVerices = HS.toList (dfsFold playTwoDiamonds (listChildVertices :: MonoidFoldAccLogic  String (OPair String) (HS.HashSet String)) "a0")
 -- :: Note need to tell compiler how to specialize polymorphic aggreagator
 -- prints all vertices
 
@@ -54,7 +54,7 @@ countDepth = defaultMonoidFoldAccLogic {
 
 
 testDimongGraphDepthCount:: Int
-testDimongGraphDepthCount = getSum $ (dfsFold playTwoDiamonds (countDepth :: MonoidFoldAccLogic v (HPair v) (Sum Int)) "a0") -- :: needs to define edge type
+testDimongGraphDepthCount = getSum $ (dfsFold playTwoDiamonds (countDepth :: MonoidFoldAccLogic v (OPair v) (Sum Int)) "a0") -- :: needs to define edge type
 -- prints 2
 
 experiments = [show testDimongGraphDepthCount, show testDimongGraphEdgeCount, show testDimongVerices]

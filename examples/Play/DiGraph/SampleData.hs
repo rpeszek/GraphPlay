@@ -6,7 +6,7 @@ import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified Data.HashSet as HS
 
 -- simple test data (list of pars that will serve as edges)
-testEdges = map(HPair) [
+testEdges = map(OPair) [
         ("a0", "a01"),
         ("a0", "a02"),
         ("a01", "a1"),
