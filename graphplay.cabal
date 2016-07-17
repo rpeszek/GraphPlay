@@ -21,12 +21,14 @@ library
                        , PolyGraph.Common.BuildableCollection
                        , PolyGraph.Common.RecursionHelpers
                        , PolyGraph.Common.BuildableMatrix
+                       , PolyGraph.ReadOnly.Graph
+                       , PolyGraph.ReadOnly.Graph.GraphEquality
                        , PolyGraph.ReadOnly.DiGraph
+                       , PolyGraph.ReadOnly.DiGraph.DiGraphEquality
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAFold
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
                        , PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion
                        , PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge
-                       , PolyGraph.ReadOnly.Graph
                        , PolyGraph.Buildable.GDSBuild
                        , PolyGraph.Buildable.GBuild
                        , PolyGraph.Buildable.DiGBuild
