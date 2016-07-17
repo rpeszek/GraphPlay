@@ -33,7 +33,7 @@ library
                        , PolyGraph.Buildable.PolyRebuild
                        , PolyGraph.Buildable.PolyMorth
                        , PolyGraph.Instances.DiGraph.DiEdgesByVertexMap
-                       , PolyGraph.Instances.DiGraph.DiAdjacencyMatrix
+                       , PolyGraph.Instances.AdjacencyMatrix
                        , PolyGraph.Instances.ListGraphs
                        , PolyGraph.Instances.EdgeCountMapGraph
                        , Play.DiGraph.SampleInstances.FirstLastWord

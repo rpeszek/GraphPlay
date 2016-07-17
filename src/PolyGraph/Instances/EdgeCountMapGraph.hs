@@ -4,7 +4,11 @@
   It is essential in implementation of polymorphic Eq for graphs / digraphs (TODO)
 -}
 
-module PolyGraph.Instances.EdgeCountMapGraph where
+module PolyGraph.Instances.EdgeCountMapGraph (
+    EdgeCountMapGraph (..)
+    , EdgeCountMapDiGraph (..)
+    , EdgeCountMap (..)
+) where
 
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
@@ -15,6 +19,7 @@ import Data.Hashable
 import qualified Data.HashMap.Strict as HM
 import qualified Data.HashSet as HS
 import qualified Data.Sequence as S
+import Data.Matrix as M
 
 
 --
@@ -31,8 +36,8 @@ data EdgeCountMap v e = EdgeCountMap {
     getVertices :: HS.HashSet v
 } deriving (Show, Eq)
 
-type DiGraphEdgeCountMap v = EdgeCountMap v (OPair v)
-type GraphEdgeCountMap v   = EdgeCountMap v (UOPair v)
+type EdgeCountMapDiGraph v = EdgeCountMap v (OPair v)
+type EdgeCountMapGraph v   = EdgeCountMap v (UOPair v)
 
 -- INSTANCES --
 instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
