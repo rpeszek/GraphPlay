@@ -68,7 +68,6 @@ instance  forall v . (Eq v) => (DiGraph (Edges v (OPair v)) v (OPair v) [])
 
 instance  forall v. (Eq v) => (Graph (Edges v (UOPair v)) v (UOPair v) [])
 
---
 instance  forall v e. (Eq v) => BuildableGraphDataSet (Edges v e) v e [] where
 
    empty = Edges []

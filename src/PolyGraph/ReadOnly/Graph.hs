@@ -32,6 +32,10 @@ class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
 
 class (EdgeSemantics e v, GraphDataSet g v e t) => Graph g v e t
 
+-- TODO provide edge-vertex consistency check
+isValidGraph :: Graph g v e t -> Bool
+isValidGraph = undefined
+
 defaultVertexCount :: forall g v e t. (GraphDataSet g v e t) => (e -> OPair v) -> g -> Int
 defaultVertexCount f g =
      let isolatedVCount = length . isolatedVertices $ g
@@ -43,7 +47,7 @@ defaultVertexCount f g =
      in  isolatedVCount + nonIsolatedVCount
 
 
---
+-- Note GMoriphism can be used with Graphs or DiGraphs
 data GMorphism v0 e0 v1 e1 = GMorphism {
    vTrans :: v0 -> v1,
    eTrans :: e0 -> e1
