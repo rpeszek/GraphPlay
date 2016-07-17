@@ -23,7 +23,7 @@ import Data.List (nub, null, lines, words, concat)
 newtype Vertices v e = Vertices { getVertices :: [v]} deriving Show
 
 -- | this graph has no isolatedVertices, it acts in forgetful way if isolatedVertex is added
-newtype Edges v = Edges { getEdges :: [OPair v]} deriving Show
+newtype Edges v e = Edges { getEdges :: [e] } deriving Show
 
 -- instances Vertices --
 instance  forall v e. (Eq v)=> (GraphDataSet (Vertices v e) v e []) where
@@ -35,8 +35,7 @@ instance forall v e. (DiEdgeSemantics e v) => (DiAdjacencyIndex (Vertices v e) v
 
 instance  forall v e. (Eq v, DiEdgeSemantics e v) => (DiGraph (Vertices v e) v e [])
 
--- TODO
-{-
+
 -- instance  forall v e. (Eq v, EdgeSemantics e v) => (Graph (Vertices v e) v e [])
 
 -- adding edge simply ignores edge and adds vertex
@@ -46,7 +45,7 @@ instance  forall v e . (Eq v, EdgeSemantics e v) => BuildableGraphDataSet (Verti
 
    g @+ v = Vertices ( v : (getVertices g) )
    g ~+ e =
-            let OPair (v1,v2) = resolveEdge e
+            let (v1,v2) = toPair . resolveEdge $ e
             in g @+ v1 @+ v2
 
    union g1 g2 = Vertices ((getVertices g1) ++ (getVertices g2))
@@ -58,19 +57,19 @@ instance  forall v e . (Eq v, Eq e, EdgeSemantics e v) => AdjustableGraphDataSet
    filterEdges strict g f = g
 
 -- Edges intances ------
-instance  forall v. (Eq v) => (GraphDataSet (Edges v) v (OPair v) []) where
+instance  forall v e. (Eq v) => (GraphDataSet (Edges v e) v e []) where
   isolatedVertices g = []
   edges g  =  getEdges g
 
-instance forall v. (Eq v) => (DiAdjacencyIndex (Edges v) v (OPair v) []) where
+instance forall v. (Eq v) => (DiAdjacencyIndex (Edges v (OPair v)) v (OPair v) []) where
   cEdgesOf g ver =  filter(\e -> let OPair(v1,x) = e in v1==ver ) $ getEdges g
 
-instance  forall v. (Eq v) => (DiGraph (Edges v ) v (OPair v) [])
+instance  forall v . (Eq v) => (DiGraph (Edges v (OPair v)) v (OPair v) [])
 
-instance  forall v. (Eq v) => (Graph (Edges v ) v (OPair v) [])
+instance  forall v. (Eq v) => (Graph (Edges v (UOPair v)) v (UOPair v) [])
 
 --
-instance  forall v . (Eq v) => BuildableGraphDataSet (Edges v ) v (OPair v) [] where
+instance  forall v e. (Eq v) => BuildableGraphDataSet (Edges v e) v e [] where
 
    empty = Edges []
 
@@ -83,12 +82,10 @@ instance  forall v . (Eq v) => BuildableGraphDataSet (Edges v ) v (OPair v) [] w
 --------------------------------------------
 -- Adjustable Graph instance              --
 --------------------------------------------
-instance  forall v . (Eq v) => AdjustableGraphDataSet (Edges v ) v (OPair v) [] where
+instance  forall v e. (Eq v, Eq e, PairLike e v) => AdjustableGraphDataSet (Edges v e) v e [] where
 
    g @\ f = g
 
    filterEdges strict g f =
                      let newEdges = filter f (getEdges g)
                      in g {getEdges = newEdges}
-
--}
