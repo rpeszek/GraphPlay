@@ -27,12 +27,12 @@ diamond0123 :: forall g v e t . (FromString v, BuildableEdgeSemantics e v, DiEdg
 diamond0123 = diamond "0" "1" "2" "3"
 
 showDiamond0123_1 =
-                let mygraph:: SG.SimpleSetGraph String
+                let mygraph:: SG.SimpleSetDiGraph String
                     mygraph = diamond0123
                 in  show (mygraph)
 
 showDiamond0123_2 =
-                let mygraph :: SG.SimpleSetGraph Int
+                let mygraph :: SG.SimpleSetDiGraph Int
                     mygraph = diamond0123
                 in show (mygraph)
 
@@ -62,7 +62,7 @@ diamond0123' :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e 
 diamond0123' f = diamond' (f "0") (f "1") (f "2") (f "3")
 
 showDiamond'0123_1 =
-                let mygraph:: SG.SimpleSetGraph String
+                let mygraph:: SG.SimpleSetDiGraph String
                     mygraph = diamond0123' id
                 in  show (mygraph)
 

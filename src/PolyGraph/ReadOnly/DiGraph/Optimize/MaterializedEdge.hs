@@ -27,8 +27,5 @@ instance forall e v.(Eq v) => Eq(EdgeHelper e v) where
 instance forall v e map. DiEdgeSemantics (EdgeHelper e v) v where
    resolveDiEdge indexedE = getVertices indexedE
 
-instance forall v e map. EdgeSemantics (EdgeHelper e v) v where
-   resolveEdge indexedE = getVertices indexedE
-
 convertToEdgeHelper :: forall e v . (e -> (HPair v)) -> e -> EdgeHelper e v
 convertToEdgeHelper f e = EdgeHelper { getEdge = e, getVertices = f e }

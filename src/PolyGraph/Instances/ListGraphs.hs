@@ -4,7 +4,7 @@
   Vertices Graph forgets edges,
   Edges graph forgets isolatedVertices.
 
-  Unlike SimpleGraph Edges allow duplicate edges in the list representing muliple edges on a graph   
+  Unlike SimpleGraph Edges allow duplicate edges in the list representing muliple edges on a graph
 -}
 module PolyGraph.Instances.ListGraphs (
   Vertices (..)
@@ -35,7 +35,9 @@ instance forall v e. (DiEdgeSemantics e v) => (DiAdjacencyIndex (Vertices v e) v
 
 instance  forall v e. (Eq v, DiEdgeSemantics e v) => (DiGraph (Vertices v e) v e [])
 
-instance  forall v e. (Eq v, EdgeSemantics e v) => (Graph (Vertices v e) v e [])
+-- TODO
+{-
+-- instance  forall v e. (Eq v, EdgeSemantics e v) => (Graph (Vertices v e) v e [])
 
 -- adding edge simply ignores edge and adds vertex
 instance  forall v e . (Eq v, EdgeSemantics e v) => BuildableGraphDataSet (Vertices v e) v e [] where
@@ -88,3 +90,5 @@ instance  forall v . (Eq v) => AdjustableGraphDataSet (Edges v ) v (HPair v) [] 
    filterEdges strict g f =
                      let newEdges = filter f (getEdges g)
                      in g {getEdges = newEdges}
+
+-}

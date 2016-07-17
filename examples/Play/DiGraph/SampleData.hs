@@ -22,10 +22,10 @@ testEdges = map(HPair) [
 --
 -- notice SimpleGraph is not specialized to String type
 --
-playTwoDiamondsSetGraph :: SG.SimpleSetGraph String
+playTwoDiamondsSetGraph :: SG.SimpleSetDiGraph String
 playTwoDiamondsSetGraph = SG.SimpleGraph (HS.fromList testEdges) HS.empty
 
-playTwoDiamonds :: SG.SimpleListGraph String
+playTwoDiamonds :: SG.SimpleListDiGraph String
 playTwoDiamonds = SG.SimpleGraph testEdges []
 
 playFirstLastTxt:: String

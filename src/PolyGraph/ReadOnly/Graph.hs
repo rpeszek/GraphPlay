@@ -17,10 +17,10 @@ import PolyGraph.Common.Helpers
 -- Graph FLWordText term would be: incidence function
 --
 class EdgeSemantics e v  where
-  resolveEdge      ::  e -> HPair v
+  resolveEdge      ::  e -> UnorderedHPair v
 
-instance forall v . (Eq v) => (EdgeSemantics (HPair v) v) where
-  resolveEdge e = e   
+instance forall v . (Eq v) => (EdgeSemantics (UnorderedHPair v) v) where
+  resolveEdge e = e
 
 class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
   isolatedVertices ::  g -> t v

@@ -12,7 +12,7 @@ import Data.Hashable
 edgeList :: [(Int, Int)]
 edgeList = [(0,1), (0,2), (0,3), (1,3), (2,3)]
 
-diamond0123Simple :: SG.SimpleListGraph Int
+diamond0123Simple :: SG.SimpleListDiGraph Int
 diamond0123Simple = SG.SimpleGraph (map (HPair) edgeList) []
 
 -- Polymorphic production:
