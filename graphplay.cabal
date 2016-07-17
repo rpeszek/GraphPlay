@@ -35,6 +35,7 @@ library
                        , PolyGraph.Instances.DiGraph.HashMapAsDiGraph
                        , PolyGraph.Instances.DiGraph.DiAdjacencyMatrix
                        , PolyGraph.Instances.ListGraphs
+                       , PolyGraph.Instances.EdgeCountMapGraph
                        , Play.DiGraph.SampleInstances.FirstLastWord
                        , PolyGraph.Instances.SimpleGraph
                        , Play.DiGraph.SampleData
