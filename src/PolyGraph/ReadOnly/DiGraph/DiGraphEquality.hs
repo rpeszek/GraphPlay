@@ -1,5 +1,5 @@
 {-
-  DiGraphs are considered equal (using relaxed (>@==) notation if they have the same vertices
+  DiGraphs are considered equal (using relaxed (~>#==) notation if they have the same vertices
   and the same vertex adjacency (each 2 verices have exactly the same number of directed edges connecting them)
 
   TODO this needs testing
@@ -24,8 +24,9 @@ edgeCountDiGIsomorphism = GMorphism {
      eTrans = resolveDiEdge
   }
 
-(>@==) :: forall g v e t . (Eq v, Hashable v, DiGraph g v e t) => g -> g -> Bool
-g0 >@== g1 = let g0edgeCounts :: EdgeCountMapDiGraph v
+(~>#==) :: forall g v e t . (Eq v, Hashable v, DiGraph g v e t) => g -> g -> Bool
+g0 ~>#== g1 =
+             let g0edgeCounts :: EdgeCountMapDiGraph v
                  g0edgeCounts = morth edgeCountDiGIsomorphism g0
                  g1edgeCounts :: EdgeCountMapDiGraph v
                  g1edgeCounts = morth edgeCountDiGIsomorphism g1

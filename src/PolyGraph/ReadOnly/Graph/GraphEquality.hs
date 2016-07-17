@@ -1,5 +1,5 @@
 {-
-  Graphs are considered equal (using relaxed (@==) notation if they have the same vertices
+  Graphs are considered equal (using relaxed (~#==) notation if they have the same vertices
   and the same vertex adjacency (each 2 verices have exactly the same number of edges connecting them)
 
   TODO this needs testing
@@ -24,8 +24,9 @@ edgeCountGIsomorphism = GMorphism {
      eTrans = resolveEdge
   }
 
-(@==) :: forall g v e t . (Eq v, Hashable v, Graph g v e t) => g -> g -> Bool
-g0 @== g1 =  let g0edgeCounts :: EdgeCountMapGraph v
+(~#==) :: forall g v e t . (Eq v, Hashable v, Graph g v e t) => g -> g -> Bool
+g0 ~#== g1 =
+             let g0edgeCounts :: EdgeCountMapGraph v
                  g0edgeCounts = morth edgeCountGIsomorphism g0
                  g1edgeCounts :: EdgeCountMapGraph v
                  g1edgeCounts = morth edgeCountGIsomorphism g1

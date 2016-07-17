@@ -18,6 +18,7 @@ main = do
   putStrLn ADJ.showDiamond0123_2
   putStrLn ADJ.showDiamond0123_3
   putStrLn ADJ.showDiamond0123_4
+  putStrLn ADJ.showDiamond0123_5
   putStrLn ADJ.showDiamond'0123_1
   putStrLn "PolyRebuild"
   putStrLn PRB.showDiamond3456AsHashMap

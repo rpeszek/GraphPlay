@@ -48,8 +48,8 @@ instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
                     let foldF :: e -> Int -> HS.HashSet v -> HS.HashSet v
                         foldF _ 0 vertices = vertices
                         foldF edge count vertices =
-                                    let vv = toPair edge
-                                    in foldr HS.delete vertices vv
+                                    let (v1,v2) = toPair edge
+                                    in foldr HS.delete vertices [v1,v2]
                         isolatedVertices = HM.foldrWithKey foldF (getVertices g) (getMap g)
                     in S.fromList . HS.toList $ isolatedVertices
 
@@ -82,8 +82,8 @@ instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
            in g {getVertices = newVertices}
 
    g ~+ e =
-           let vv = toPair e
-               newVertices = foldr HS.insert (getVertices g) vv
+           let (v1,v2) = toPair e
+               newVertices = foldr HS.insert (getVertices g) [v1,v2]
                newMap = HM.insertWith (\oldCount _ -> oldCount + 1) e (1::Int) (getMap g)
            in EdgeCountMap {getMap = newMap, getVertices = newVertices}
 
