@@ -2,7 +2,6 @@
   Implementation of a arbitrary di-graph as its ajacency matrix
   Assumes Ord v for simplicity and reasonable performance.
 
-  TODO this still does not work right
 -}
 module PolyGraph.Instances.AdjacencyMatrix where
 
