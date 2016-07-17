@@ -1,8 +1,8 @@
 ------
--- TODO optimized index should use PolyGraph.Instances.DiGraph.HashMapAsDiGraph
+-- TODO optimized index should use PolyGraph.Instances.DiGraph.DiEdgesByVertexMap
 ------
 module PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion (
-   buildDiGraphHashMap
+   buildDiEdgesByVertexMap
 ) where
 
 import qualified Data.Maybe as MB
@@ -10,7 +10,7 @@ import Control.Monad
 import Control.Monad.ST
 import Data.Hashable
 import qualified Data.HashMap.Strict as HM
-import PolyGraph.Instances.DiGraph.HashMapAsDiGraph
+import PolyGraph.Instances.DiGraph.DiEdgesByVertexMap
 import PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge
 import PolyGraph.Common.Helpers
 import PolyGraph.ReadOnly.DiGraph
@@ -21,11 +21,11 @@ import PolyGraph.Common.BuildableCollection
 -- builders that create fast DiGraph and DiAdjacencyIndex for a DiGraph       ---
 -----------------------------------------------------------------------
 
-buildDiGraphHashMap :: forall g v e tg th .
+buildDiEdgesByVertexMap :: forall g v e tg th .
       (Eq v, Hashable v, GraphDataSet g v e tg,
              Traversable th, BuildableCollection (th (EdgeHelper e v)) (EdgeHelper e v)) =>
-                      (e -> (OPair v)) -> g -> DiGraphHashMap v (EdgeHelper e v) th
-buildDiGraphHashMap slowSemantics g =
+                      (e -> (OPair v)) -> g -> DiEdgesByVertexMap v (EdgeHelper e v) th
+buildDiEdgesByVertexMap slowSemantics g =
      let gedges = edges g                         :: tg e
          ginsolatedVertices  = isolatedVertices g :: tg v
          emptyMap = HM.empty                      :: HM.HashMap v (th (EdgeHelper e v))
@@ -37,4 +37,4 @@ buildDiGraphHashMap slowSemantics g =
 
          verticesInserted = foldr(\v hm -> HM.insert v emptyEdges hm) emptyMap ginsolatedVertices
      in
-         DiGraphHashMap $ foldr addEdge verticesInserted gedges
+         DiEdgesByVertexMap $ foldr addEdge verticesInserted gedges

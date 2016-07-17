@@ -5,7 +5,7 @@ import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Buildable.PolyRebuild
 import PolyGraph.Buildable.PolyMorth
 import qualified PolyGraph.Instances.SimpleGraph as SG
-import qualified PolyGraph.Instances.DiGraph.HashMapAsDiGraph as HM
+import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HM
 import Data.Hashable
 
 -- create simple graph data structure
@@ -28,6 +28,6 @@ diamondChain =  foldr (\i g -> g `union` (fmorth (+i) diamond0123Simple)) empty 
 
 -- specialized type consumption
 
-showDiamond0123AsHashMap  = show (diamond0123  :: HM.DiGraphHashMap Int (OPair Int) [])
-showDiamond3456AsHashMap  = show (diamond3456  :: HM.DiGraphHashMap Int (OPair Int) [])
-showDiamondChainAsHashMap = show (diamondChain :: HM.DiGraphHashMap Int (OPair Int) [])
+showDiamond0123AsHashMap  = show (diamond0123  :: HM.DiEdgesByVertexMap Int (OPair Int) [])
+showDiamond3456AsHashMap  = show (diamond3456  :: HM.DiEdgesByVertexMap Int (OPair Int) [])
+showDiamondChainAsHashMap = show (diamondChain :: HM.DiEdgesByVertexMap Int (OPair Int) [])

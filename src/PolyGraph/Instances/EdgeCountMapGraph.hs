@@ -18,7 +18,7 @@ import qualified Data.Sequence as S
 
 
 --
--- HashMap (v0,v0) 0 represents any vertex without loop
+-- vertices are stored separately in a set
 -- HashMap (v0,v0) 1 represents loop
 -- HashMap (v0,v1) 2 represents 2 edges from v0 to v1
 --
@@ -26,28 +26,28 @@ import qualified Data.Sequence as S
 -- for UOPair.  2 graphs are considered equal if for each of the verices they
 -- have the same number of adjacent edges
 --
-data EdgeCountMap e = EdgeCountMap {
-    getMap :: HM.HashMap e Int
+data EdgeCountMap v e = EdgeCountMap {
+    getMap :: HM.HashMap e Int,
+    getVertices :: HS.HashSet v
 } deriving (Show, Eq)
 
-type DiGraphEdgeCountMap v = EdgeCountMap (OPair v)
-type GraphEdgeCountMap v   = EdgeCountMap (UOPair v)
+type DiGraphEdgeCountMap v = EdgeCountMap v (OPair v)
+type GraphEdgeCountMap v   = EdgeCountMap v (UOPair v)
 
 -- INSTANCES --
 instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
-                              (GraphDataSet (EdgeCountMap e) v e S.Seq) where
+                              (GraphDataSet (EdgeCountMap v e) v e S.Seq) where
 
-  --filterWithKey :: forall k v. (k -> v -> Bool) -> HashMap k v -> HashMap k vSource
+  --HM.foldrWithKey :: (k -> v -> a -> a) -> a -> HashMap k v -> a
   isolatedVertices g =
-                    let zeroCountFilter :: e -> Int -> Bool
-                        zeroCountFilter edge count = (count == 0) && oneElementPair edge
-                        allverticesWithoutLoops :: HS.HashSet v
-                        allverticesWithoutLoops = HS.fromList . map (pairFirst . toPair) . HM.keys . HM.filterWithKey zeroCountFilter . getMap $ g
-                        -- HM.foldrWithKey :: (k -> v -> a -> a) -> a -> HashMap k v -> a
-                        isolatedVertices = undefined :: HS.HashSet v
+                    let foldF :: e -> Int -> HS.HashSet v -> HS.HashSet v
+                        foldF _ 0 vertices = vertices
+                        foldF edge count vertices =
+                                    let vv = toPair edge
+                                    in foldr HS.delete vertices vv
+                        isolatedVertices = HM.foldrWithKey foldF (getVertices g) (getMap g)
                     in S.fromList . HS.toList $ isolatedVertices
 
-  --foldrWithKey :: (k -> v -> a -> a) -> a -> HashMap k v -> a
   -- | edges replay same OPair several times for multiedge graphs
   edges g  =
               let  foldF :: e -> Int -> S.Seq e -> S.Seq e
@@ -59,21 +59,31 @@ instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
 -- No DiAdjacencyIndex instance, probably not needed
 --
 instance  forall v. (Eq v, Hashable v) =>
-                                 (DiGraph (EdgeCountMap (OPair v)) v (OPair v) S.Seq)
+                                 (DiGraph (EdgeCountMap v (OPair v)) v (OPair v) S.Seq)
 
 instance  forall v. (Eq v, Hashable v) =>
-                                 (Graph (EdgeCountMap (UOPair v)) v (UOPair v) S.Seq)
+                                 (Graph (EdgeCountMap v (UOPair v)) v (UOPair v) S.Seq)
 
 --
 instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
-                              (BuildableGraphDataSet (EdgeCountMap e) v e S.Seq) where
+                              (BuildableGraphDataSet (EdgeCountMap v e) v e S.Seq) where
 
-   empty = EdgeCountMap HM.empty
+   empty = EdgeCountMap HM.empty HS.empty
 
    -- insert :: (Eq k, Hashable k) => k -> v -> HashMap k v -> HashMap k v
    -- insertWith :: (Eq k, Hashable k) => (v -> v -> v) -> k -> v -> HashMap k v -> HashMap k v
-   g @+ v = undefined -- needs insertWith to keep previous if loops
+   g @+ v =
+           let newVertices = HS.insert v (getVertices g)
+           in g {getVertices = newVertices}
 
-   g ~+ e = undefined
+   g ~+ e =
+           let vv = toPair e
+               newVertices = foldr HS.insert (getVertices g) vv
+               newMap = HM.insertWith (\oldCount _ -> oldCount + 1) e (1::Int) (getMap g)
+           in EdgeCountMap {getMap = newMap, getVertices = newVertices}
 
-   union g1 g2 = undefined
+   -- unionWith :: (Eq k, Hashable k) => (v -> v -> v) -> HashMap k v -> HashMap k v -> HashMap k v
+   union g1 g2 =
+           let newVertices = HS.union (getVertices g1) (getVertices g2)
+               newMap = HM.unionWith(+) (getMap g1) (getMap g2)
+           in EdgeCountMap {getMap = newMap, getVertices = newVertices}

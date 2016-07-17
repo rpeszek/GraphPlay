@@ -5,7 +5,7 @@ module Play.DiGraph.PolyBuild where
 
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified PolyGraph.Instances.SimpleGraph as SG
-import qualified PolyGraph.Instances.DiGraph.HashMapAsDiGraph as HM
+import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HM
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Buildable.DiGBuild
@@ -42,7 +42,7 @@ showDiamond0123_3 =
                 in show (mygraph)
 
 showDiamond0123_4 =
-                let mygraph :: HM.DiGraphHashMap String (H.OPair String) []
+                let mygraph :: HM.DiEdgesByVertexMap String (H.OPair String) []
                     mygraph = diamond0123
                 in show (mygraph)
 

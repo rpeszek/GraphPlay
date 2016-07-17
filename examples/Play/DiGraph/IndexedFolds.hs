@@ -10,7 +10,7 @@ import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion as
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge as ME
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.ReadOnly.DiGraph.Fold.TAFold
-import qualified PolyGraph.Instances.DiGraph.HashMapAsDiGraph as HTG
+import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HTG
 import qualified Play.DiGraph.SampleInstances.FirstLastWord as T
 import qualified Play.DiGraph.SampleData as S (playFirstLast)
 import qualified Data.HashSet as HS
@@ -21,8 +21,8 @@ import qualified Data.HashSet as HS
 -- Here edges are converted to pre-parsed pairs and HashMap based DiAdjacencyIndex is used for fast calculations.
 ------
 
-playGraph :: HTG.DiGraphHashMap T.FLWord (ME.EdgeHelper T.FLWordSentence T.FLWord) []
-playGraph = I.buildDiGraphHashMap T.fLWordsInFLWordSentence S.playFirstLast
+playGraph :: HTG.DiEdgesByVertexMap T.FLWord (ME.EdgeHelper T.FLWordSentence T.FLWord) []
+playGraph = I.buildDiEdgesByVertexMap T.fLWordsInFLWordSentence S.playFirstLast
 
 -- this counts edges as if graph was expanded to a tree
 allFLWordSentences ::forall e v . (Hashable v, Eq v) => FoldAccLogic [] v e (HS.HashSet v)
