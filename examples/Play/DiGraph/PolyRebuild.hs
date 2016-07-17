@@ -4,6 +4,7 @@ import PolyGraph.Common.Helpers
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Buildable.PolyRebuild
 import PolyGraph.Buildable.PolyMorth
+import PolyGraph.ReadOnly.DiGraph.DiGraphEquality
 import qualified PolyGraph.Instances.SimpleGraph as SG
 import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HM
 import Data.Hashable
@@ -20,11 +21,16 @@ diamond0123Simple = SG.SimpleGraph (map (OPair) edgeList) []
 diamond0123 :: forall g t . (BuildableGraphDataSet g Int (OPair Int) t) =>  g
 diamond0123 = polyRebuild diamond0123Simple
 
+areEqual :: Bool
+areEqual = diamond0123Simple >@== diamond0123
+
 diamond3456 :: forall g t . (BuildableGraphDataSet g Int (OPair Int) t) =>  g
 diamond3456 = fmorth (+3) diamond0123Simple
 
 diamondChain :: forall g t . (BuildableGraphDataSet g Int (OPair Int) t) =>  g
 diamondChain =  foldr (\i g -> g `union` (fmorth (+i) diamond0123Simple)) empty (map (*3) [0..5])
+
+areNotEqual = diamond0123Simple >@== diamondChain
 
 -- specialized type consumption
 

@@ -1,6 +1,8 @@
 {-
   Implementation of a arbitrary di-graph as its ajacency matrix
   Assumes Ord v for simplicity and reasonable performance.
+
+  TODO this still does not work right
 -}
 module PolyGraph.Instances.AdjacencyMatrix where
 
@@ -26,7 +28,7 @@ prettyAdjacencyMatrix g =  let  vertices :: S.Seq v
                                 vertices = S.sort . S.fromList . HS.toList $ (getVertices g)
                                 vertexDisplay = show vertices
                                 matrixDisplay = M.prettyMatrix (getAdjacencyMatrix vertices g)
-                           in  "Vertices " ++ vertexDisplay ++ "\n" ++ "Adjacenty Matrix " ++ matrixDisplay
+                           in  "Vertices " ++ vertexDisplay ++ "\n" ++ "Adjacenty Matrix\n" ++ matrixDisplay
 
 getOrdAdjacentMatrix :: forall v e . (Eq v, Ord v, Eq e, Hashable e, PairLike e v) =>
                                        EdgeCountMap v e -> M.Matrix Int
