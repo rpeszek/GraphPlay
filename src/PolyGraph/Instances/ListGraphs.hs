@@ -9,6 +9,8 @@
 module PolyGraph.Instances.ListGraphs (
   Vertices (..)
   , Edges (..)
+  , GEdges
+  , DiEdges
 ) where
 
 import PolyGraph.ReadOnly.Graph
@@ -24,6 +26,10 @@ newtype Vertices v e = Vertices { getVertices :: [v]} deriving Show
 
 -- | this graph has no isolatedVertices, it acts in forgetful way if isolatedVertex is added
 newtype Edges v e = Edges { getEdges :: [e] } deriving Show
+type  GEdges v  = Edges v (UOPair v)
+type  DiEdges v = Edges v (OPair v)
+
+
 
 -- instances Vertices --
 instance  forall v e. (Eq v)=> (GraphDataSet (Vertices v e) v e []) where

@@ -38,8 +38,9 @@ library
                        , PolyGraph.Instances.AdjacencyMatrix
                        , PolyGraph.Instances.ListGraphs
                        , PolyGraph.Instances.EdgeCountMapGraph
-                       , Play.DiGraph.SampleInstances.FirstLastWord
                        , PolyGraph.Instances.SimpleGraph
+                       , PolyGraph.QuickCheckSupport.ArbitraryTypes
+                       , Play.DiGraph.SampleInstances.FirstLastWord
                        , Play.DiGraph.SampleData
                        , Play.DiGraph.TreeFoldOnSimpleGraph
                        , Play.DiGraph.TreeMonoidFoldOnSimpleGraph
@@ -54,6 +55,7 @@ library
                       , containers
                       , unordered-containers
                       , matrix
+                      , QuickCheck
   default-language:    Haskell2010
   extensions:          TemplateHaskell
                       , ScopedTypeVariables
