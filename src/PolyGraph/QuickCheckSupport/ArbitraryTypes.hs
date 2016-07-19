@@ -25,8 +25,8 @@ instance forall v. (VertexNames v) => Arbitrary(UniqueUOPairs v) where
   arbitrary = do
     v1Ids <- sublistOf [1..15]
     v2Ids <- sublistOf ([1..15] L.\\ (L.drop 1 v1Ids)) -- v1s and v2s can have at most one element in common
-    subset  <- sublistOf ( [UOPair(vName v1Id, vName v2Id) | v1Id <- v1Ids, v2Id <- v2Ids] )
-    return (UniqueUOPairs subset)
+    subset <- scale (*2) $ sublistOf ( [UOPair(vName v1Id, vName v2Id) | v1Id <- v1Ids, v2Id <- v2Ids] )
+    return $ UniqueUOPairs subset
 
 -- 1,3,5,6   1,5,9,10
 instance forall v. (VertexNames v) => Arbitrary(UniqueOPairs v) where
