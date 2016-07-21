@@ -39,7 +39,7 @@ library
                        , PolyGraph.Instances.ListGraphs
                        , PolyGraph.Instances.EdgeCountMapGraph
                        , PolyGraph.Instances.SimpleGraph
-                       , PolyGraph.QuickCheckSupport.ArbitraryTypes
+                       , PolyGraph.Common.PropertySupport
                        , Play.DiGraph.SampleInstances.FirstLastWord
                        , Play.DiGraph.SampleData
                        , Play.DiGraph.TreeFoldOnSimpleGraph

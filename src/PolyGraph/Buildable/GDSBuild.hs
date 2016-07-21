@@ -31,6 +31,10 @@ class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
   -- | adds edge (and vertices if needed), implementation decides what to do if same edge is added twice, Eq not assumed on e here
   (~+) :: g -> e -> g
 
+  (?+) :: g -> Either v e -> g
+  g ?+ Left v = g @+ v
+  g ?+ Right e = g ~+ e 
+
   (@++) :: g -> [v] -> g
   g @++ []     = g
   g @++ (v:vs) = g @+ v @++ vs
