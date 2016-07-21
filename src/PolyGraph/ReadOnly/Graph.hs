@@ -27,8 +27,12 @@ class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
   edges            ::  g -> t e
 
   -- | edge count
-  e    ::  g -> Int
-  e g  =  length . edges $ g
+  eCount    ::  g -> Int
+  eCount g  =  length . edges $ g
+
+  -- | vertex count that uses edge to vertex resolver
+  vCount    ::  (e -> (v,v)) -> g -> Int
+  vCount    =  defaultVertexCount
 
 class (EdgeSemantics e v, GraphDataSet g v e t) => Graph g v e t
 

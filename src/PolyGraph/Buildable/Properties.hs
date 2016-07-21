@@ -18,7 +18,7 @@ prop_notForgetfulG :: forall g v. (Eq v,
 prop_notForgetfulG emptyG bag =
       let graph = buildGraph emptyG (getMix bag) :: g
           (es, isolatedVs, connVs) = analyze bag :: ([UOPair v], [v], [v])
-      in ((e graph == length es) && (length (isolatedVertices graph) == length isolatedVs))
+      in ((eCount graph == length es) && (length (isolatedVertices graph) == length isolatedVs))
 
 --
 prop_esForgetfulKeepsVs :: forall g v b e. (Eq v,
@@ -30,7 +30,7 @@ prop_esForgetfulKeepsVs :: forall g v b e. (Eq v,
 prop_esForgetfulKeepsVs emptyG bag =
       let graph = buildGraph emptyG (getMix bag) :: g
           (es, isolatedVs, connVs) = analyze bag :: ([e], [v], [v])
-      in ((e graph == 0) && (defaultVertexCount toPair graph) == (length connVs + length isolatedVs))
+      in ((eCount graph == 0) && (vCount toPair graph) == (length connVs + length isolatedVs))
 
 
 prop_esForgetfulKeepsVsG :: forall g v. (Eq v,
