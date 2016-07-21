@@ -13,7 +13,7 @@ module PolyGraph.Instances.EdgeCountMapGraph (
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
-import PolyGraph.Adjustable.GDSAdjust
+import PolyGraph.Adjustable
 import PolyGraph.Common
 import Data.Hashable
 import qualified Data.HashMap.Strict as HM

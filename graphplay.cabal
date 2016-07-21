@@ -38,7 +38,6 @@ library
                        , PolyGraph.Buildable.PolyMorth
                        , PolyGraph.Buildable.Properties
                        , PolyGraph.Adjustable
-                       , PolyGraph.Adjustable.GDSAdjust
                        , PolyGraph.Instances.DiGraph.DiEdgesByVertexMap
                        , PolyGraph.Instances.AdjacencyMatrix
                        , PolyGraph.Instances.ListGraphs

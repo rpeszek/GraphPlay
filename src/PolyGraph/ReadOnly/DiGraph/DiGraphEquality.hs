@@ -9,7 +9,7 @@ module PolyGraph.ReadOnly.DiGraph.DiGraphEquality where
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
-import PolyGraph.Adjustable.GDSAdjust
+import PolyGraph.Adjustable
 import PolyGraph.Common
 import PolyGraph.Buildable.PolyMorth
 import Data.Hashable
