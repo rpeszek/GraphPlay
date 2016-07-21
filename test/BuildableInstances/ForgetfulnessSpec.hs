@@ -3,7 +3,12 @@
 module BuildableInstances.ForgetfulnessSpec (main, spec) where
 
 import Test.Hspec
+import Test.QuickCheck
 import qualified Play.DiGraph.SampleData as SD
+import PolyGraph.Common.Helpers
+import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable.Properties
+import PolyGraph.Instances.ListGraphs
 
 main :: IO ()
 main = hspec spec
@@ -15,3 +20,6 @@ spec = do
       length [1..10] == 10
     it "and should access other code" $ do
       length SD.testEdges == 10
+  describe "Vertices Graph" $ do
+    it "is edge only fogetful" $ property $
+      prop_esForgetfulKeepsVsG (emptyGraph :: Vertices Int (UOPair Int))

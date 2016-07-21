@@ -36,12 +36,12 @@ class (EdgeSemantics e v, GraphDataSet g v e t) => Graph g v e t
 isValidGraph :: forall g v e t . Graph g v e t => g -> Bool
 isValidGraph = undefined
 
-defaultVertexCount :: forall g v e t. (GraphDataSet g v e t) => (e -> OPair v) -> g -> Int
+defaultVertexCount :: forall g v e t. (GraphDataSet g v e t) => (e -> (v,v)) -> g -> Int
 defaultVertexCount f g =
      let isolatedVCount = length . isolatedVertices $ g
          appendVertices :: e -> [v] -> [v]
          appendVertices e list =
-                              let OPair (v1, v2) = f e
+                              let (v1, v2) = f e
                               in  v1 : v2 : list
          nonIsolatedVCount = length . nub $ foldr appendVertices [] (edges g)
      in  isolatedVCount + nonIsolatedVCount
