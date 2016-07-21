@@ -17,10 +17,11 @@ library
   hs-source-dirs:      src
                        , examples
   exposed-modules:     Lib
-                       , PolyGraph.Common.Helpers
+                       , PolyGraph.Common
                        , PolyGraph.Common.BuildableCollection
                        , PolyGraph.Common.RecursionHelpers
                        , PolyGraph.Common.BuildableMatrix
+                       , PolyGraph.ReadOnly
                        , PolyGraph.ReadOnly.Graph
                        , PolyGraph.ReadOnly.Graph.GraphEquality
                        , PolyGraph.ReadOnly.DiGraph
@@ -29,12 +30,15 @@ library
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
                        , PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion
                        , PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge
+                       , PolyGraph.Buildable
                        , PolyGraph.Buildable.GDSBuild
                        , PolyGraph.Buildable.GBuild
                        , PolyGraph.Buildable.DiGBuild
                        , PolyGraph.Buildable.PolyRebuild
                        , PolyGraph.Buildable.PolyMorth
                        , PolyGraph.Buildable.Properties
+                       , PolyGraph.Adjustable
+                       , PolyGraph.Adjustable.GDSAdjust
                        , PolyGraph.Instances.DiGraph.DiEdgesByVertexMap
                        , PolyGraph.Instances.AdjacencyMatrix
                        , PolyGraph.Instances.ListGraphs

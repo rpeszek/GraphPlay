@@ -10,7 +10,7 @@ import qualified PolyGraph.Instances.AdjacencyMatrix as AM
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Buildable.DiGBuild
-import qualified PolyGraph.Common.Helpers as H
+import qualified PolyGraph.Common as H
 
 
 -------

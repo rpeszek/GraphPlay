@@ -1,7 +1,7 @@
 module Play.DiGraph.TreeFoldOnSimpleGraph where
 
 import PolyGraph.ReadOnly.DiGraph
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import PolyGraph.ReadOnly.DiGraph.Fold.TAFold
 import Data.Monoid
 import Data.Hashable

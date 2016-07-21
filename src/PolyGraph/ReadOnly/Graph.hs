@@ -10,7 +10,7 @@ module PolyGraph.ReadOnly.Graph (
 ) where --exports everything, a terrible programmer wrote it
 
 import Data.List (nub, length)
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 
 --
 -- e are edges v are vertices, the order of (OPair v) does not imply ordering of vertices

@@ -6,7 +6,7 @@
 module PolyGraph.Instances.DiGraph.DiEdgesByVertexMap where
 
 import Data.Hashable
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild

@@ -20,7 +20,7 @@ import Test.QuickCheck.Arbitrary
 import Test.QuickCheck.Gen
 import Control.Monad
 import Data.List as L
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import PolyGraph.Instances.ListGraphs
 
 ---------------------------------------------

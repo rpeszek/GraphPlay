@@ -6,7 +6,7 @@ module PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge (
 import qualified Data.Foldable as F
 import qualified Data.Maybe as MB
 import qualified Data.HashMap.Strict as HM
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.ReadOnly.Graph
 

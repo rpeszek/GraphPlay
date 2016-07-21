@@ -9,7 +9,7 @@ module Play.DiGraph.SampleInstances.FirstLastWord (
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import Data.List (nub, null, lines, words, concat)
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion as INX
 import qualified Data.Hashable as HASH

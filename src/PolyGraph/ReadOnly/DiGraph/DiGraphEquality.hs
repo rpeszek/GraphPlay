@@ -10,7 +10,7 @@ import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Adjustable.GDSAdjust
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import PolyGraph.Buildable.PolyMorth
 import Data.Hashable
 import PolyGraph.Instances.EdgeCountMapGraph

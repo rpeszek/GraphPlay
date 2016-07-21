@@ -2,7 +2,7 @@ module PolyGraph.Buildable.GDSBuild where
 
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics)
-import qualified PolyGraph.Common.Helpers as H
+import qualified PolyGraph.Common as H
 
 class BuildableEdgeSemantics e v where
   defaultEdge :: v -> v -> e

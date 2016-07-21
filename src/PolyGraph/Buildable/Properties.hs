@@ -3,7 +3,7 @@ module PolyGraph.Buildable.Properties where
 
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.Buildable.GDSBuild
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import PolyGraph.Common.PropertySupport
 
 buildGraph :: forall g v e t. (Eq v, BuildableGraphDataSet g v e t) =>

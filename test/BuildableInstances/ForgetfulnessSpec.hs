@@ -5,7 +5,7 @@ module BuildableInstances.ForgetfulnessSpec (main, spec) where
 import Test.Hspec
 import Test.QuickCheck
 import qualified Play.DiGraph.SampleData as SD
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Buildable.Properties
 import PolyGraph.Instances.ListGraphs

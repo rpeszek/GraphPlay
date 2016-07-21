@@ -1,6 +1,6 @@
 module Play.DiGraph.PolyRebuild where
 
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Buildable.PolyRebuild
 import PolyGraph.Buildable.PolyMorth

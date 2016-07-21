@@ -14,7 +14,7 @@ import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable.GDSBuild
 import PolyGraph.Adjustable.GDSAdjust
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import Data.Hashable
 import qualified Data.HashMap.Strict as HM
 import qualified Data.HashSet as HS

@@ -15,7 +15,7 @@ import Control.Monad (liftM, forM)
 import Control.Monad.ST (ST, runST)
 import Control.Lens
 import qualified Data.HashTable.Class as HT
-import qualified PolyGraph.Common.Helpers as H
+import qualified PolyGraph.Common as H
 import PolyGraph.Common.RecursionHelpers
 import PolyGraph.ReadOnly.DiGraph
 

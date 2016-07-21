@@ -5,7 +5,7 @@
 module Play.DiGraph.IndexedFolds where
 
 import Data.Hashable
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion as I
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge as ME
 import PolyGraph.ReadOnly.DiGraph

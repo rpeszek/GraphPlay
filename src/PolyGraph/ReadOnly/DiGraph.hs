@@ -25,7 +25,7 @@
 module PolyGraph.ReadOnly.DiGraph where --exports everything on purpose
 
 import qualified PolyGraph.ReadOnly.Graph as G
-import PolyGraph.Common.Helpers
+import PolyGraph.Common
 
 --
 -- e are edges v are vertices, to implememnet direct edge sematics we need to know
