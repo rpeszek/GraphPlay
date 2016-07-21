@@ -9,7 +9,7 @@ import Data.Hashable
 import PolyGraph.Common
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 import PolyGraph.Adjustable
 import PolyGraph.Common.BuildableCollection
 import qualified Data.HashMap.Strict as HM

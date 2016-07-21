@@ -1,6 +1,6 @@
 module PolyGraph.Adjustable where
 
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 
 class (Eq e, BuildableGraphDataSet g v e t)  => AdjustableGraphDataSet g v e t where
   -- |filterEdges strict graph filterF

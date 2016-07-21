@@ -19,7 +19,7 @@ module PolyGraph.Instances.SimpleGraph (
 
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 import PolyGraph.Adjustable
 import PolyGraph.Common
 import PolyGraph.Common.BuildableCollection

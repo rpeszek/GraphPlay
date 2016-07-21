@@ -1,6 +1,6 @@
 module PolyGraph.Buildable.DiGBuild where
 
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics)
 

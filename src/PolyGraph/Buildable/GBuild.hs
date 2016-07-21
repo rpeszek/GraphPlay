@@ -1,6 +1,6 @@
 module PolyGraph.Buildable.GBuild where
 
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 import PolyGraph.ReadOnly.Graph
 
 (@+~~@) :: forall g v e t . (BuildableEdgeSemantics e v, EdgeSemantics e v, BuildableGraphDataSet g v e t) =>  v -> v -> g -> g

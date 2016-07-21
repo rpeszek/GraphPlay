@@ -2,7 +2,7 @@ module PolyGraph.Buildable.PolyRebuild where
 
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 
 addAllEdges :: forall g0 v e t0 g1 t1. (GraphDataSet g0 v e t0, BuildableGraphDataSet g1 v e t1) =>
                    g0 -> g1 -> g1

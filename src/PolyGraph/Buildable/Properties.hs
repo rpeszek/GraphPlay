@@ -2,7 +2,7 @@
 module PolyGraph.Buildable.Properties where
 
 import PolyGraph.ReadOnly.Graph
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 import PolyGraph.Common
 import PolyGraph.Common.PropertySupport
 

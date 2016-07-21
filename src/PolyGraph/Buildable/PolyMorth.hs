@@ -2,7 +2,7 @@ module PolyGraph.Buildable.PolyMorth where
 
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 
 
 morthEdges  :: forall g0 v0 e0 t0 g1 v1 e1 t1. (GraphDataSet g0 v0 e0 t0, BuildableGraphDataSet g1 v1 e1 t1) =>

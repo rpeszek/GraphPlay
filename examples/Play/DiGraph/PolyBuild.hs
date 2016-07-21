@@ -8,7 +8,7 @@ import qualified PolyGraph.Instances.SimpleGraph as SG
 import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HM
 import qualified PolyGraph.Instances.AdjacencyMatrix as AM
 import PolyGraph.ReadOnly.DiGraph
-import PolyGraph.Buildable.GDSBuild
+import PolyGraph.Buildable
 import PolyGraph.Buildable.DiGBuild
 import qualified PolyGraph.Common as H
 
