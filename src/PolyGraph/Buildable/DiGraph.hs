@@ -1,4 +1,4 @@
-module PolyGraph.Buildable.DiGBuild where
+module PolyGraph.Buildable.DiGraph where
 
 import PolyGraph.Buildable
 import PolyGraph.ReadOnly.Graph

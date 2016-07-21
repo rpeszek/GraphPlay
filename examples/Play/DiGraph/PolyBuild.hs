@@ -9,7 +9,7 @@ import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HM
 import qualified PolyGraph.Instances.AdjacencyMatrix as AM
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable
-import PolyGraph.Buildable.DiGBuild
+import PolyGraph.Buildable.DiGraph
 import qualified PolyGraph.Common as H
 
 

@@ -31,8 +31,8 @@ library
                        , PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion
                        , PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge
                        , PolyGraph.Buildable
-                       , PolyGraph.Buildable.GBuild
-                       , PolyGraph.Buildable.DiGBuild
+                       , PolyGraph.Buildable.Graph
+                       , PolyGraph.Buildable.DiGraph
                        , PolyGraph.Buildable.PolyRebuild
                        , PolyGraph.Buildable.PolyMorth
                        , PolyGraph.Buildable.Properties
