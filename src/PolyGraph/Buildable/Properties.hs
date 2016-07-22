@@ -40,12 +40,12 @@ keepAllEdges (es, isolatedVs, connectedVs) graph =
                   eCount graph == length es
 
 --
-keepUniqueEdges :: forall g v e. (Eq v,
+forgetMultiEdges :: forall g v e. (Eq v,
                           Eq e,
                           PairLike e v,
                           BuildableGraphDataSet g v e []) =>
                                            ([e], [v], [v]) -> g -> Bool
-keepUniqueEdges (es, isolatedVs, connectedVs) graph =
+forgetMultiEdges (es, isolatedVs, connectedVs) graph =
                    eCount graph == (length . nub $ es)
 
 --

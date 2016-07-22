@@ -55,7 +55,7 @@ instance forall e . (Eq e, Hashable e) => BuildableUniqueCollection (HS.HashSet 
 class (Eq e, BuildableUniqueCollection t e) => AdjustableCollection t e  where
    filterBuildableCollection :: (e -> Bool) -> t -> t
    deleteBuildableElement :: e -> t -> t
-   deleteBuildableElement e t = filterBuildableCollection (== e) t
+   deleteBuildableElement e t = filterBuildableCollection (/= e) t
 
 instance forall e . (Eq e) => AdjustableCollection [e] e where
    filterBuildableCollection = filter
