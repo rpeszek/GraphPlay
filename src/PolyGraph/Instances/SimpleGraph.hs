@@ -110,7 +110,7 @@ instance  forall v e t . (Eq v,
                 newVertices = deleteBuildableElement v1 $
                               deleteBuildableElement v2 (getDisconnectedVertices g)
                 newEdges = addUniqueBuildableElement (fromPair (v1,v2)) (getEdges g)
-            in g {getEdges = newEdges}
+            in g {getEdges = newEdges, getDisconnectedVertices = newVertices}
    union g1 g2 =
             let newEdges = (getEdges g1) `unionBuildableCollections` (getEdges g2)
                 newVertices = (getDisconnectedVertices g1) `unionBuildableCollections` (getDisconnectedVertices g2)

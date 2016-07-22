@@ -14,17 +14,22 @@ import PolyGraph.Adjustable
 import PolyGraph.Common.BuildableCollection
 import qualified Data.HashMap.Strict as HM
 import qualified Data.Foldable as F
+import Data.List ((\\))
 
-newtype DiEdgesByVertexMap v e t = DiEdgesByVertexMap { getHashMap :: HM.HashMap v (t e) } deriving Show
+type DiEdgeListByVertexMap v e = DiEdgesByVertexMap v e []
+newtype DiEdgesByVertexMap v e t = DiEdgesByVertexMap { getHashMap :: HM.HashMap v (t e) } deriving (Show, Read)
 
 
 
 ------------------------------------------------------------------------------------------
 -- HashMap is naturally a di-graph with [] being the Foldable for edges/vertices        --
 ------------------------------------------------------------------------------------------
-instance forall v e te. (Eq v, Hashable v, Traversable te) =>
+instance forall v e te. (Eq v, Hashable v, DiEdgeSemantics e v, Traversable te) =>
                                            (GraphDataSet (DiEdgesByVertexMap v e te) v e []) where
-  isolatedVertices =  HM.keys . HM.filter (F.null) . getHashMap
+  isolatedVertices g =
+                 let suspects = HM.keys . HM.filter (F.null) . getHashMap $ g
+                     allToVertices =  map(second . resolveDiEdge) . edges $ g
+                 in suspects \\ allToVertices
   edges    =  concat . map (F.toList) . HM.elems . getHashMap
 
 instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableCollection (te e) e) =>
@@ -37,7 +42,7 @@ instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, 
 instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableCollection (te e) e) =>
                                   (BuildableGraphDataSet(DiEdgesByVertexMap v e te) v e []) where
    empty = DiEdgesByVertexMap HM.empty
-   g @+ v = DiEdgesByVertexMap . (HM.insertWith (\old new -> old) v emptyBuildableCollection) . getHashMap $ g
+   g @+ v = DiEdgesByVertexMap . (HM.insertWith (\new old -> old) v emptyBuildableCollection) . getHashMap $ g
    g ~+ e =
         let OPair (v1,v2) = resolveDiEdge e
         in DiEdgesByVertexMap .

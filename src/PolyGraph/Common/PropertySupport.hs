@@ -14,6 +14,7 @@ module PolyGraph.Common.PropertySupport (
   , VertexNames (..)
   , BagInfo(..)
   , analyzeBag
+  , trippleCounts
   , (&&&)
 ) where
 
@@ -91,6 +92,8 @@ analyzeBag vsOrEs =
               uniqueIsolatedVs = nub isolatedCandiatesR
           in  (edgesR, nub $ uniqueIsolatedVs L.\\ uniqueConnectedVs, uniqueConnectedVs)
 
+trippleCounts :: forall a b c . ([a],[b],[c]) -> (Int, Int, Int)
+trippleCounts (as, bs, cs) = (L.length as, L.length bs, L.length cs)
 
 (&&&) ::  (a -> b -> Bool) -> (a -> b -> Bool) -> a -> b -> Bool
 (&&&) = liftM2 . liftM2 $ (&&)
