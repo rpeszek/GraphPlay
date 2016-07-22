@@ -7,6 +7,7 @@ import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
 import qualified PolyGraph.Instances.SimpleGraph as SG
 import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HM
 import qualified PolyGraph.Instances.AdjacencyMatrix as AM
+import qualified PolyGraph.Instances.ListGraphs as LG
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable
 import PolyGraph.Buildable.DiGraph
@@ -37,6 +38,9 @@ showDiamond0123_4 = show (diamond0123 :: HM.DiEdgesByVertexMap String (H.OPair S
 
 showDiamond0123_5 = AM.prettyAdjacencyMatrix (diamond0123 :: AM.DiAdjacencyMatrix Int)
 
+showDiamond0123_6 = show (diamond0123 :: LG.Vertices Int (H.OPair Int))
+
+showDiamond0123_7 = show (diamond0123 :: LG.Edges Int (H.OPair Int))
 -----------------------------------------
 -- better code, locks on type I want   ---
 -----------------------------------------

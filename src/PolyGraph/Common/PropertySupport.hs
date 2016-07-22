@@ -23,8 +23,16 @@ import Data.List as L
 import PolyGraph.Common
 import PolyGraph.Instances.ListGraphs
 
+---------------------------------------------------
+-- list of 'MixedBags' used with property tests  --
+---------------------------------------------------
+data SimpleUOBag v = SimpleUOBag { getSimpleUOMix:: [Either v (UOPair v)] } deriving (Show, Read)
+data SimpleOBag v  = SimpleOBag  { getSimpleOMix::  [Either v (OPair v)]  } deriving (Show, Read)
+data MultiUOBag v  = MultiUOBag  { getMultiUOMix::  [Either v (UOPair v)] } deriving (Show, Read)
+data MultiOBag v   = MultiOBag   { getMultiOMix::   [Either v (OPair v)]  } deriving (Show, Read)
+
 ---------------------------------------------
--- list of types used with property tests  --
+-- helper types, more specialized bags     --
 ---------------------------------------------
 newtype SimpleUOList v = SimpleUOList { getSimpleUOPs ::[UOPair v]} deriving Show
 newtype SimpleOList v  = SimpleOList { getSimpleOPs :: [OPair v]  } deriving Show
@@ -33,11 +41,6 @@ newtype MultiOList v   = MultiOList { getMultiOPs ::   [OPair v]  } deriving Sho
 
 newtype VariousVertices v  = VariousVertices { getVs :: [v] } deriving Show
 newtype IsolatedVertices v = IsolatedVertices { getIVs:: [v]} deriving Show
-
-data SimpleUOBag v = SimpleUOBag { getSimpleUOMix:: [Either v (UOPair v)] } deriving Show
-data SimpleOBag v  = SimpleOBag  { getSimpleOMix::  [Either v (OPair v)]  } deriving Show
-data MultiUOBag v  = MultiUOBag  { getMultiUOMix::  [Either v (UOPair v)] } deriving Show
-data MultiOBag v   = MultiOBag   { getMultiOMix::   [Either v (OPair v)]  } deriving Show
 
 -----------------------------------------------------------
 -- all property data generators implement MixedBag class --
@@ -57,7 +60,7 @@ class (Eq v, PairLike e v) => MixedBag b v e where
             in conv . analyzeBag . getMix
   analyze :: b -> ([e],[v],[v])
   analyze = analyzeBag . getMix
-  
+
 ---------------------------------------------------------------------------------
 -- VertexNames is used to define Int based property test data of various types --
 ---------------------------------------------------------------------------------
@@ -84,6 +87,10 @@ analyzeBag vsOrEs =
                        in (e: edges, isolatedCandiates, v1 : v2 : connectedVs)
               (edgesR, isolatedCandiatesR, connectedVsR) = L.foldr foldF ([],[],[]) vsOrEs
           in  (edgesR, isolatedCandiatesR L.\\ connectedVsR, connectedVsR)
+
+
+(&&&) ::  (a -> b -> Bool) -> (a -> b -> Bool) -> a -> b -> Bool
+(&&&) = liftM2 . liftM2 $ (&&)
 
 -------------------------------------------------------------------
 -- arbitrary instances and MixedBag instances for declared types --

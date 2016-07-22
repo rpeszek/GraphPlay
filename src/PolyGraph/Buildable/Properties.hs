@@ -10,7 +10,35 @@ buildGraph :: forall g v e t. (Eq v, BuildableGraphDataSet g v e t) =>
                                                            g -> [Either v e] -> g
 buildGraph emptyG verticesOrEdges = foldr (flip (?+)) emptyG verticesOrEdges
 
+runProperty :: forall g v b e. (Eq v,
+                                VertexNames v,
+                                PairLike e v,
+                                MixedBag b v e,
+                                BuildableGraphDataSet g v e []) =>
+                                   (([e], [v], [v]) -> g -> Bool) -> g ->  b  -> Bool
+runProperty propCondition emptyG bag =
+      let graph = buildGraph emptyG (getMix bag) :: g
+          bagInfo = analyze bag :: ([e], [v], [v])
+      in propCondition bagInfo graph
 
+--
+runPropertyMG :: forall g v. (Eq v,
+                             VertexNames v,
+                             BuildableGraphDataSet g v (UOPair v) []) =>
+                                (([UOPair v], [v], [v]) -> g -> Bool) -> g ->  MultiUOBag v -> Bool
+runPropertyMG = runProperty
+
+--
+keepsVertices :: forall g v e. (Eq v,
+                          PairLike e v,
+                          BuildableGraphDataSet g v e []) =>
+                                           ([e], [v], [v]) -> g -> Bool
+keepsVertices (edges, isolatedVs, connectedVs) graph =
+        ((vCount toPair graph) == (length isolatedVs + length connectedVs))
+
+
+-- old --
+------
 prop_notForgetfulG :: forall g v. (Eq v,
                                    VertexNames v,
                                    BuildableGraphDataSet g v (UOPair v) []) =>

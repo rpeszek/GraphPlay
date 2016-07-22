@@ -10,6 +10,7 @@ import PolyGraph.Buildable
 import PolyGraph.Buildable.Properties
 import PolyGraph.Instances.ListGraphs
 
+
 main :: IO ()
 main = hspec spec
 
@@ -22,4 +23,4 @@ spec = do
       length SD.testEdges == 10
   describe "Vertices Graph" $ do
     it "is edge only fogetful" $ property $
-      prop_esForgetfulKeepsVsG (emptyGraph :: Vertices Int (UOPair Int))
+      runPropertyMG keepsVertices (emptyGraph :: Vertices Int (UOPair Int))

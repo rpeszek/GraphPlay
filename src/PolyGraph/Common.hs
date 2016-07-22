@@ -17,6 +17,7 @@ module PolyGraph.Common (
 
 import Data.Hashable
 
+
 -- Helper class and types --
 class PairLike a b | a-> b where
   toPair :: a -> (b,b)
@@ -37,7 +38,7 @@ second e = pairSecond . toPair $ e
 -- helper type for ordered and pairs of the same type (homologous)
 -- I need that to make it a Functor
 --
-newtype OPair a = OPair (a,a) deriving (Eq, Show)
+newtype OPair a = OPair (a,a) deriving (Eq, Show, Read)
 
 -- OPair instances --
 instance forall v . PairLike (OPair v) v where
@@ -52,7 +53,7 @@ instance Functor (OPair) where
 
 
 -- UnorderdPair used for resolving Graph edges --
-newtype UOPair v = UOPair (v,v) deriving Show
+newtype UOPair v = UOPair (v,v) deriving (Show, Read)
 
 instance forall v . PairLike (UOPair v) v where
   toPair (UOPair (a1,a2)) = (a1,a2)
