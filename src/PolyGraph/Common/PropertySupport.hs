@@ -14,6 +14,7 @@ module PolyGraph.Common.PropertySupport (
   , VertexNames (..)
   , BagInfo(..)
   , analyzeBag
+  , (&&&)
 ) where
 
 import Test.QuickCheck.Arbitrary
