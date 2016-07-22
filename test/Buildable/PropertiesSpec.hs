@@ -35,4 +35,5 @@ spec = do
   describe "SimpleGraph Type" $ do
     context "as Buildable Graph Instance" $ do
       it "has forget multi edges and keep vertices" $ property $
+         -- ! currently failing
          checkMultiEdgeDataProp (forgetMultiEdges &&& keepVertices) (on :: SimpleListGraph Int )
