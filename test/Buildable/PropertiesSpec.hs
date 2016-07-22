@@ -19,7 +19,15 @@ spec = do
   describe "Vertices Type" $ do
     context "as Buildable Graph Instance" $ do
       it "has keep vertices and forget edges" $ property $
-        checkMultiEdgeDataProp (keepVertices &&& forgetEdges) (emptyGraph :: Vertices Int (UOPair Int))
+        checkMultiEdgeDataProp (keepVertices &&& forgetEdges) (on :: Vertices Int (UOPair Int))
     context "as Buildable Di-Graph Instance" $ do
       it "has keep vertices and forget di-edges" $ property $
-        checkMultiDiEdgeDataProp (keepVertices &&& forgetEdges) (emptyGraph :: Vertices Int (OPair Int))
+        checkMultiDiEdgeDataProp (keepVertices &&& forgetEdges) (on :: Vertices Int (OPair Int))
+
+  describe "Edges Type" $ do
+    context "as Buildable Graph Instance" $ do
+      it "has keep all (including multi) edges and forget isolated vertices" $ property $
+         checkMultiEdgeDataProp (keepAllEdges &&& forgetIsolatedVertices) (on :: Edges Int (UOPair Int))
+    context "as Buildable Di-Graph Instance" $ do
+      it "has keep all (including multi) edges and forget isolated vertices" $ property $
+         checkMultiDiEdgeDataProp (keepAllEdges &&& forgetIsolatedVertices) (on :: Edges Int (OPair Int))
