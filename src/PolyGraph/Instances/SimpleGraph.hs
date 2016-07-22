@@ -95,7 +95,15 @@ instance  forall v e t . (Eq v,
 
    empty = SimpleGraph (emptyBuildableCollection :: t e) (emptyBuildableCollection :: t v)
 
-   g @+ v = let newVertices = addUniqueBuildableElement v (getDisconnectedVertices g)
+   g @+ v = let foldF :: e -> Bool -> Bool
+                foldF e True = True
+                foldF e False =
+                            let (v1,v2) = toPair e
+                            in ((v == v1) || (v == v2))
+                isInEdges = foldr foldF False (getEdges g)
+                newVertices = if isInEdges
+                              then (getDisconnectedVertices g)
+                              else (addUniqueBuildableElement v (getDisconnectedVertices g))
             in g {getDisconnectedVertices = newVertices}
    g ~+ e =
             let (v1,v2) = toPair e
