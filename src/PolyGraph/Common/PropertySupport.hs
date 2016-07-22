@@ -86,7 +86,9 @@ analyzeBag vsOrEs =
                        let (v1,v2) = toPair e
                        in (e: edges, isolatedCandiates, v1 : v2 : connectedVs)
               (edgesR, isolatedCandiatesR, connectedVsR) = L.foldr foldF ([],[],[]) vsOrEs
-          in  (edgesR, isolatedCandiatesR L.\\ connectedVsR, connectedVsR)
+              uniqueConnectedVs = nub connectedVsR
+              uniqueIsolatedVs = nub isolatedCandiatesR
+          in  (edgesR, nub $ uniqueIsolatedVs L.\\ uniqueConnectedVs, uniqueConnectedVs)
 
 
 (&&&) ::  (a -> b -> Bool) -> (a -> b -> Bool) -> a -> b -> Bool
