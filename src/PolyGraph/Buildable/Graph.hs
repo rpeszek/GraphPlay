@@ -1,6 +1,7 @@
 module PolyGraph.Buildable.Graph where
 
 import PolyGraph.Buildable
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
 
 (@+~~@) :: forall g v e t . (BuildableEdgeSemantics e v, EdgeSemantics e v, BuildableGraphDataSet g v e t) =>  v -> v -> g -> g

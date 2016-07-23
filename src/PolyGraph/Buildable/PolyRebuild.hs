@@ -1,5 +1,6 @@
 module PolyGraph.Buildable.PolyRebuild where
 
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable

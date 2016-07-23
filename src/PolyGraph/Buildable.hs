@@ -1,5 +1,6 @@
 module PolyGraph.Buildable where
 
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics)
 import qualified PolyGraph.Common as H

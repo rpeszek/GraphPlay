@@ -13,8 +13,9 @@ import qualified Data.HashMap.Strict as HM
 import PolyGraph.Instances.DiGraph.DiEdgesByVertexMap
 import PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge
 import PolyGraph.Common
-import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
+import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Common.BuildableCollection
 
 -----------------------------------------------------------------------

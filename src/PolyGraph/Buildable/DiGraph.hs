@@ -1,6 +1,7 @@
 module PolyGraph.Buildable.DiGraph where
 
 import PolyGraph.Buildable
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics)
 

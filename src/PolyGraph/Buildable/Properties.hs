@@ -1,6 +1,7 @@
 
 module PolyGraph.Buildable.Properties where
 
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.Buildable
 import PolyGraph.Common

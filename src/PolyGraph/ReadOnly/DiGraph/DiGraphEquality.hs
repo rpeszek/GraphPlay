@@ -6,7 +6,7 @@
 -}
 module PolyGraph.ReadOnly.DiGraph.DiGraphEquality where
 
-import PolyGraph.ReadOnly.Graph
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable
 import PolyGraph.Adjustable

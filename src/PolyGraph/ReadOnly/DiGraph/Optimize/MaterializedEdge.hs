@@ -7,8 +7,9 @@ import qualified Data.Foldable as F
 import qualified Data.Maybe as MB
 import qualified Data.HashMap.Strict as HM
 import PolyGraph.Common
-import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
+import PolyGraph.ReadOnly.DiGraph
 
 ------------------------------------------------------------------------------------------
 --  DiEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --

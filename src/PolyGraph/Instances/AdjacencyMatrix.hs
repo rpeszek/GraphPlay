@@ -5,6 +5,7 @@
 -}
 module PolyGraph.Instances.AdjacencyMatrix where
 
+import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable

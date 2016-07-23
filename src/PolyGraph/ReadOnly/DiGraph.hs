@@ -24,7 +24,7 @@
 
 module PolyGraph.ReadOnly.DiGraph where --exports everything on purpose
 
-import qualified PolyGraph.ReadOnly.Graph as G
+import qualified PolyGraph.ReadOnly as G
 import PolyGraph.Common
 
 --
@@ -58,13 +58,3 @@ class (G.GraphDataSet g v e t, DiEdgeSemantics e v)  => DiGraph g v e t
 
 instance forall v . (Eq v) => (DiEdgeSemantics  (OPair v) v) where
   resolveDiEdge e = e                                                   --(:t) g -> e -> (OPair v), brain teaser why is that?
-
--- no longer used
---instance forall v . (Eq v) => (DiEdgeSemantics  (v,v) v) where
---  resolveDiEdge e = OPair e                                                   --(:t) g -> e -> (OPair v), brain teaser why is that?
-
--- THESE create problems:
---instance forall e v. DiEdgeSemantics e v => G.EdgeSemantics e v where
---   resolveEdge = resolveDiEdge
-
---instance forall g v e t. DiGraph g v e t => G.Graph g v e t
