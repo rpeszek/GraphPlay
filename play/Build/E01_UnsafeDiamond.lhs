@@ -32,12 +32,12 @@ Diamond graphs have 4 vertices and 5 edges and look like so (directed to the rig
    \     /
       2
 
-'diamond' is a function that creates a Diamond directed graph with vertices v0 v1 v2 v3.
-and 'diamond0123' is that function applied to 4 string arguments
-The symbol ^+~>^ represents a function that adds directed edge to the graph with > signifying direction
+Following 'diamond' function creates a (polymorphic) Diamond directed graph with vertices v0 v1 v2 v3.
+and 'diamond0123' is that function applied to 4 String arguments
+Note about implementation: ^+~>^ represents a function that adds directed edge to the graph with > signifying direction
 and ^ signifies deserialization of vertex arguments.
 
-Here is our polymorphic data production code:
+So, here is our polymorphic data production code:
 
 \begin{code}
  diamond :: forall g v e t . (FromString v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t)
@@ -52,7 +52,7 @@ Here is our polymorphic data production code:
  diamond0123 = diamond "0" "1" "2" "3"
 \end{code}
 
-Please note that diamond0123 is defined 'forall' types g v e t as long as they satisfy listed constraints
+Please note that 'diamond0123' variable is defined 'forall' types g v e t as long as they satisfy listed constraints
   - 'FromString v' means that vertex type has deserialization mechanism
   - 'BuildableEdgeSemantics e v' means that edge type supports ability to create edges when vertices are known
   - 'DiEdgeSemantics e v' means that type e provides a way of finding adjacent vertices
