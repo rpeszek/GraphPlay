@@ -7,9 +7,12 @@ module PolyGraph.ReadOnly (
    , defaultVertexCount
    , GMorphism (..)
    , fGMorphism
+   , isValidGraphDataSet
 ) where
 
 import Data.List (nub, length)
+import qualified Data.Foldable as F
+import qualified Data.Maybe as M
 
 -- |  GraphDataSet thinks of vertices (v) and edges (e) as two arbitrary types
 --    Incidence function is defined on Graph or DiGraph level.
@@ -24,6 +27,16 @@ class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
   -- | vertex count that uses edge to vertex resolver
   vCount    ::  (e -> (v,v)) -> g -> Int
   vCount    =  defaultVertexCount
+
+-- | property helper
+isValidGraphDataSet :: forall g v e t . GraphDataSet g v e t => (e -> (v,v)) ->g -> Bool
+isValidGraphDataSet resolveE g =
+               let isolatedVs = isolatedVertices g
+                   findVMatch :: e -> Bool
+                   findVMatch e =
+                           let (v1,v2) = resolveE e
+                           in  (F.elem v1 isolatedVs) || (F.elem v2 isolatedVs)
+               in M.isNothing $ F.find findVMatch (edges g)
 
 ----------------------------------------------------------
 -- Note GMoriphism can be used with Graphs or DiGraphs  --

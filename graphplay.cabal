@@ -24,8 +24,10 @@ library
                        , PolyGraph.ReadOnly
                        , PolyGraph.ReadOnly.Graph
                        , PolyGraph.ReadOnly.Graph.GraphEquality
+                       , PolyGraph.ReadOnly.Graph.Properties
                        , PolyGraph.ReadOnly.DiGraph
                        , PolyGraph.ReadOnly.DiGraph.DiGraphEquality
+                       , PolyGraph.ReadOnly.DiGraph.Properties
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAFold
                        , PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
                        , PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion

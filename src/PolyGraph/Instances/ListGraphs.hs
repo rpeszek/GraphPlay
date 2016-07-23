@@ -43,6 +43,8 @@ instance forall v e. (DiEdgeSemantics e v) => (DiAdjacencyIndex (Vertices v e) v
 
 instance  forall v e. (Eq v, DiEdgeSemantics e v) => (DiGraph (Vertices v e) v e [])
 
+instance  forall v e. (Eq v, EdgeSemantics e v) => (Graph (Vertices v e) v e [])
+
 
 -- instance  forall v e. (Eq v, EdgeSemantics e v) => (Graph (Vertices v e) v e [])
 

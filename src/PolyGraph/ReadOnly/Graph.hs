@@ -20,16 +20,6 @@ instance forall v . (Eq v) => (EdgeSemantics (UOPair v) v) where
 
 class (EdgeSemantics e v, GraphDataSet g v e t) => Graph g v e t
 
--- TODO provide edge-vertex consistency check
-isValidGraph :: forall g v e t . Graph g v e t => g -> Bool
-isValidGraph = undefined
-
-
--- TODO implement check
--- to be valid eTrans and resolveEdge needs to commute with the vTrans
-isValidMorphism :: forall g v0 e0 t v1 e1 . (GraphDataSet g v0 e0 t, EdgeSemantics e0 v0, EdgeSemantics e1 v1) =>
-                               g -> GMorphism v0 e0 v1 e1 -> Bool
-isValidMorphism = undefined
 
 {-
 -- not needed, use functors directly with fGMorphism

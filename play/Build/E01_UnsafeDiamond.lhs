@@ -1,6 +1,7 @@
-First Play/Example program showing GraphPlay library.
+GraphPlay Example 1
 If you are like me, with many years of bad OO habits, this example will look strange.
-It is worth stopping and thinking about it.  It is all in the 'forall' constraint.
+It is worth thinking about how Haskell polymorphism works and what does the 'forall'
+constraint imply.
 
 \begin{code}
 module Build.E01_UnsafeDiamond where

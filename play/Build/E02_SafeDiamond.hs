@@ -1,5 +1,6 @@
 {-
  Polymorphic production with specialized consumption example.
+ TODO needs conversion to .lhs
 -}
 module Build.E02_SafeDiamond where
 

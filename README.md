@@ -16,4 +16,19 @@ Project uses somewhat unusual folder structure:
 * play - contain files that demo the library
 * test - is a TODO
 
+To play with this project:
+
+```
+git clone https://github.com/rpeszek/GraphPlay.git
+cd GraphPlay
+stack build
+stack build --test
+```
+or
+```
+stack ghci
+stack ghci --test
+```
+and :l various play/test files.
+
 My first non-'hello world' Haskell project!  Learning a TON and having lots of fun.
