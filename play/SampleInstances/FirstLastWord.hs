@@ -35,7 +35,7 @@ toFLWordText text = FLWordText text
 instance HASH.Hashable(FLWord) where
   hashWithSalt salt x = HASH.hashWithSalt salt (getFLWordText x)
 
-instance FromString (FLWord) where
+instance PrettyRead (FLWord) where
   fromString s = FLWord s
 
 fLWordsInFLWordSentence :: FLWordSentence -> OPair FLWord

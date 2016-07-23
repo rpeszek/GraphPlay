@@ -11,14 +11,14 @@ class BuildableEdgeSemantics e v where
 instance forall v. (Read v) => BuildableEdgeSemantics (H.OPair v) v where
   defaultEdge v1 v2 = H.OPair (v1,v2)
 
-class FromString a where
+class PrettyRead a where
   fromString :: String -> a
 
 
-instance {-# OVERLAPPABLE #-} forall v. (Read v) => FromString v where
+instance {-# OVERLAPPABLE #-} forall v. (Read v) => PrettyRead v where
   fromString = read
 
-instance {-# OVERLAPPING #-} FromString String where
+instance {-# OVERLAPPING #-} PrettyRead String where
     fromString = id
 
 class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
