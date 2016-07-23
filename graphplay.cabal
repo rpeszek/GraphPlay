@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 
 library
   hs-source-dirs:      src
-                       , examples
+                       , play
   exposed-modules:     Lib
                        , PolyGraph.Common
                        , PolyGraph.Common.BuildableCollection
