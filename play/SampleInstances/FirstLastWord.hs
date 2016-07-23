@@ -1,4 +1,4 @@
-module Play.DiGraph.SampleInstances.FirstLastWord (
+module SampleInstances.FirstLastWord (
      FLWordSentence(..)
    , FLWord(..)
    , FLWordText(..)

@@ -1,4 +1,4 @@
-module Play.DiGraph.TreeFoldOnSimpleGraph where
+module Deprecated.DiGraph.TreeFoldOnSimpleGraph where
 
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Common
@@ -7,7 +7,7 @@ import Data.Monoid
 import Data.Hashable
 import qualified Data.HashSet as HS
 import PolyGraph.Instances.SimpleGraph
-import Play.DiGraph.SampleData (playTwoDiamondsSetGraph, playTwoDiamonds)
+import Deprecated.DiGraph.SampleData (playTwoDiamondsSetGraph, playTwoDiamonds)
 
 --
 -- example aggregator (polymorphic for arbitrary v and e types but to count a needs to be an Int or something of that sort)

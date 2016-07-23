@@ -1,8 +1,8 @@
-module Play.DiGraph.SampleData where
+module Deprecated.DiGraph.SampleData where
 
 import PolyGraph.Common
 import qualified PolyGraph.Instances.SimpleGraph as SG
-import qualified Play.DiGraph.SampleInstances.FirstLastWord as FL
+import qualified SampleInstances.FirstLastWord as FL
 import qualified Data.HashSet as HS
 
 -- simple test data (list of pars that will serve as edges)

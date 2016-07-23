@@ -13,7 +13,7 @@ much language support is just so intriguing.
 
 Project uses somewhat unusual folder structure:  
 * src - contains PolyGraph.xyz modules with mostly polymorphic type class level
-* examples - contain Play.xyz modules for ghci use to play with the PolyGraph
+* play - contain files that demo the library
 * test - is a TODO
 
 My first non-'hello world' Haskell project!  Learning a TON and having lots of fun.

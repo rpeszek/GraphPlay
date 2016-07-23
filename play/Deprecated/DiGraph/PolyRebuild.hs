@@ -1,4 +1,4 @@
-module Play.DiGraph.PolyRebuild where
+module Deprecated.DiGraph.PolyRebuild where
 
 import PolyGraph.Common
 import PolyGraph.Buildable

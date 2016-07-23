@@ -1,6 +1,6 @@
 import Test.Hspec
 import Test.QuickCheck
-import Play.DiGraph.SampleData
+import Deprecated.DiGraph.SampleData
 
 main :: IO ()
 main = hspec $ do

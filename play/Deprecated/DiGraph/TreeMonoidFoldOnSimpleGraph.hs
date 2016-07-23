@@ -1,4 +1,4 @@
-module Play.DiGraph.TreeMonoidFoldOnSimpleGraph where
+module Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph where
 
 ----------------------------------------------------------------------
 -- test experiments
@@ -8,7 +8,7 @@ import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Common
 import PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold
 import qualified Data.HashSet as HS
-import Play.DiGraph.SampleData (playTwoDiamonds)
+import Deprecated.DiGraph.SampleData (playTwoDiamonds)
 
 
 -- | Numbers as Monoids under addition.

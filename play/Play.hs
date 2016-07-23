@@ -1,9 +1,10 @@
 
-import qualified Play.DiGraph.TreeFoldOnSimpleGraph as FSG
-import qualified Play.DiGraph.TreeMonoidFoldOnSimpleGraph as MFSG
-import qualified Play.DiGraph.IndexedFolds as IND1
-import qualified Play.DiGraph.PolyBuild as ADJ
-import qualified Play.DiGraph.PolyRebuild as PRB
+import qualified Deprecated.DiGraph.TreeFoldOnSimpleGraph as FSG
+import qualified Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph as MFSG
+import qualified Deprecated.DiGraph.IndexedFolds as IND1
+import qualified Build.E01_UnsafeDiamond as ADJ
+import qualified Build.E02_SafeDiamond as ADJ
+import qualified Deprecated.DiGraph.PolyRebuild as PRB
 
 main :: IO ()
 main = do

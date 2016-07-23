@@ -43,13 +43,14 @@ library
                        , PolyGraph.Instances.EdgeCountMapGraph
                        , PolyGraph.Instances.SimpleGraph
                        , PolyGraph.Common.PropertySupport
-                       , Play.DiGraph.SampleInstances.FirstLastWord
-                       , Play.DiGraph.SampleData
-                       , Play.DiGraph.TreeFoldOnSimpleGraph
-                       , Play.DiGraph.TreeMonoidFoldOnSimpleGraph
-                       , Play.DiGraph.IndexedFolds
-                       , Play.DiGraph.PolyBuild
-                       , Play.DiGraph.PolyRebuild
+                       , SampleInstances.FirstLastWord
+                       , Deprecated.DiGraph.SampleData
+                       , Deprecated.DiGraph.TreeFoldOnSimpleGraph
+                       , Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph
+                       , Deprecated.DiGraph.IndexedFolds
+                       , Build.E01_UnsafeDiamond
+                       , Build.E02_SafeDiamond
+                       , Deprecated.DiGraph.PolyRebuild
   build-depends:       base >= 4.7 && < 5
                       , lens
                       , mtl

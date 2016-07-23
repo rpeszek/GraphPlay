@@ -2,7 +2,7 @@
 -- Examples demostrate converting D-Graph that would be slow to
 -- fast DiAdjacencyIndex/DiGraph
 ------
-module Play.DiGraph.IndexedFolds where
+module Deprecated.DiGraph.IndexedFolds where
 
 import Data.Hashable
 import PolyGraph.Common
@@ -11,8 +11,8 @@ import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge as ME
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.ReadOnly.DiGraph.Fold.TAFold
 import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HTG
-import qualified Play.DiGraph.SampleInstances.FirstLastWord as T
-import qualified Play.DiGraph.SampleData as S (playFirstLast)
+import qualified SampleInstances.FirstLastWord as T
+import qualified Deprecated.DiGraph.SampleData as S (playFirstLast)
 import qualified Data.HashSet as HS
 
 ------
