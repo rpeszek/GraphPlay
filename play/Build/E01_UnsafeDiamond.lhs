@@ -89,7 +89,7 @@ And here is how our polymorphic graph data structure can be consumed:
   Vertices forget about all edges being added and remember only their vertices.
 
 And finally please note that this is a very literate program!
-Yes it is a valid program that runs and executes.
+Yes, it is a valid program that runs and executes.
 
 Why did I call it unsafe?  Compiler cannot check the deserialization so
 you can do things like this and get a runtime error:
