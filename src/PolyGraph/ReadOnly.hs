@@ -41,6 +41,9 @@ isValidGraphDataSet resolveE g =
 ----------------------------------------------------------
 -- Note GMoriphism can be used with Graphs or DiGraphs  --
 -- Definition is has not type contraint on e            --
+--                                                      --
+-- morphism properties are defined in GraphProperties   --
+-- DiGraph.Properties modules separately                --
 ----------------------------------------------------------
 data GMorphism v0 e0 v1 e1 = GMorphism {
    vTrans :: v0 -> v1,
@@ -53,6 +56,7 @@ fGMorphism fn = GMorphism {
      eTrans = fmap fn
  }
 
+-- other helper functions --
 defaultVertexCount :: forall g v e t. (GraphDataSet g v e t) => (e -> (v,v)) -> g -> Int
 defaultVertexCount f g =
      let isolatedVCount = length . isolatedVertices $ g

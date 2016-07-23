@@ -4,7 +4,10 @@
 
   TODO this needs testing
 -}
-module PolyGraph.ReadOnly.Graph.GraphEquality where
+module PolyGraph.ReadOnly.Graph.GraphEquality (
+  (~#==)
+  , edgeCountGIsomorphism
+) where
 
 import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph

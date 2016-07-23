@@ -12,10 +12,11 @@ module PolyGraph.Common.PropertySupport (
   , MultiOBag(..)
   , MixedBag (..)
   , VertexNames (..)
-  , BagInfo(..)
   , analyzeBag
   , trippleCounts
   , (&&&)
+  -- , bijectionCheckHelper
+  -- , isBijection
 ) where
 
 import Test.QuickCheck.Arbitrary
@@ -23,7 +24,8 @@ import Test.QuickCheck.Gen
 import Control.Monad
 import Data.List as L
 import PolyGraph.Common
-import PolyGraph.Instances.ListGraphs
+-- import PolyGraph.Instances.ListGraphs
+import PolyGraph.ReadOnly as Base
 
 ---------------------------------------------------
 -- list of 'MixedBags' used with property tests  --
@@ -47,19 +49,8 @@ newtype IsolatedVertices v = IsolatedVertices { getIVs:: [v]} deriving Show
 -----------------------------------------------------------
 -- all property data generators implement MixedBag class --
 -----------------------------------------------------------
-data BagInfo v e = BagInfo {
-   getEs:: [e],
-   getIsolatedVs:: [v],
-   getConnectedVs:: [v]
-}
-
 class (Eq v, PairLike e v) => MixedBag b v e where
   getMix :: b -> [Either v e]
-  info   :: b -> BagInfo v e
-  info   =
-           let conv :: ([e],[v],[v]) -> BagInfo v e
-               conv (el, ivl, vl) = BagInfo el ivl vl
-            in conv . analyzeBag . getMix
   analyze :: b -> ([e],[v],[v])
   analyze = analyzeBag . getMix
 
@@ -97,6 +88,22 @@ trippleCounts (as, bs, cs) = (L.length as, L.length bs, L.length cs)
 
 (&&&) ::  (a -> b -> Bool) -> (a -> b -> Bool) -> a -> b -> Bool
 (&&&) = liftM2 . liftM2 $ (&&)
+
+-- this is fine only for vertices
+bijectionCheckHelper :: forall a1 a2 . (Eq a1, Eq a2) =>
+                                [a1] -> (a1 -> a2) -> Bool
+bijectionCheckHelper testData f =
+                     let  inputs = L.nub testData
+                          values = map f inputs
+                     in L.length values == L.length inputs
+
+-- | this one is interesting it should basically check edge counts
+-- TODO this is not ready
+isBijection :: forall v0 e0 v1 e1 . (Eq v0, Eq v1 )=>
+                      [v0] -> [e0] -> Base.GMorphism v0 e0 v1 e1 -> Bool
+isBijection vs es m = undefined
+
+
 
 -------------------------------------------------------------------
 -- arbitrary instances and MixedBag instances for declared types --
@@ -184,12 +191,6 @@ instance forall v . (Eq v, VertexNames v) => Arbitrary(SimpleOBag v) where
 --    data MultiUOBag v  = MultiUOBag  { getMultiUOMix:: [Either v (UOPair v)] } deriving Show
 instance forall v. (Eq v) => MixedBag (MultiUOBag v) v (UOPair v) where
   getMix = getMultiUOMix
-
-testX :: forall v . (Eq v) => MultiUOBag v -> Int
-testX bag =
-      let ginfo :: BagInfo v (UOPair v)
-          ginfo = info bag
-      in L.length $ getEs ginfo
 
 instance forall v . (Eq v, VertexNames v) => Arbitrary(MultiUOBag v) where
   arbitrary = do
