@@ -12,7 +12,8 @@ When I get to it, I will want to try other approaches like using Free. Doing pol
 much language support is just so intriguing.
 
 Project uses somewhat unusual folder structure because in addition to standard 'src' and 'test' it has a separate folder called 'play'.  
-That folder contain files that demo the library. I am re-working these as literate programs. I think of them as code versions of blog posts. I love FP and Haskell and maybe my affection will become more contagious with these little program examples.
+That folder contain files that demo the library. I am re-working these as literate programs. I think of them as code versions of blog posts. I love FP and Haskell and maybe my affection will become more contagious with these little program examples. These play folder examples should be *easy to read without 
+knowing much about Haskell*
 
 To play with this project:
 
