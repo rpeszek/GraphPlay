@@ -11,10 +11,8 @@ I started plying with polymorphism by using class types with functional dependen
 When I get to it, I will want to try other approaches like using Free. Doing polymorphism without
 much language support is just so intriguing.
 
-Project uses somewhat unusual folder structure:  
-* src - contains PolyGraph.xyz modules with mostly polymorphic type class level
-* play - contain files that demo the library
-* test - is a TODO
+Project uses somewhat unusual folder structure because in addition to standard 'src' and 'test' it has a separate folder called 'play'.  
+That folder contain files that demo the library. I am re-working these as literate programs. I think of them as code versions of blog posts. I love FP and Haskell and maybe my affection will become more contagious with these little program examples.
 
 To play with this project:
 
@@ -31,4 +29,4 @@ stack ghci --test
 ```
 and :l various play/test files.
 
-My first non-'hello world' Haskell project!  Learning a TON and having lots of fun.
+My first more sizable Haskell project!  Learning a TON and having lots of fun.

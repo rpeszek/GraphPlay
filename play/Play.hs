@@ -8,16 +8,16 @@ import qualified Deprecated.DiGraph.PolyRebuild as PRB
 
 main :: IO ()
 main = do
+  putStrLn "E01:"
+  E01.allThisHardWork
+  putStrLn "E02:"
+  E02.allThisHardWork
   putStrLn "Folds:"
   print FSG.experiments
   putStrLn "Monoid Folds:"
   print MFSG.experiments
   putStrLn "Indexed Folds:"
   print IND1.experiments
-  putStrLn "E01:"
-  E01.allThisHardWork
-  putStrLn "E02:"
-  putStrLn E02.showDiamond'0123_1
   putStrLn "PolyRebuild"
   putStrLn PRB.showDiamond3456AsHashMap
   putStrLn PRB.showDiamondChainAsHashMap

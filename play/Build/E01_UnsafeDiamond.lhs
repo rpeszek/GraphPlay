@@ -4,7 +4,7 @@ It is worth thinking about how Haskell polymorphism works and what does the 'for
 constraint imply.
 
 \begin{code}
-module Build.E01_UnsafeDiamond where
+module Build.E01_UnsafeDiamond (allThisHardWork) where
 \end{code}
 
 This program shows polymorphic production of graph data structures
@@ -63,8 +63,8 @@ So, here is our polymorphic data production code:
  diamond :: forall g v e t . (PrettyRead v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t)
                            => String -> String -> String -> String -> g
  diamond v0 v1 v2 v3 =    ( v0 ^+~>^ v1 ) .
-                          ( v0 ^+~>^ v3 ) .
                           ( v0 ^+~>^ v2 ) .
+                          ( v0 ^+~>^ v3 ) .
                           ( v1 ^+~>^ v3 ) .
                           ( v2 ^+~>^ v3 ) $ emptyGraph
 
@@ -113,8 +113,7 @@ Understanding the code:
 
 - showDiamond0123_7 Vertices type forgets about the edges being added and remembers only vertices.
 
-
-Why did I call this example unsafe?  Type checking cannot verify deserialization so
+This example trades type safety for convenience.  Type checking cannot verify deserialization so
 you can do things like this and get a runtime error:
 
 \begin{code}
@@ -152,4 +151,4 @@ and evaluate all this hard work:
    putStrLn showDiamond0123_7
 \end{code}
 
-I will fix the lack of type safety in the next example.
+Next example will create diamond without deserializing vertices.
