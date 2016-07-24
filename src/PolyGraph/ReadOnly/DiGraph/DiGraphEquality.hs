@@ -27,7 +27,8 @@ edgeCountDiGIsomorphism = GMorphism {
      eTrans = resolveDiEdge
   }
 
-(~>#==) :: forall g v e t . (Eq v, Hashable v, DiGraph g v e t) => g -> g -> Bool
+(~>#==) :: forall g0 g1 v e0 e1 t0 t1 . (Eq v, Hashable v, DiGraph g0 v e0 t0, DiGraph g1 v e1 t1)
+                                            => g0 -> g1 -> Bool
 g0 ~>#== g1 =
              let g0edgeCounts :: EdgeCountMapDiGraph v
                  g0edgeCounts = morth edgeCountDiGIsomorphism g0

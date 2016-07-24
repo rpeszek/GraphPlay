@@ -27,7 +27,8 @@ edgeCountGIsomorphism = GMorphism {
      eTrans = resolveEdge
   }
 
-(~#==) :: forall g v e t . (Eq v, Hashable v, Graph g v e t) => g -> g -> Bool
+(~#==) :: forall g0 g1 v e0 e1 t0 t1 . (Eq v, Hashable v, Graph g0 v e0 t0, Graph g1 v e1 t1) =>
+                                                  g0 -> g1 -> Bool
 g0 ~#== g1 =
              let g0edgeCounts :: EdgeCountMapGraph v
                  g0edgeCounts = morth edgeCountGIsomorphism g0
