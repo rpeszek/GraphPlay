@@ -14,10 +14,8 @@ instance forall v. (Read v) => BuildableEdgeSemantics (H.OPair v) v where
 class PrettyRead a where
   fromString :: String -> a
 
-
 instance {-# OVERLAPPABLE #-} forall v. (Read v) => PrettyRead v where
   fromString = read
-
 instance {-# OVERLAPPING #-} PrettyRead String where
     fromString = id
 

@@ -52,6 +52,7 @@ library
                        , Deprecated.DiGraph.IndexedFolds
                        , Build.E01_UnsafeDiamond
                        , Build.E02_SafeDiamond
+                       , Build.E03_PolyReloaded
                        , Deprecated.DiGraph.PolyRebuild
   build-depends:       base >= 4.7 && < 5
                       , lens

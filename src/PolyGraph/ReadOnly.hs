@@ -16,6 +16,10 @@ import qualified Data.Maybe as M
 
 -- |  GraphDataSet thinks of vertices (v) and edges (e) as two arbitrary types
 --    Incidence function is defined on Graph or DiGraph level.
+--    Foldable constraint does not imply any adjacency friendly folds.
+--    It simply means that the content of edges and isolatedVertices can be
+--    discovered independently of traversing the graph itself.
+
 class (Eq v, Foldable t)  => GraphDataSet g v e t | g -> t, g -> v, g -> e where
   isolatedVertices ::  g -> t v
   edges            ::  g -> t e

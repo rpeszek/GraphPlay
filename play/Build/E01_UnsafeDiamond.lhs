@@ -14,19 +14,19 @@ Polymorphic directed graphs are defined in
 
 \begin{code}
  import qualified PolyGraph.Common as Common
- import PolyGraph.ReadOnly.DiGraph
- import PolyGraph.Buildable
- import PolyGraph.Buildable.DiGraph
+ import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics)
+ import PolyGraph.Buildable (PrettyRead, BuildableEdgeSemantics, BuildableGraphDataSet, emptyGraph)
+ import PolyGraph.Buildable.DiGraph ((^+~>^))
 \end{code}
 
 have various implementations defined in
 
 \begin{code}
- import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HM
- import qualified PolyGraph.Instances.SimpleGraph as SG
- import qualified PolyGraph.Instances.AdjacencyMatrix as AM
- import qualified PolyGraph.Instances.ListGraphs as LG
- import qualified SampleInstances.FirstLastWord as FL
+ import qualified PolyGraph.Instances.SimpleGraph as Simple
+ import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as AdjacencyIndex
+ import qualified PolyGraph.Instances.AdjacencyMatrix as AMatrix
+ import qualified PolyGraph.Instances.ListGraphs as ListGraphs
+ import qualified SampleInstances.FirstLastWord as TextSentencesGraph
 \end{code}
 
 and our examples will also need to handle errors:
@@ -83,13 +83,13 @@ Note that 'diamond0123' variable is defined 'forall' types g v e t as long as th
 And here is how our polymorphic graph data structure can be consumed:
 
 \begin{code}
- showDiamond0123_1 = show (diamond0123 :: SG.SimpleSetDiGraph String)
- showDiamond0123_2 = show (diamond0123 :: SG.SimpleListDiGraph Int)
- showDiamond0123_3 = show (diamond0123 :: FL.FLWordText)
- showDiamond0123_4 = show (diamond0123 :: HM.DiEdgesByVertexMap String (Common.OPair String) [])
- showDiamond0123_5 = AM.prettyAdjacencyMatrix (diamond0123 :: AM.DiAdjacencyMatrix Int)
- showDiamond0123_6 = show (diamond0123 :: LG.Edges Int (Common.OPair Int))
- showDiamond0123_7 = show (diamond0123 :: LG.Vertices Int (Common.OPair Int))
+ showDiamond0123_1 = show (diamond0123 :: Simple.SimpleSetDiGraph String)
+ showDiamond0123_2 = show (diamond0123 :: Simple.SimpleListDiGraph Int)
+ showDiamond0123_3 = show (diamond0123 :: TextSentencesGraph.FLWordText)
+ showDiamond0123_4 = show (diamond0123 :: AdjacencyIndex.DiEdgesByVertexMap String (Common.OPair String) [])
+ showDiamond0123_5 = AMatrix.prettyAdjacencyMatrix (diamond0123 :: AMatrix.DiAdjacencyMatrix Int)
+ showDiamond0123_6 = show (diamond0123 :: ListGraphs.Edges Int (Common.OPair Int))
+ showDiamond0123_7 = show (diamond0123 :: ListGraphs.Vertices Int (Common.OPair Int))
 \end{code}
 
 Understanding the code:
@@ -103,7 +103,8 @@ Understanding the code:
   are sentences in that text and adjacent vertices are first and last words in the sentence.
   It is a weird example, but it works.
 
-- showDiamond0123_4 is a classic way to represent graphs, it is a map using vertex as key and adjacent di-edges as value.
+- showDiamond0123_4 is one of the classic ways to represent graphs, it is the adjacency index map
+  that has vertex as key and adjacent di-edges list as value.
 
 - showDiamond0123_5 specializes diamond0123 to its AdjacencyMatrix.  AdjacencyMatrix is just another
   instance of our polymorphic Graph.  Ain't that cool?
@@ -120,7 +121,7 @@ you can do things like this and get a runtime error:
  diamondABCD :: forall g v e t . (PrettyRead v, BuildableEdgeSemantics e v, DiEdgeSemantics e v, BuildableGraphDataSet g v e t) => g
  diamondABCD = diamond "a" "b" "c" "d"
 
- showDiamondWrong = show (diamondABCD :: SG.SimpleSetDiGraph Int)
+ showDiamondWrong = show (diamondABCD :: Simple.SimpleSetDiGraph Int)
 \end{code}
 
 And finally, please note that this is a very literate program! It is supposed to use LaTeX markup.

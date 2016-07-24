@@ -14,8 +14,8 @@ import PolyGraph.Buildable.DiGraph ((@+~>@))
 We will just use 2 instance types
 
 \begin{code}
-import qualified SampleInstances.FirstLastWord as FL
-import qualified PolyGraph.Instances.SimpleGraph as SG
+import qualified SampleInstances.FirstLastWord   as TextSentencesGraph
+import qualified PolyGraph.Instances.SimpleGraph as Simple
 \end{code}
 
 This time we use @+~>@ function which adds directed edge and has signature
@@ -55,16 +55,16 @@ diamond0123' :: forall g v e t . (BuildableEdgeSemantics e v, DiEdgeSemantics e 
 diamond0123' f = safeDiamond (f 0) (f 1) (f 2) (f 3)
 
 showDiamond'0123_1 =
-                let mygraph:: SG.SimpleSetDiGraph String
+                let mygraph:: Simple.SimpleSetDiGraph String
                     mygraph = diamond0123' show
                 in show (mygraph)
 showDiamond'0123_2 =
-                let mygraph :: FL.FLWordText
-                    mygraph = diamond0123' (FL.FLWord . show)
+                let mygraph :: TextSentencesGraph.FLWordText
+                    mygraph = diamond0123' (TextSentencesGraph.FLWord . show)
                 in show (mygraph)
 \end{code}
 
-To run it evaluate this in GHCI:
+To run it evaluate this in ghci:
 
 \begin{code}
 allThisHardWork :: IO()
