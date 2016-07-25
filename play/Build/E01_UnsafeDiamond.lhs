@@ -1,4 +1,6 @@
 GraphPlay Example 1
+** All GraphPlay lhs files use markdown formatting syntax and are being exported to wiki **
+
 If you are like me, with many years of bad OO habits, this example will look strange.
 It is worth thinking about how Haskell polymorphism works and what does the 'forall'
 constraint imply.
@@ -41,11 +43,13 @@ and our examples will also need to handle errors:
 About Graph Theory:
 Diamond graph has 4 vertices and 5 edges and looks like this (directed left to right)
 
+```
       1
    /     \
 0   ----   3
    \     /
       2
+```
 
 About our program:
 The following 'diamond' function creates a (polymorphic) diamond directed graph with vertices v0 v1 v2 v3.
