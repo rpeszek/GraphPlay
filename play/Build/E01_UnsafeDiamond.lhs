@@ -1,9 +1,6 @@
 GraphPlay Example 1
-** All GraphPlay lhs files use markdown formatting syntax and are being exported to wiki **
 
-If you are like me, with many years of bad OO habits, this example will look strange.
-It is worth thinking about how Haskell polymorphism works and what does the 'forall'
-constraint imply.
+If you are like me and have many years of OO habits, this example will look strange.
 
 \begin{code}
 module Build.E01_UnsafeDiamond (allThisHardWork) where
