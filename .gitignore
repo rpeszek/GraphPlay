@@ -19,3 +19,5 @@ cabal.sandbox.config
 .stack-work/
 cabal.project.local
 Work.hs
+lhs-to-md-c.sh
+lhs-to-md-p.sh
