@@ -1,25 +1,31 @@
-module PolyGraph.Buildable where
+--
+--
+module PolyGraph.Buildable (
+   BuildableEdgeSemantics(..)
+   , BuildableGraphDataSet(..)
+   , PrettyRead(..)
+   , addDefaultEdge
+) where
 
-import PolyGraph.ReadOnly
-import PolyGraph.ReadOnly.Graph
+import qualified PolyGraph.ReadOnly as Base
 import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics)
-import qualified PolyGraph.Common as H
+import qualified PolyGraph.Common as Common
 
 class BuildableEdgeSemantics e v where
   defaultEdge :: v -> v -> e
 
-instance forall v. (Read v) => BuildableEdgeSemantics (H.OPair v) v where
-  defaultEdge v1 v2 = H.OPair (v1,v2)
+instance forall v. (Read v) => BuildableEdgeSemantics (Common.OPair v) v where
+  defaultEdge v1 v2 = Common.OPair (v1,v2)
 
+-- Helper class used for deserializing Vertices when creating graphs --
 class PrettyRead a where
   fromString :: String -> a
-
 instance {-# OVERLAPPABLE #-} forall v. (Read v) => PrettyRead v where
   fromString = read
 instance {-# OVERLAPPING #-} PrettyRead String where
     fromString = id
 
-class GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
+class Base.GraphDataSet g v e t  => BuildableGraphDataSet g v e t where
   empty :: g
 
   emptyGraph :: g

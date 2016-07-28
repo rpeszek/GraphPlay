@@ -1,6 +1,6 @@
 {-
   HashMap representation of Di-Graph where vertices are keys and collection of di-adjecent edges
-  is stored as a value.  Efficient for traversing algorithms.
+  is stored as a value.  Efficient for traversing algorithms. 
 -}
 
 module PolyGraph.Instances.DiGraph.DiEdgesByVertexMap where
@@ -58,7 +58,7 @@ instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, 
 -- this will be a bit slow but not too bad
 instance forall v e te. (Eq v, Hashable v, Eq e, Traversable te, DiEdgeSemantics e v, AdjustableCollection (te e) e) =>
                                   (AdjustableGraphDataSet(DiEdgesByVertexMap v e te) v e []) where
-   g @\ f =
+   g \@ f =
              let verticesTrimmed = DiEdgesByVertexMap . (HM.filterWithKey (\v _ -> f v)) . getHashMap $ g
                  edgeFilter :: e -> Bool
                  edgeFilter e =

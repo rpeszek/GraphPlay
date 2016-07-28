@@ -108,6 +108,9 @@ test-suite graphplay-test
                       , RankNTypes
                       -- GADT
 
+  other-modules:      Buildable.PropertiesSpec
+                      , ReadOnly.EqualitySpec
+
 source-repository head
   type:     git
   location: https://github.com/rpeszek/GraphPlay

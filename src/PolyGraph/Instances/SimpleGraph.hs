@@ -4,7 +4,7 @@
   it ignores multiple edges treating
   them as one edge (even if used with a list).
 
-  This data type treats no-multiple edges requirement on the type level.
+  This data type treats no-multiple edges requirement on the type level. 
 
   Assumption that graph has no multiple edges is viewed as: edge does not contribute
   more information than 2 vertices it joins.  Hence edge can be simply represented as a pair.
@@ -127,7 +127,7 @@ instance  forall v e t . (Eq v,
                         PairLike e v
                         ) => AdjustableGraphDataSet(SimpleGraph v e t) v e t where
 
-   g @\ f = let newVertices = filterBuildableCollection f (getDisconnectedVertices g)
+   g \@ f = let newVertices = filterBuildableCollection f (getDisconnectedVertices g)
                 newEdges = filterBuildableCollection (\vv -> (f $ first vv) && (f $ second vv)) (getEdges g)
             in  SimpleGraph { getEdges = newEdges, getDisconnectedVertices = newVertices}
 

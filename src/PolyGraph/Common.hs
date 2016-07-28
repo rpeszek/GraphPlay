@@ -3,7 +3,6 @@
 -- SHARED HELPERS
 -- various helpers (typically exist defined somewhere else but wanted to limit library dependencies)
 --
-
 module PolyGraph.Common (
   pairSecond
   , pairFirst
@@ -15,7 +14,7 @@ module PolyGraph.Common (
   , oneElementPair
 ) where
 
-import Data.Hashable
+import Data.Hashable (Hashable, hashWithSalt)
 
 
 -- Helper class and types --
@@ -35,8 +34,9 @@ second :: (PairLike e v) => e -> v
 second e = pairSecond . toPair $ e
 
 --
--- helper type for ordered and pairs of the same type (homologous)
--- I need that to make it a Functor
+-- Type used to resolve directed edges.  Represents ordered 2-element list.
+-- These is more than a superficial diffrence from the (,) type, this one is
+-- more of a collection type as Functor (and Monad/Applicative when I get to it)
 --
 newtype OPair a = OPair (a,a) deriving (Eq, Show, Read)
 
@@ -51,8 +51,10 @@ instance forall v. Hashable v => Hashable (OPair v) where
 instance Functor (OPair) where
     fmap f (OPair (x,y)) = OPair (f x, f y)
 
-
--- UnorderdPair used for resolving Graph edges --
+--
+-- UnorderdPair used for resolving Graph edges
+-- Represents 2 element set
+--
 newtype UOPair v = UOPair (v,v) deriving (Show, Read)
 
 instance forall v . PairLike (UOPair v) v where
@@ -69,7 +71,7 @@ instance Functor (UOPair) where
     fmap f (UOPair (x,y)) = UOPair (f x, f y)
 
 
-
+-- TODO probably should switch to using Arrow since it is part of the base.
 pairSecond :: (a,b) -> b
 pairSecond (_,x) = x
 

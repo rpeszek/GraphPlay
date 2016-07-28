@@ -1,15 +1,16 @@
-GraphPlay Example 4. Polymorphism to the max
+GraphPlay Example 4. Polymorphism to the max 
 ------
-As a OO programmer I have found the very idea of polymorphic data production fascinating.
-Examples 1 and 2 were all about it. That idea brings the next puzzling question: is it possible
-to both produce and consume data polymorphically, thus, creating programs that are instance independent.
+As a OO programmer I have found the idea of polymorphic data production fascinating.
+Examples 1 and 2 were dedicated to that idea. Would it be possible to both produce and consume data polymorphically?
+... thus, creating programs that are completely instance independent?
 
-The answer is obvioulsy: no that would not be logical. For example, I can polymphically calculate edge count
-using eCount function defined by the GraphDataSet (PolyGraph.ReadOnly) type class, but both Vertices and Edges
-(PolyGraph.Instances.ListGraphs) implement BuildableGraphDataSet and for Vertices instance eCount will always
-be zero (Vertices type forgets about edges) and for Edges will not.
+The answer is: no that would not make sense because results of the calculation can depend on which
+instance is used. For example, I can polymphically calculate edge count using eCount function defined by
+the GraphDataSet (PolyGraph.ReadOnly) type class.  Result of this calculation for Vertices
+(PolyGraph.Instances.ListGraphs) will always be zero (Vertices instance forgets about edges).
 
-This program attempt to do the next best thing. Create a program that is 'almost' agnostic to instance types.
+This program attempts to do the next best thing. Create a program that stays
+agnostic of which instance is used until the very end.
 \begin{code}
 module Build.E04_PolyToMax (allThisHardWork, grid) where
 \end{code}
@@ -22,22 +23,20 @@ import PolyGraph.Common (OPair(..), PairLike(..))
 import PolyGraph.Buildable ((+@))
 import PolyGraph.Buildable.DiGraph ((@+~>@))
 import qualified PolyGraph.Buildable as B
-import qualified PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold as FastFold
 \end{code}
 
-We will use these to finally specialize on the instance types
+with extra help from these modules:
 \begin{code}
-import qualified PolyGraph.Instances.ListGraphs as ListGraphs
-import Data.List
+import qualified PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold as FastFold
 import Control.Arrow ((&&&))
 \end{code}
 
-We need something to signal the type.
+And we will show off our results at the end using graph instances found in:
 \begin{code}
-on :: forall g v e t.  B.BuildableGraphDataSet g v e t => g
-on = B.emptyGraph
+import qualified PolyGraph.Instances.ListGraphs as ListGraphs
 \end{code}
 
+Grid is a directed graph with edges pointing up and right. We will be using a square n x n grid with n^2 vertices.
 \begin{code}
 grid :: forall g v e t. (
                           B.BuildableEdgeSemantics e v,
@@ -55,43 +54,68 @@ grid n f =
           in  addHLine (n-1) . addVBars (n-2) . addVLine (n-1) . addHBars (n-2) $ grid (n-1) f
 \end{code}
 
-_Motivation_: TODO
+_Motivation and Problem Statement_: Trees and Graphs are related in more than one way.
+I like to think about trees as:
 
-To keep things simple and focused, moving forward, we specialize vertex type to (Int, Int) and edge type to OPair.
+_Trees are directed graphs that lack the concept of vertex equality_
+
+Program that does a recursive logic on a directed graph and ignores vertex equality can be very inefficient.
+One classic example of this is the naive (and well known) recursive program example for computing Fibonacci numbers.
+
+_Grid graph_: If grid forgot about vertex equality, it would become a (pruned) binary tree.
+In this example we will compute a comparizon between the v-size of the grid against the node size of that tree.
+
+To keep things simple and focused, we specialize vertex type to (Int, Int) and the edge type to OPair.
+First, I will try to compute the v-size of the grid, ignoring the fact that we can predict the result of n^2.
 What I want is a fuction which looks like this:
 
- countGridVertices:: Int -> Int
+ countGraphVertices:: Int -> Int
+ countGraphVertices n = undefined
 
-accepting size of the graph and computing the number of verices, not carying about which of the instances of
-BuildableGraphDataSet is being used. This is not logical and Haskell compiler will not allow it. So I have 2 choices:
+effectively removing the 'g' from the type signature with all associated constraints.
+This is not logical and Haskell compiler will not allow me to use my 'grid' function in the implementation of
+'countGraphVertices'. So I have 2 choices:
 
-  - accept bugus input parameter (similar to Java List.toArray) to tell compiler which type is used
-  - include graph type in the result
+  - accept a bugus input parameter (similar to Java List.toArray) to tell compiler about 'g' and its contraints
+  - include graph type in the result for the same purpose
 
-Since the later the first approach is more familiar to OO coders I will run with it:
+Since the first approach is more familiar to OO coders I will run with it:
+
 \begin{code}
 countGraphVertices  :: forall g v . (B.BuildableGraphDataSet g (Int,Int) (OPair (Int,Int)) [])
                                     => g -> Int -> Int
 countGraphVertices _ n = Base.vCount (toPair . DiG.resolveDiEdge) (grid n (,) :: g)
-
 \end{code}
 
-\begin{code}
-newtype Sum a = Sum { getSum :: a } deriving Show
-instance Num a => Monoid (Sum a) where
-    mempty = Sum 0
-    Sum x `mappend` Sum y = Sum (x + y)
+_Understanding the code_: in the code above, it maybe confusing why do I need to resolve edges when calculating vertex count.  It is because
+vCount is implemented on the GraphDataSet level GraphDataSet 'knows' only about edges and isolatedVertices, and it does not
+assume anything about the edge type.
 
-treeNodeCountFoldLogic :: FastFold.MonoidFoldAccLogic v (OPair v) (Sum Int)
-treeNodeCountFoldLogic = FastFold.defaultMonoidFoldAccLogic {
-                      FastFold.applyVertex  = const (Sum 1)
+_Code below_: I find is super cool that things like Monoid type class is part of the the language base package.
+Monoids are for 'appending' things. Interestingly the obvious choice of monoid: 'the number' is not implemented
+as one because it is unclear if (+) or (*) should be used. Thus, I need to create my own type and make it Monoid.
+
+I am using a tree-like fold (PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold) for directed graphs which allows me to collect any information from each folded vertex,
+each folded edge and the monoid 'appending' is performed on each vertex across fold results from all di-adjacent edges.
+
+\begin{code}
+newtype Plus a = Plus { getSum :: a } deriving Show
+instance Num a => Monoid (Plus a) where
+    mempty = Plus 0
+    Plus x `mappend` Plus y = Plus (x + y)
+
+treeNodeCounter :: FastFold.MonoidFoldAccLogic v (OPair v) (Plus Int)
+treeNodeCounter = FastFold.defaultMonoidFoldAccLogic {
+                      FastFold.applyVertex  = const (Plus 1)
                  }
 
 countTreeNodes:: forall g v . (DiG.DiAdjacencyIndex g (Int,Int) (OPair (Int,Int)) [],
                               B.BuildableGraphDataSet g (Int,Int) (OPair (Int,Int)) [])
                                  => g -> Int -> Int
-countTreeNodes _ n = getSum $ FastFold.dfsFold (grid n (,) :: g) treeNodeCountFoldLogic (0,0)
+countTreeNodes _ n = getSum $ FastFold.dfsFold (grid n (,) :: g) treeNodeCounter (0,0)
 \end{code}
+
+That allows us to wrap up our example in a recognizable Haskell pattern:
 
 \begin{code}
 runProgram :: forall g v . (DiG.DiAdjacencyIndex g (Int,Int) (OPair (Int,Int)) [],
@@ -100,6 +124,23 @@ runProgram :: forall g v . (DiG.DiAdjacencyIndex g (Int,Int) (OPair (Int,Int)) [
 runProgram n g = map (countGraphVertices g &&& countTreeNodes g) [1..n]
 \end{code}
 
+_Understanding the code_: If you do not know what &&& try to first guess what it does by looking
+at the type signature and the rest of the code.
+Here I could replace the funtion used by map with
+
+   \i -> (countGraphVertices g i, countTreeNodes g i)
+
+and &&& makes the code more point-free.
+
+We need something to signal the type.
+
+\begin{code}
+on :: forall g v e t.  B.BuildableGraphDataSet g v e t => g
+on = B.emptyGraph
+\end{code}
+
+And now we can run the comparizon.  Notice that the resulting numbers are different depending
+on the choice of instance type.  This is why types are needed at some point in the program.
 \begin{code}
 allThisHardWork :: IO()
 allThisHardWork = do

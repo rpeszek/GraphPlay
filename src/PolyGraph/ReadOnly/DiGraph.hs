@@ -21,8 +21,13 @@
 --
 --  Note: LANGUAGE extensions shown below are typically configured globally for a project
 --
+--
 
-module PolyGraph.ReadOnly.DiGraph where --exports everything on purpose
+module PolyGraph.ReadOnly.DiGraph (
+   DiEdgeSemantics(..)
+  , DiAdjacencyIndex(..)
+  , DiGraph(..)
+) where --exports everything on purpose
 
 import qualified PolyGraph.ReadOnly as G
 import PolyGraph.Common

@@ -2,7 +2,7 @@
   Convenience forgetful graphs that can be used to build more complex graphs or to examine
   edge or vertex aspect of polymorphic graph.
   Vertices Graph forgets edges,
-  Edges graph forgets isolatedVertices.
+  Edges graph forgets isolatedVertices. 
 
   Unlike SimpleGraph Edges allow duplicate edges in the list representing muliple edges on a graph
 -}
@@ -64,7 +64,7 @@ instance  forall v e . (Eq v, PairLike e v) => BuildableGraphDataSet (Vertices v
 
 instance  forall v e . (Eq v, Eq e, PairLike e v) => AdjustableGraphDataSet (Vertices v e) v e [] where
 
-   g @\ f = Vertices ( filter f (getVertices g) )
+   g \@ f = Vertices ( filter f (getVertices g) )
 
    filterEdges strict g f = g
 
@@ -95,7 +95,7 @@ instance  forall v e. (Eq v) => BuildableGraphDataSet (Edges v e) v e [] where
 --------------------------------------------
 instance  forall v e. (Eq v, Eq e, PairLike e v) => AdjustableGraphDataSet (Edges v e) v e [] where
 
-   g @\ f = g
+   g \@ f = g
 
    filterEdges strict g f =
                      let newEdges = filter f (getEdges g)

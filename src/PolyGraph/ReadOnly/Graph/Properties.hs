@@ -1,9 +1,14 @@
+-- Properties for Graph
+--
+module PolyGraph.ReadOnly.Graph.Properties (
+   isValidGraph
+   , isValidMorphism
+   , isValidMorphismSingleEdge
+) where
 
-module PolyGraph.ReadOnly.Graph.Properties where
-
-import PolyGraph.ReadOnly
-import PolyGraph.ReadOnly.Graph
-import PolyGraph.Common
+import PolyGraph.ReadOnly (GMorphism(..), isValidGraphDataSet)
+import PolyGraph.ReadOnly.Graph (Graph, EdgeSemantics(..))
+import PolyGraph.Common (UOPair(..), PairLike(toPair))
 import qualified Data.Maybe as M
 import qualified Data.Foldable as F
 
