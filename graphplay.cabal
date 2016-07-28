@@ -53,6 +53,7 @@ library
                        , Build.E01_UnsafeDiamond
                        , Build.E02_SafeDiamond
                        , Build.E03_PolyReloaded
+                       , Build.E04_PolyToMax
                        , Deprecated.DiGraph.PolyRebuild
   build-depends:       base >= 4.7 && < 5
                       , lens

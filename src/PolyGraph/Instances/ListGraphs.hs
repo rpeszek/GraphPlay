@@ -37,6 +37,8 @@ type  DiEdges v = Edges v (OPair v)
 instance  forall v e. (Eq v)=> (GraphDataSet (Vertices v e) v e []) where
   isolatedVertices g = getVertices g
   edges g  =  []
+  -- vCount    ::  (e -> (v,v)) -> g -> Int
+  vCount =  const (length . getVertices)
 
 instance forall v e. (DiEdgeSemantics e v) => (DiAdjacencyIndex (Vertices v e) v e []) where
    cEdgesOf g ver = []
