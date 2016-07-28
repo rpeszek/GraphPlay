@@ -55,10 +55,10 @@ instance  forall v e . (Eq v, PairLike e v) => BuildableGraphDataSet (Vertices v
 
    empty = Vertices []
 
-   g @+ v = Vertices ( nub (v : (getVertices g)) )
-   g ~+ e =
+   g +@ v = Vertices ( nub (v : (getVertices g)) )
+   g +~ e =
             let (v1,v2) = toPair e
-            in g @+ v1 @+ v2
+            in g +@ v1 +@ v2
 
    union g1 g2 = Vertices ((getVertices g1) ++ (getVertices g2))
 
@@ -84,9 +84,9 @@ instance  forall v e. (Eq v) => BuildableGraphDataSet (Edges v e) v e [] where
 
    empty = Edges []
 
-   g @+ v = g
+   g +@ v = g
 
-   g ~+ e = Edges ( e : (getEdges g))
+   g +~ e = Edges ( e : (getEdges g))
 
    union g1 g2 = Edges ((getEdges g1) ++ (getEdges g2))
 

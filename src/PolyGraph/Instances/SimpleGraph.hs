@@ -96,7 +96,7 @@ instance  forall v e t . (Eq v,
 
    empty = SimpleGraph (emptyBuildableCollection :: t e) (emptyBuildableCollection :: t v)
 
-   g @+ v = let foldF :: e -> Bool -> Bool
+   g +@ v = let foldF :: e -> Bool -> Bool
                 foldF e True = True
                 foldF e False =
                             let (v1,v2) = toPair e
@@ -106,7 +106,7 @@ instance  forall v e t . (Eq v,
                               then (getDisconnectedVertices g)
                               else (addUniqueBuildableElement v (getDisconnectedVertices g))
             in g {getDisconnectedVertices = newVertices}
-   g ~+ e =
+   g +~ e =
             let (v1,v2) = toPair e
                 newVertices = deleteBuildableElement v1 $
                               deleteBuildableElement v2 (getDisconnectedVertices g)

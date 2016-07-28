@@ -1,6 +1,6 @@
 GraphPlay Example 4. Polymorphism to the max
 ------
-As a OO programmer I found the very idea of polymorphic data production fascinating.
+As a OO programmer I have found the very idea of polymorphic data production fascinating.
 Examples 1 and 2 were all about it. That idea brings the next puzzling question: is it possible
 to both produce and consume data polymorphically, thus, creating programs that are instance independent.
 
@@ -19,7 +19,7 @@ We will need our polymorphic graph building machinery:
 import qualified PolyGraph.ReadOnly as Base
 import qualified PolyGraph.ReadOnly.DiGraph as DiG
 import PolyGraph.Common (OPair(..), PairLike(..))
-import PolyGraph.Buildable ((@+))
+import PolyGraph.Buildable ((+@))
 import PolyGraph.Buildable.DiGraph ((@+~>@))
 import qualified PolyGraph.Buildable as B
 import qualified PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold as FastFold
@@ -45,7 +45,7 @@ grid :: forall g v e t. (
                           B.BuildableGraphDataSet g v e t)
                                    =>  Int -> (Int -> Int -> v) -> g
 grid 0 _ = B.emptyGraph
-grid 1 f = B.emptyGraph @+ (f 0 0) :: (B.BuildableGraphDataSet g v e t ) => g
+grid 1 f = B.emptyGraph +@ (f 0 0) :: (B.BuildableGraphDataSet g v e t ) => g
 grid n f =
           let addHLine :: Int -> g -> g
               addHLine j g = foldr(\i -> (f i j) @+~>@ (f (i+1) j)) g [0..(n-2)]

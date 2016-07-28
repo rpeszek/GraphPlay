@@ -11,7 +11,7 @@ We will need these modules:
 
 \begin{code}
 import PolyGraph.Common (OPair(..))
-import PolyGraph.Buildable ((~+), (@+))
+import PolyGraph.Buildable ((+~), (+@))
 import qualified PolyGraph.Buildable as B
 import PolyGraph.Buildable.PolyMorth as Reload
 import qualified PolyGraph.Instances.ListGraphs as ListGraphs
@@ -44,22 +44,22 @@ This library treats graphs as conceputually consisting of 2 things:
 
 In example 2 we have started with emptyGraph and used (@~>@) function repeatedly to
 create edges and build a polymorphic diamond.
-We could have alternatively used the (@+) function that adds one vertex at a time (constraints not show):
+We could have alternatively used the (+@) function that adds one vertex at a time (constraints not show):
 
-  (@+) :: g -> v -> g
+  (+@) :: g -> v -> g
 
-and (~+) that adds one edge at the time
+and (+~) that adds one edge at the time
 
-  (~+) :: g -> v -> g
+  (+~) :: g -> v -> g
 
 If we can create a polymorphic graph that way, we should also be able to just fold over the edges
-and vertices of a graph dataset and 'replay' the graph using (@+) and (~+), thus, creating a new polymorphic copy.
+and vertices of a graph dataset and 'replay' the graph using (+@) and (+~), thus, creating a new polymorphic copy.
 
 For diamond0123Simple, which does not have any isolatedVertices, the code to do so would look like so:
 
 \begin{code}
 diamond0123c :: forall g t . (B.BuildableGraphDataSet g Int (OPair Int) t) =>  g
-diamond0123c = foldr (flip(~+)) B.emptyGraph (Simple.getEdges diamond0123Simple)
+diamond0123c = foldr (flip(+~)) B.emptyGraph (Simple.getEdges diamond0123Simple)
 \end{code}
 
 That works but is not that interesting.  A more interesting idea is to do some sort

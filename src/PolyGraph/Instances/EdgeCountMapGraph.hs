@@ -78,11 +78,11 @@ instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
 
    -- insert :: (Eq k, Hashable k) => k -> v -> HashMap k v -> HashMap k v
    -- insertWith :: (Eq k, Hashable k) => (v -> v -> v) -> k -> v -> HashMap k v -> HashMap k v
-   g @+ v =
+   g +@ v =
            let newVertices = HS.insert v (getVertices g)
            in g {getVertices = newVertices}
 
-   g ~+ e =
+   g +~ e =
            let (v1,v2) = toPair e
                newVertices = foldr HS.insert (getVertices g) [v1,v2]
                newMap = HM.insertWith (\oldCount _ -> oldCount + 1) e (1::Int) (getMap g)

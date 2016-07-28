@@ -43,8 +43,8 @@ instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, 
 instance forall v e te. (Eq v, Hashable v, Traversable te, DiEdgeSemantics e v, BuildableCollection (te e) e) =>
                                   (BuildableGraphDataSet(DiEdgesByVertexMap v e te) v e []) where
    empty = DiEdgesByVertexMap HM.empty
-   g @+ v = DiEdgesByVertexMap . (HM.insertWith (\new old -> old) v emptyBuildableCollection) . getHashMap $ g
-   g ~+ e =
+   g +@ v = DiEdgesByVertexMap . (HM.insertWith (\new old -> old) v emptyBuildableCollection) . getHashMap $ g
+   g +~ e =
         let OPair (v1,v2) = resolveDiEdge e
         in DiEdgesByVertexMap .
            (HM.insertWith (\new old -> old) v2 emptyBuildableCollection) .

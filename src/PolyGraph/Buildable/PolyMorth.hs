@@ -11,7 +11,7 @@ morthEdges  :: forall g0 v0 e0 t0 g1 v1 e1 t1. (GraphDataSet g0 v0 e0 t0, Builda
 
 morthEdges trans gs gd =
                  let edgeF :: e0 -> g1 -> g1
-                     edgeF e0 g1 = g1 ~+ (eTrans trans e0)
+                     edgeF e0 g1 = g1 +~ (eTrans trans e0)
                  in foldr edgeF gd (edges gs)
 
 morthIsolatedVertices :: forall g0 v0 e0 t0 g1 v1 e1 t1. (GraphDataSet g0 v0 e0 t0, BuildableGraphDataSet g1 v1 e1 t1) =>
@@ -19,7 +19,7 @@ morthIsolatedVertices :: forall g0 v0 e0 t0 g1 v1 e1 t1. (GraphDataSet g0 v0 e0 
 
 morthIsolatedVertices trans gs gd =
                  let vertF :: v0 -> g1 -> g1
-                     vertF v0 g1 = g1 @+ (vTrans trans v0)
+                     vertF v0 g1 = g1 +@ (vTrans trans v0)
                  in foldr vertF gd (isolatedVertices gs)
 
 -- | uses graph morphism to create a polymorphic BuildableGraphDataSet
