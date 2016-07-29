@@ -1,16 +1,13 @@
-GraphPlay Example 4. Polymorphism to the max 
+GraphPlay Example 4. Polymorphism to the max
 ------
 As a OO programmer I have found the idea of polymorphic data production fascinating.
-Examples 1 and 2 were dedicated to that idea. Would it be possible to both produce and consume data polymorphically?
-... thus, creating programs that are completely instance independent?
-
+Can we do even more? Would it be possible to both produce and consume data polymorphically?
+Create programs that are completely agnostic to instance types?  
 The answer is: no that would not make sense because results of the calculation can depend on which
-instance is used. For example, I can polymphically calculate edge count using eCount function defined by
-the GraphDataSet (PolyGraph.ReadOnly) type class.  Result of this calculation for Vertices
-(PolyGraph.Instances.ListGraphs) will always be zero (Vertices instance forgets about edges).
+instance is used. We will see more of this here.  
+This example attempts to do the next best thing. _Create a program that stays
+agnostic of which instance is used until the very end_.
 
-This program attempts to do the next best thing. Create a program that stays
-agnostic of which instance is used until the very end.
 \begin{code}
 module Build.E04_PolyToMax (allThisHardWork, grid) where
 \end{code}
@@ -54,23 +51,22 @@ grid n f =
           in  addHLine (n-1) . addVBars (n-2) . addVLine (n-1) . addHBars (n-2) $ grid (n-1) f
 \end{code}
 
-_Motivation and Problem Statement_: Trees and Graphs are related in more than one way.
-I like to think about trees as:
+_Motivation and Problem Statement_: Trees and directed graphs are related in more than one way.
+One way to think about trees is:
+   > _Trees are directed graphs that lack the concept of vertex equality_
 
-_Trees are directed graphs that lack the concept of vertex equality_
-
-Program that does a recursive logic on a directed graph and ignores vertex equality can be very inefficient.
-One classic example of this is the naive (and well known) recursive program example for computing Fibonacci numbers.
-
-_Grid graph_: If grid forgot about vertex equality, it would become a (pruned) binary tree.
-In this example we will compute a comparizon between the v-size of the grid against the node size of that tree.
+Programs that do recursive logic on a directed graphs and ignore vertex equality can be very inefficient.
+One classic example of this is the naive (and well known) recursive program example for
+computing Fibonacci numbers.  
+_Grid directed graph_ without vertex equality becomes a (pruned) binary tree.
+In this example I will compute a comparizon between the v-size of the grid against the size of that tree.
 
 To keep things simple and focused, we specialize vertex type to (Int, Int) and the edge type to OPair.
 First, I will try to compute the v-size of the grid, ignoring the fact that we can predict the result of n^2.
 What I want is a fuction which looks like this:
 
- countGraphVertices:: Int -> Int
- countGraphVertices n = undefined
+  > countGraphVertices:: Int -> Int  
+    countGraphVertices n = undefined
 
 effectively removing the 'g' from the type signature with all associated constraints.
 This is not logical and Haskell compiler will not allow me to use my 'grid' function in the implementation of
@@ -87,14 +83,15 @@ countGraphVertices  :: forall g v . (B.BuildableGraphDataSet g (Int,Int) (OPair 
 countGraphVertices _ n = Base.vCount (toPair . DiG.resolveDiEdge) (grid n (,) :: g)
 \end{code}
 
-_Understanding the code_: in the code above, it maybe confusing why do I need to resolve edges when calculating vertex count.  It is because
-vCount is implemented on the GraphDataSet level GraphDataSet 'knows' only about edges and isolatedVertices, and it does not
-assume anything about the edge type.
+_Understanding the code_: in the code above, it maybe confusing why do I need to resolve
+edges when calculating vertex count.  It is because vCount is implemented on the GraphDataSet level.
+GraphDataSet 'knows' only about edges and isolatedVertices, and it does not
+assume anything about the edge type so it needs a bit of help.
 
 _Code below_: I find is super cool that things like Monoid type class is part of the the language base package.
-Monoids are for 'appending' things. Interestingly the obvious choice of monoid: 'the number' is not implemented
-as one because it is unclear if (+) or (*) should be used. Thus, I need to create my own type and make it Monoid.
-
+Monoids are for 'appending' things. Interestingly the obvious choice of monoid: 'the number' is not a monoid instance
+because it is unclear if (+) or (*) should be used.   
+Thus, I need to create my own type and make it Monoid.
 I am using a tree-like fold (PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold) for directed graphs which allows me to collect any information from each folded vertex,
 each folded edge and the monoid 'appending' is performed on each vertex across fold results from all di-adjacent edges.
 
@@ -127,9 +124,7 @@ runProgram n g = map (countGraphVertices g &&& countTreeNodes g) [1..n]
 _Understanding the code_: If you do not know what &&& try to first guess what it does by looking
 at the type signature and the rest of the code.
 Here I could replace the funtion used by map with
-
-   \i -> (countGraphVertices g i, countTreeNodes g i)
-
+  >  \i -> (countGraphVertices g i, countTreeNodes g i)
 and &&& makes the code more point-free.
 
 We need something to signal the type.
