@@ -160,4 +160,4 @@ Notice that the resulting numbers are different depending
 on the choice of instance type.  This is why types are needed at some point in the program.
 
 And finally, if you are trying to compare this to OO, please notice that I am not constructing
-data anywhere in this program, I am constructing types.
+data anywhere in this program, I am constructing types, and I do that at the very end.
