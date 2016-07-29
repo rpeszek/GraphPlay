@@ -60,7 +60,7 @@ About the syntax:
   -  > signifies direction
   -  ^ signifies deserialization of vertex arguments.
 
-So, here is our polymorphic data production code:
+So, here is our polymorphic type production code:
 
 \begin{code}
  diamond :: forall g v e t . (PrettyRead v,
@@ -103,7 +103,7 @@ And here is how our polymorphic graph data structure can be consumed:
  showDiamond0123_7 = show (diamond0123 :: ListGraphs.Vertices Int (Common.OPair Int))
 \end{code}
 
-Understanding the code:
+Understanding the code:  In all 7 lines we are still constructing types not data. 
 - showDiamond0123_1 (-2) specializes diamond0123 to SimpleSetDiGraph or SimpleListDiGraph type,
   In Graph Theory, Simple Graphs are graphs that do not have multiple edges or loops.
   _Sidenote_: Simple<Whatever>DiGraph deviates from that a bit and allows for a single loop.

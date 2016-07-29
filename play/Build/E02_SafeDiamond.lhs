@@ -29,7 +29,7 @@ which is much stronger than:
   (^+~>^) :: String -> String -> g -> g
 
 _Symbol @ signifies vertex argument_.
-Here is the new version of our data production function:
+Here is the new version of our type production function:
 
 \begin{code}
 safeDiamond :: forall g v e t . (BuildableEdgeSemantics e v,
@@ -72,6 +72,7 @@ showDiamond'0123_2 =
                 in show (mygraph)
 \end{code}
 
+Once again, please note that at the very end we are still not constructing data only types.  
 To run it evaluate this in ghci:
 
 \begin{code}
