@@ -16,8 +16,7 @@ cabal-version:       >=1.10
 library
   hs-source-dirs:      src
                        , play
-  exposed-modules:     Lib
-                       , PolyGraph.Common
+  exposed-modules:     PolyGraph.Common
                        , PolyGraph.Common.BuildableCollection
                        , PolyGraph.Common.RecursionHelpers
                        , PolyGraph.Common.BuildableMatrix
