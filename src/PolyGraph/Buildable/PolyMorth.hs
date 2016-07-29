@@ -1,8 +1,9 @@
-module PolyGraph.Buildable.PolyMorth where
+module PolyGraph.Buildable.PolyMorth (
+    morth
+  , fmorth
+) where
 
 import PolyGraph.ReadOnly
-import PolyGraph.ReadOnly.Graph
-import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable
 
 
@@ -28,7 +29,7 @@ morth :: forall g0 v0 e0 t0 g1 v1 e1 t1. (GraphDataSet g0 v0 e0 t0, BuildableGra
 morth trans gs = (morthEdges trans gs) . (morthIsolatedVertices trans gs) $ emptyGraph
 
 -- | polyMorth for Functor edges
-fmorth :: forall f g0 v0 e0 t0 g1 v1 e1 t1. (Functor f, GraphDataSet g0 v0 (f v0) t0, BuildableGraphDataSet g1 v1 (f v1) t1) =>
+fmorth :: forall f g0 v0 t0 g1 v1 t1. (Functor f, GraphDataSet g0 v0 (f v0) t0, BuildableGraphDataSet g1 v1 (f v1) t1) =>
                 (v0 -> v1) -> g0 -> g1
 fmorth f = morth (fGMorphism f)
 

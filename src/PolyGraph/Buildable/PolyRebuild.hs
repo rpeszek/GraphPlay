@@ -1,9 +1,9 @@
-module PolyGraph.Buildable.PolyRebuild where
+module PolyGraph.Buildable.PolyRebuild (
+   polyRebuild
+) where
 
-import PolyGraph.ReadOnly
-import PolyGraph.ReadOnly.Graph
-import PolyGraph.ReadOnly.DiGraph
-import PolyGraph.Buildable
+import PolyGraph.ReadOnly  (GraphDataSet(..))
+import PolyGraph.Buildable (BuildableGraphDataSet(..))
 
 addAllEdges :: forall g0 v e t0 g1 t1. (GraphDataSet g0 v e t0, BuildableGraphDataSet g1 v e t1) =>
                    g0 -> g1 -> g1
