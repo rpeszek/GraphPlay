@@ -2,7 +2,7 @@
   Graphs are considered equal (using relaxed (~#==) notation if they have the same vertices
   and the same vertex adjacency (each 2 verices have exactly the same number of edges connecting them)
 
-  TODO this needs testing 
+  TODO this needs testing
 -}
 module PolyGraph.ReadOnly.Graph.GraphEquality (
   (~#==)
@@ -10,7 +10,7 @@ module PolyGraph.ReadOnly.Graph.GraphEquality (
 ) where
 
 import PolyGraph.ReadOnly (GMorphism(..))
-import PolyGraph.ReadOnly.Graph (EdgeSemantics(..), Graph(..))
+import PolyGraph.ReadOnly.Graph (EdgeSemantics(..), Graph)
 import PolyGraph.Common (UOPair)
 import PolyGraph.Buildable.PolyMorth (morth)
 import Data.Hashable (Hashable)

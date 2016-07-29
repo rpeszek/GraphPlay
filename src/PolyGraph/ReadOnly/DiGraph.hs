@@ -26,7 +26,7 @@
 module PolyGraph.ReadOnly.DiGraph (
    DiEdgeSemantics(..)
   , DiAdjacencyIndex(..)
-  , DiGraph(..)
+  , DiGraph
 ) where --exports everything on purpose
 
 import qualified PolyGraph.ReadOnly as G

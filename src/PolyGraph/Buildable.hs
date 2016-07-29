@@ -8,7 +8,6 @@ module PolyGraph.Buildable (
 ) where
 
 import qualified PolyGraph.ReadOnly as Base
-import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics)
 import qualified PolyGraph.Common as Common
 
 class BuildableEdgeSemantics e v where

@@ -10,14 +10,14 @@
 
 module PolyGraph.ReadOnly.DiGraph.Fold.TAFold where --TODO exports everything, a terrible programmer wrote it
 
-import Data.Hashable (Hashable)
-import Control.Monad (liftM, forM)
-import Control.Monad.ST (ST, runST)
 import Control.Lens
-import qualified Data.HashTable.Class as HT
-import qualified PolyGraph.Common as H
-import PolyGraph.Common.RecursionHelpers
-import PolyGraph.ReadOnly.DiGraph
+import Data.Hashable                      (Hashable)
+import Control.Monad                      (liftM, forM)
+import Control.Monad.ST                   (ST, runST)
+import qualified Data.HashTable.Class     as HT
+import qualified PolyGraph.Common         as Common
+import PolyGraph.ReadOnly.DiGraph         (DiAdjacencyIndex(..), DiEdgeSemantics(..))
+import qualified PolyGraph.Common.RecursionHelpers as RecHelp
 
 
 newtype AccError = AccError String
@@ -44,7 +44,7 @@ makeLenses ''PartialFoldRes
 -- NOTE: aggregate Traversable needs to match DiAdjacencyIndex Traversable
 -- This is done for simplicity (aggregate almost directly consumes DiAdjacencyIndex collection of edges)
 --
-dfsFoldM :: forall m g v e t a. (Monad m, DiAdjacencyIndex g v e t) => RecursionHandler m v a -> g ->  FoldAccLogic t v e a  -> v -> m a
+dfsFoldM :: forall m g v e t a. (Monad m, DiAdjacencyIndex g v e t) => RecHelp.RecursionHandler m v a -> g ->  FoldAccLogic t v e a  -> v -> m a
 dfsFoldM handler g logic v =
     let _aggregate = aggregate logic       :: t a -> a
         _applyVertex = applyVertex logic   :: v -> a -> a
@@ -52,8 +52,8 @@ dfsFoldM handler g logic v =
         _childEdges =  g `cEdgesOf` v      :: t e
     in do
         _childTempResults <- forM _childEdges (\_childEdge -> do
-              let _childVertex= (H.second . resolveDiEdge) _childEdge
-              _childResult <- handle handler (dfsFoldM handler g logic) $ _childVertex
+              let _childVertex= (Common.second . resolveDiEdge) _childEdge
+              _childResult <- RecHelp.handle handler (dfsFoldM handler g logic) $ _childVertex
               return PartialFoldRes{_rvertex = _childVertex, _redge = _childEdge, _raccumulator = _childResult}
          )
         return $ (_applyVertex v) . _aggregate $ fmap (view raccumulator)
@@ -64,13 +64,13 @@ dfsFoldM handler g logic v =
 -- This walks the grah without remembering visited vertices (effectively walks a tree)
 --
 dfsFoldExponential :: forall g v e t a. (DiAdjacencyIndex g v e t) => g -> FoldAccLogic t v e a  -> v -> a
-dfsFoldExponential g logic v = let handler = RecursionHandler { handle = id } :: RecursionHandler Identity v a
+dfsFoldExponential g logic v = let handler = RecHelp.RecursionHandler { RecHelp.handle = id } :: RecHelp.RecursionHandler Identity v a
                         in runIdentity (dfsFoldM handler g logic v)
 
 --
 -- Uses memoization to assure that each vertex is visisted only once.  Will currently not work with cycles.
 --
-dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, DiAdjacencyIndex g v e t) => HashTable s v Bool -> HashTable s v a -> g ->  FoldAccLogic t v e a  -> v -> ST s a
+dfsFoldST :: forall s g v e t a. (Eq v, Hashable v, DiAdjacencyIndex g v e t) => RecHelp.HashTable s v Bool -> RecHelp.HashTable s v a -> g ->  FoldAccLogic t v e a  -> v -> ST s a
 dfsFoldST htCycles htmemo g logic =
               let  cyclesHandler :: v -> ST s a
                    cyclesHandler v =  do
@@ -78,13 +78,13 @@ dfsFoldST htCycles htmemo g logic =
                               case aOrError of Right a -> return a
                                                Left (AccError msg) -> fail msg
 
-                   handler = RecursionHandler { handle = (memo htmemo) . (handleReentry htCycles cyclesHandler) } :: RecursionHandler (ST s) v a
+                   handler = RecHelp.RecursionHandler { RecHelp.handle = (RecHelp.memo htmemo) . (RecHelp.handleReentry htCycles cyclesHandler) } :: RecHelp.RecursionHandler (ST s) v a
               in dfsFoldM handler g logic
 
 runDtsFoldST :: forall s g v e t a. (Eq v, Hashable v, DiAdjacencyIndex g v e t) => g ->  FoldAccLogic t v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
-     htCycles <- HT.new :: ST s (HashTable s v Bool)
-     htmemo <- HT.new :: ST s (HashTable s v a)
+     htCycles <- HT.new :: ST s (RecHelp.HashTable s v Bool)
+     htmemo <- HT.new :: ST s (RecHelp.HashTable s v a)
      a <- dfsFoldST htCycles htmemo g logic v
      return a
 

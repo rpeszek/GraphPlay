@@ -6,14 +6,14 @@
 
 module PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold where --TODO exports everything, a terrible programmer wrote it
 
-import Data.Hashable (Hashable)
-import Control.Monad (liftM, foldM)
-import Control.Monad.ST (ST, runST)
 import Control.Lens
-import qualified Data.HashTable.Class as HT
-import qualified PolyGraph.Common as H
-import PolyGraph.Common.RecursionHelpers
-import PolyGraph.ReadOnly.DiGraph
+import Data.Hashable
+import Control.Monad                    (liftM, foldM)
+import Control.Monad.ST                 (ST, runST)
+import qualified Data.HashTable.Class   as HT
+import qualified PolyGraph.Common       as Common
+import PolyGraph.ReadOnly.DiGraph       (DiAdjacencyIndex(..), DiEdgeSemantics(..))
+import qualified PolyGraph.Common.RecursionHelpers as RecHelp
 
 
 newtype AccError = AccError String
@@ -44,17 +44,17 @@ liftPairHelper e1 =  liftM $ (,) e1
 
 --
 --
-dfsFoldM :: forall m g v e t a. (Monoid a, Monad m, DiAdjacencyIndex g v e t) => RecursionHandler m v a -> g ->  MonoidFoldAccLogic v e a  -> v -> m a
+dfsFoldM :: forall m g v e t a. (Monoid a, Monad m, DiAdjacencyIndex g v e t) => RecHelp.RecursionHandler m v a -> g ->  MonoidFoldAccLogic v e a  -> v -> m a
 dfsFoldM handler g logic v =
      let acc_applyVertex =  applyVertex logic v   :: a
          acc_applyEdge   =  applyEdge   logic     :: e -> a
-         _recursionV     =  handle handler (dfsFoldM handler g logic)   :: v -> m a
-         _recursionE     = _recursionV . H.second . resolveDiEdge    :: e -> m a
+         _recursionV     =  RecHelp.handle handler (dfsFoldM handler g logic)   :: v -> m a
+         _recursionE     = _recursionV . Common.second . resolveDiEdge       :: e -> m a
          _recursion      = (\e -> (liftPairHelper e) . _recursionE $ e) :: e -> m (e, a)
          _childEdgesM    =  g `cEdgesOf` v                              :: t e
          _foldedChildResults =
                         (mapM _recursion _childEdgesM) >>=
-                        (foldM (\a ea -> return $ (acc_applyEdge (H.pairFirst ea)) `mappend` (H.pairSecond ea) `mappend` a) mempty)
+                        (foldM (\a ea -> return $ (acc_applyEdge (Common.pairFirst ea)) `mappend` (Common.pairSecond ea) `mappend` a) mempty)
          _finalResult = (liftM (mappend acc_applyVertex)) _foldedChildResults  :: m a
      in
          _finalResult
@@ -65,14 +65,14 @@ dfsFoldM handler g logic v =
 --
 dfsFoldExponential :: forall g v e t a. (Monoid a, DiAdjacencyIndex g v e t) => g -> MonoidFoldAccLogic v e a  -> v -> a
 dfsFoldExponential g logic v =
-                        let handler = RecursionHandler { handle = id } :: RecursionHandler Identity v a
+                        let handler = RecHelp.RecursionHandler { RecHelp.handle = id } :: RecHelp.RecursionHandler Identity v a
                         in runIdentity (dfsFoldM handler g logic v)
 
 -- TODO the following boilerplate is almost the same as in TreeFold externalize it for code reuse
 --
 -- Uses memoization to assure that each vertex is visisted only once.  Will currently not work with cycles.
 --
-dfsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, DiAdjacencyIndex g v e t) => HashTable s v Bool -> HashTable s v a -> g ->  MonoidFoldAccLogic v e a  -> v -> ST s a
+dfsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, DiAdjacencyIndex g v e t) => RecHelp.HashTable s v Bool -> RecHelp.HashTable s v a -> g ->  MonoidFoldAccLogic v e a  -> v -> ST s a
 dfsFoldST htCycles htmemo g logic =
               let  cyclesHandler :: v -> ST s a
                    cyclesHandler v =  do
@@ -80,14 +80,14 @@ dfsFoldST htCycles htmemo g logic =
                               case aOrError of Right a -> return a
                                                Left (AccError msg) -> fail msg
 
-                   handler = RecursionHandler { handle = (memo htmemo) . (handleReentry htCycles cyclesHandler) } :: RecursionHandler (ST s) v a
+                   handler = RecHelp.RecursionHandler { RecHelp.handle = (RecHelp.memo htmemo) . (RecHelp.handleReentry htCycles cyclesHandler) } :: RecHelp.RecursionHandler (ST s) v a
               in dfsFoldM handler g logic
 
 
 runDtsFoldST :: forall s g v e t a. (Monoid a, Eq v, Hashable v, DiAdjacencyIndex g v e t) => g ->  MonoidFoldAccLogic  v e a  -> v -> ST s a
 runDtsFoldST g logic v = do
-     htCycles <- HT.new :: ST s (HashTable s v Bool)
-     htmemo <- HT.new :: ST s (HashTable s v a)
+     htCycles <- HT.new :: ST s (RecHelp.HashTable s v Bool)
+     htmemo <- HT.new :: ST s   (RecHelp.HashTable s v a)
      a <- dfsFoldST htCycles htmemo g logic v
      return a
 

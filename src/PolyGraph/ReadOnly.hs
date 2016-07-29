@@ -10,7 +10,7 @@ module PolyGraph.ReadOnly (
    , isValidGraphDataSet
 ) where
 
-import Data.List (nub, length)
+import Data.List (nub)
 import qualified Data.Foldable as F
 import qualified Data.Maybe as M
 

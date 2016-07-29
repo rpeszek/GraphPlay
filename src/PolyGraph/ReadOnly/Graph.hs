@@ -2,7 +2,7 @@
 --
 module PolyGraph.ReadOnly.Graph (
    EdgeSemantics(..)
-   , Graph (..)
+   , Graph
 ) where --exports everything, a terrible programmer wrote it
 
 import PolyGraph.ReadOnly (GraphDataSet)

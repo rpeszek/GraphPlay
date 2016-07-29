@@ -12,8 +12,8 @@ module PolyGraph.Common.BuildableCollection (
 ) where
 
 import qualified Data.HashSet as HS
-import Data.Hashable
-import Data.List (nub, filter)
+import Data.Hashable (Hashable)
+import Data.List (nub)
 
 -- helper classes  ---
 class BuildableCollection t e | t -> e where
@@ -30,14 +30,14 @@ instance forall e. BuildableCollection [e] e where
    emptyBuildableCollection = []
    unionBuildableCollections = (++)
 
-instance forall e hs. (Eq e, Hashable e) => BuildableCollection (HS.HashSet e) e where
+instance forall e. (Eq e, Hashable e) => BuildableCollection (HS.HashSet e) e where
    addBuildableElement   = HS.insert
    emptyBuildableCollection  = HS.empty
    unionBuildableCollections  = HS.union
 
 --Example usage:---
-testF :: forall t0 e. (Foldable t0, BuildableCollection (t0 e) e) => t0 e
-testF = emptyBuildableCollection
+--testF :: forall t0 e. (Foldable t0, BuildableCollection (t0 e) e) => t0 e
+--testF = emptyBuildableCollection
 
 class BuildableCollection t e => BuildableUniqueCollection t e  where
    addUniqueBuildableElement  :: e -> t  -> t

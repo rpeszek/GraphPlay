@@ -3,13 +3,8 @@ module PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge (
    EdgeHelper(..)
 ) where
 
-import qualified Data.Foldable as F
-import qualified Data.Maybe as MB
-import qualified Data.HashMap.Strict as HM
-import PolyGraph.Common
-import PolyGraph.ReadOnly
-import PolyGraph.ReadOnly.Graph
-import PolyGraph.ReadOnly.DiGraph
+import PolyGraph.Common (OPair)
+import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics, DiEdgeSemantics(..))
 
 ------------------------------------------------------------------------------------------
 --  DiEdgeSemantics indexer should be needed only if rerieval of v-s from edges is slow --
@@ -25,7 +20,7 @@ instance forall e v.(Eq v) => Eq(EdgeHelper e v) where
   fedge1 == fedge2 = (getVertices fedge1) == (getVertices fedge2)
 
 
-instance forall v e map. DiEdgeSemantics (EdgeHelper e v) v where
+instance forall v e . DiEdgeSemantics (EdgeHelper e v) v where
    resolveDiEdge indexedE = getVertices indexedE
 
 convertToEdgeHelper :: forall e v . (e -> (OPair v)) -> e -> EdgeHelper e v
