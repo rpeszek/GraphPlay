@@ -79,7 +79,7 @@ What I want is a function which looks like this:
   > countGraphVertices:: Int -> Int  
     countGraphVertices gridSize = undefined
 
-It would be not logical, and Haskell compiler will not allow me, to use my 'grid' function in the implementation of
+It would be not logical, and (impressively!) Haskell compiler will not allow me, to use my 'grid' function in the implementation of
 'countGraphVertices' unless I specialize the use of 'grid' to a specific instance. This is precisely what I want to avoid.
 So I have 2 choices:
 
