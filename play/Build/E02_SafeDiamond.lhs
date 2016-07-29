@@ -72,7 +72,7 @@ showDiamond'0123_2 =
                 in show (mygraph)
 \end{code}
 
-Once again, please note that at the very end we are still not constructing data only types.  
+Once again, please note that at the very end we are still not constructing (think selecting) data only types.  
 To run it evaluate this in ghci:
 
 \begin{code}
