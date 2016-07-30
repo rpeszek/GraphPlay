@@ -38,13 +38,13 @@ library
                        , PolyGraph.Buildable.PolyMorth
                        , PolyGraph.Buildable.Properties
                        , PolyGraph.Adjustable
+                       , PolyGraph.Common.PropertySupport
+                       , PolyForFree.GraphDSL
                        , Instances.DiGraph.DiEdgesByVertexMap
                        , Instances.AdjacencyMatrix
                        , Instances.ListGraphs
                        , Instances.EdgeCountMapGraph
                        , Instances.SimpleGraph
-                       , PolyGraph.Common.PropertySupport
-                       , PolyForFree.DiGraphDSL
                        , SampleInstances.FirstLastWord
                        , Deprecated.DiGraph.SampleData
                        , Deprecated.DiGraph.TreeFoldOnSimpleGraph
