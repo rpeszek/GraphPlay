@@ -43,9 +43,11 @@ library
                        , Instances.DiGraph.DiEdgesByVertexMap
                        , Instances.AdjacencyMatrix
                        , Instances.ListGraphs
+                       , Instances.ListGraphs.DslInterpreter
                        , Instances.EdgeCountMapGraph
                        , Instances.SimpleGraph
                        , SampleInstances.FirstLastWord
+                       , SampleInstances.FirstLastWord.DslInterpreter
                        , Deprecated.DiGraph.SampleData
                        , Deprecated.DiGraph.TreeFoldOnSimpleGraph
                        , Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph
@@ -54,6 +56,7 @@ library
                        , Build.E02_SafeDiamond
                        , Build.E03_PolyReloaded
                        , Build.E04_PolyToMax
+                       , Build.E05_PolyForFree
                        , Deprecated.DiGraph.PolyRebuild
   build-depends:       base >= 4.7 && < 5
                       , lens

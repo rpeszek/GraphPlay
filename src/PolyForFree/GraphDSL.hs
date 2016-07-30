@@ -2,7 +2,7 @@ module PolyForFree.GraphDSL (
     GraphDSL
     , addVertex
     , addEdgeWithData
-    , showProgram
+    , programPrettyShow
     , runDefaultInterpreter
 ) where
 
@@ -26,11 +26,11 @@ addEdgeWithData v1 v2 edgeData = liftF (AddEdgeWithData v1 v2 edgeData ())
 
 --- interpreters ---
 
-showProgram :: forall v edata r . (Show v, Show edata) => Free (GraphDslCmds v edata) r -> String
-showProgram (Free (AddVertex v1 next)) = "+@ (" ++ show(v1) ++ ") \n" ++ showProgram next
-showProgram (Free (AddEdgeWithData v1 v2 edata next)) = 
-          "+~ (" ++ show(v1) ++ " --{" ++ show(edata) ++ "}-> " ++ show(v2) ++ ") \n" ++ showProgram next          
-showProgram (Pure _) = "end" -- ++ show r ++ "\n"
+programPrettyShow :: forall v edata r . (Show v, Show edata, Show r) => Free (GraphDslCmds v edata) r -> String
+programPrettyShow (Free (AddVertex v1 next)) = "addVertex " ++ show(v1) ++ " \n" ++ programPrettyShow next
+programPrettyShow (Free (AddEdgeWithData v1 v2 edata next)) = 
+          "addEdgeWithData " ++ show(v1) ++ " " ++ show(v2) ++ " " ++ show(edata) ++") \n" ++ programPrettyShow next          
+programPrettyShow (Pure _) = "" --show r ++ "\n"
 
 addVertexHelper :: forall v edata .  v -> ([v], [(v,v,edata)]) -> ([v], [(v,v,edata)])
 addVertexHelper v (vlist, elist) = (v:vlist, elist)
