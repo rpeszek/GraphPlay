@@ -44,6 +44,7 @@ library
                        , PolyGraph.Instances.EdgeCountMapGraph
                        , PolyGraph.Instances.SimpleGraph
                        , PolyGraph.Common.PropertySupport
+                       , PolyForFree.DiGraphDSL
                        , SampleInstances.FirstLastWord
                        , Deprecated.DiGraph.SampleData
                        , Deprecated.DiGraph.TreeFoldOnSimpleGraph
@@ -63,6 +64,7 @@ library
                       , unordered-containers
                       , matrix
                       , QuickCheck
+                      , free
   default-language:    Haskell2010
   extensions:          TemplateHaskell
                       , ScopedTypeVariables
@@ -73,6 +75,7 @@ library
                       , UndecidableInstances
                       --, OverlappingInstances
                       , RankNTypes
+                      , DeriveFunctor
                       -- GADT
 
 -- change OverlappingInstances to OVERLAPPING/OVERLAPPABLE/OVERLAPS
