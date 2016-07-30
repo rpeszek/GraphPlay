@@ -176,7 +176,7 @@ allThisHardWork = do
     putStrLn "Why just [2..27], Why not QuickCheck?"
 \end{code}
 
-   > I have used Int for counting the tree size.  At 27 that number overflows Int with a value
+   > I have used Int when calculating the tree size.  At 27 that number overflows Int with a value
      of -7534807705245191491 which kinda proves the point!
 
 Notice that the resulting numbers are different depending
