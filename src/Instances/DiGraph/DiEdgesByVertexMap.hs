@@ -3,7 +3,7 @@
   is stored as a value.  Efficient for traversing algorithms. 
 -}
 
-module PolyGraph.Instances.DiGraph.DiEdgesByVertexMap where
+module Instances.DiGraph.DiEdgesByVertexMap where
 
 import Data.Hashable
 import PolyGraph.Common

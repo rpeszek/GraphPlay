@@ -10,10 +10,10 @@ import PolyGraph.Buildable
 import PolyGraph.Buildable.Properties
 import qualified PolyGraph.ReadOnly.Graph.Properties as GProps
 import qualified PolyGraph.ReadOnly.DiGraph.Properties as DiGProps
-import qualified PolyGraph.Instances.ListGraphs as List
-import qualified PolyGraph.Instances.SimpleGraph as Simple
-import qualified PolyGraph.Instances.EdgeCountMapGraph as Adj
-import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as Indx
+import qualified Instances.ListGraphs as List
+import qualified Instances.SimpleGraph as Simple
+import qualified Instances.EdgeCountMapGraph as Adj
+import qualified Instances.DiGraph.DiEdgesByVertexMap as Indx
 
 main :: IO ()
 main = hspec spec

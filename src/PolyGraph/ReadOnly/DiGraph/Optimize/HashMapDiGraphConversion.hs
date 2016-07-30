@@ -1,5 +1,5 @@
 ------
--- TODO optimized index should use PolyGraph.Instances.DiGraph.DiEdgesByVertexMap
+-- TODO optimized index should use Instances.DiGraph.DiEdgesByVertexMap
 ------
 module PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion (
    buildDiEdgesByVertexMap
@@ -10,7 +10,7 @@ import qualified Data.Maybe as MB
 --import Control.Monad.ST
 import Data.Hashable
 import qualified Data.HashMap.Strict                        as HM
-import PolyGraph.Instances.DiGraph.DiEdgesByVertexMap       (DiEdgesByVertexMap(..))
+import Instances.DiGraph.DiEdgesByVertexMap       (DiEdgesByVertexMap(..))
 import PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge (EdgeHelper(..))
 import PolyGraph.Common                                     (OPair(..))
 import qualified PolyGraph.ReadOnly                         as Base

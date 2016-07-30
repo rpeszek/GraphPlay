@@ -7,7 +7,7 @@
   Unlike SimpleGraph Edges allow duplicate edges in the list representing muliple edges on a graph
 -}
 
-module PolyGraph.Instances.ListGraphs (
+module Instances.ListGraphs (
   Vertices (..)
   , Edges (..)
   , GEdges

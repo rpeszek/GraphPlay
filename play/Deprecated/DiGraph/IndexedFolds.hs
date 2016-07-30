@@ -10,7 +10,7 @@ import qualified PolyGraph.ReadOnly.DiGraph.Optimize.HashMapDiGraphConversion as
 import qualified PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge as ME
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.ReadOnly.DiGraph.Fold.TAFold
-import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HTG
+import qualified Instances.DiGraph.DiEdgesByVertexMap as HTG
 import qualified SampleInstances.FirstLastWord as T
 import qualified Deprecated.DiGraph.SampleData as S (playFirstLast)
 import qualified Data.HashSet as HS

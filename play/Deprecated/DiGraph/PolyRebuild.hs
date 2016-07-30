@@ -5,8 +5,8 @@ import PolyGraph.Buildable
 import PolyGraph.Buildable.PolyRebuild
 import PolyGraph.Buildable.PolyMorth
 import PolyGraph.ReadOnly.DiGraph.DiGraphEquality
-import qualified PolyGraph.Instances.SimpleGraph as SG
-import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as HM
+import qualified Instances.SimpleGraph as SG
+import qualified Instances.DiGraph.DiEdgesByVertexMap as HM
 import Data.Hashable
 
 -- create simple graph data structure

@@ -27,7 +27,7 @@ import Control.Arrow ((&&&))
 
 And we will show off our results at the end using graph instances found in:
 \begin{code}
-import qualified PolyGraph.Instances.ListGraphs as ListGraphs
+import qualified Instances.ListGraphs as ListGraphs
 \end{code}
 
 Grid is a directed graph with edges pointing up and right. 

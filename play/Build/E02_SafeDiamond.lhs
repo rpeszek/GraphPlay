@@ -16,7 +16,7 @@ We will just use 2 instance types
 
 \begin{code}
 import qualified SampleInstances.FirstLastWord   as TextSentencesGraph
-import qualified PolyGraph.Instances.SimpleGraph as Simple
+import qualified Instances.SimpleGraph as Simple
 \end{code}
 
 This time we use @+~>@ function which adds directed edge and has signature

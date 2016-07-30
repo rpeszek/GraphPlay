@@ -6,7 +6,7 @@ import PolyGraph.ReadOnly.DiGraph.Fold.TAFold
 import Data.Monoid
 import Data.Hashable
 import qualified Data.HashSet as HS
-import PolyGraph.Instances.SimpleGraph
+import Instances.SimpleGraph
 import Deprecated.DiGraph.SampleData (playTwoDiamondsSetGraph, playTwoDiamonds)
 
 --

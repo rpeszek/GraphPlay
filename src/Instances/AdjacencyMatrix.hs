@@ -3,7 +3,7 @@
   Assumes Ord v for simplicity and reasonable performance.
 
 -}
-module PolyGraph.Instances.AdjacencyMatrix where
+module Instances.AdjacencyMatrix where
 
 import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
@@ -16,7 +16,7 @@ import qualified Data.HashMap.Strict as HM
 import qualified Data.HashSet as HS
 import qualified Data.Sequence as S
 import Data.Matrix as M
-import PolyGraph.Instances.EdgeCountMapGraph
+import Instances.EdgeCountMapGraph
 
 
 type DiAdjacencyMatrix v = EdgeCountMap v (OPair v)

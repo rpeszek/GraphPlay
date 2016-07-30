@@ -16,7 +16,7 @@ import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics(..), DiGraph)
 import PolyGraph.Common (OPair)
 import PolyGraph.Buildable.PolyMorth (morth)
 import Data.Hashable (Hashable)
-import PolyGraph.Instances.EdgeCountMapGraph (EdgeCountMapDiGraph)
+import Instances.EdgeCountMapGraph (EdgeCountMapDiGraph)
 
 --morth :: forall g0 v0 e0 t0 g1 v1 e1 t1. (GraphDataSet g0 v0 e0 t0, BuildableGraphDataSet g1 v1 e1 t1) =>
 --                GMorphism v0 e0 v1 e1 -> g0 -> g1

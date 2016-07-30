@@ -14,9 +14,9 @@ import PolyGraph.Common (OPair(..))
 import PolyGraph.Buildable ((+~), (+@))
 import qualified PolyGraph.Buildable as B
 import PolyGraph.Buildable.PolyMorth as Reload
-import qualified PolyGraph.Instances.ListGraphs as ListGraphs
-import qualified PolyGraph.Instances.SimpleGraph as Simple
-import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as IndexGraph
+import qualified Instances.ListGraphs as ListGraphs
+import qualified Instances.SimpleGraph as Simple
+import qualified Instances.DiGraph.DiEdgesByVertexMap as IndexGraph
 import Data.Hashable
 \end{code}
 

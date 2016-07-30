@@ -13,9 +13,9 @@ import qualified PolyGraph.ReadOnly.DiGraph.Properties as DiGProps
 import PolyGraph.ReadOnly.DiGraph.DiGraphEquality ((~>#==))
 import PolyGraph.ReadOnly.Graph.GraphEquality ((~#==))
 
-import qualified PolyGraph.Instances.ListGraphs as List
-import qualified PolyGraph.Instances.EdgeCountMapGraph as Adj
-import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as Indx
+import qualified Instances.ListGraphs as List
+import qualified Instances.EdgeCountMapGraph as Adj
+import qualified Instances.DiGraph.DiEdgesByVertexMap as Indx
 
 main :: IO ()
 main = hspec spec

@@ -1,7 +1,7 @@
 module Deprecated.DiGraph.SampleData where
 
 import PolyGraph.Common
-import qualified PolyGraph.Instances.SimpleGraph as SG
+import qualified Instances.SimpleGraph as SG
 import qualified SampleInstances.FirstLastWord as FL
 import qualified Data.HashSet as HS
 

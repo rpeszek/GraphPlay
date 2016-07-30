@@ -4,7 +4,7 @@
   It is essential in implementation of polymorphic Eq for graphs / digraphs (TODO)
 -}
 
-module PolyGraph.Instances.EdgeCountMapGraph (
+module Instances.EdgeCountMapGraph (
     EdgeCountMapGraph (..)
     , EdgeCountMapDiGraph (..)
     , EdgeCountMap (..)

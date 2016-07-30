@@ -22,10 +22,10 @@ Polymorphic directed graphs are defined in
 have various implementations defined in
 
 \begin{code}
- import qualified PolyGraph.Instances.SimpleGraph as Simple
- import qualified PolyGraph.Instances.DiGraph.DiEdgesByVertexMap as AdjacencyIndex
- import qualified PolyGraph.Instances.AdjacencyMatrix as AMatrix
- import qualified PolyGraph.Instances.ListGraphs as ListGraphs
+ import qualified Instances.SimpleGraph as Simple
+ import qualified Instances.DiGraph.DiEdgesByVertexMap as AdjacencyIndex
+ import qualified Instances.AdjacencyMatrix as AMatrix
+ import qualified Instances.ListGraphs as ListGraphs
  import qualified SampleInstances.FirstLastWord as TextSentencesGraph
 \end{code}
 

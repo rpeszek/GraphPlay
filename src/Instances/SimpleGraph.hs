@@ -9,7 +9,7 @@
   Assumption that graph has no multiple edges is viewed as: edge does not contribute
   more information than 2 vertices it joins.  Hence edge can be simply represented as a pair.
 -}
-module PolyGraph.Instances.SimpleGraph (
+module Instances.SimpleGraph (
      SimpleGraph(..)
    , SimpleListDiGraph
    , SimpleSetDiGraph

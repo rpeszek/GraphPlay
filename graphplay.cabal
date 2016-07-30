@@ -38,11 +38,11 @@ library
                        , PolyGraph.Buildable.PolyMorth
                        , PolyGraph.Buildable.Properties
                        , PolyGraph.Adjustable
-                       , PolyGraph.Instances.DiGraph.DiEdgesByVertexMap
-                       , PolyGraph.Instances.AdjacencyMatrix
-                       , PolyGraph.Instances.ListGraphs
-                       , PolyGraph.Instances.EdgeCountMapGraph
-                       , PolyGraph.Instances.SimpleGraph
+                       , Instances.DiGraph.DiEdgesByVertexMap
+                       , Instances.AdjacencyMatrix
+                       , Instances.ListGraphs
+                       , Instances.EdgeCountMapGraph
+                       , Instances.SimpleGraph
                        , PolyGraph.Common.PropertySupport
                        , PolyForFree.DiGraphDSL
                        , SampleInstances.FirstLastWord
