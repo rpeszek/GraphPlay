@@ -30,7 +30,8 @@ for all your major classes.  That is lots of work it will be hard to maintain an
 Can you do that so it is composable: so 2 DSLs can work together?  This is basically hard stuff.
 
 The amazing thing is that it is not hard at all if you do it right and structure it correctly. That correct
-structure is called Free Monad.
+structure is called Free Monad. Free monad is structurally a perfect match for both building a DSL and interpreters.
+The cost is often one line of code for DSL and one line of code per interpreter per DSL instruction. 
 
 We will be producing a graph using a very simple DSL defined in:
 \begin{code}
