@@ -1,18 +1,65 @@
+GraphPlay Example 5. Free Decoupling and Polymorphism for free.
+------
+This example presents decoupling of data production and consumption with benefits similar to 
+Examples 1 and 2 but is accomplished without type classes!  Our plan in a nutshell is:
+  - build a graph using a DSL
+  - use different interpreters to do different things with it
 
-Strictly speaking this is not polymorphism, but it does accomplish very similar goals of writing code 
-once and using it across may different types. 
+Strictly speaking, this is approach is not polymorphism, but it can accomplish very similar goals of:
+_write code once and use it across may different types_ and in many ways it goes beyond that.
  
 \begin{code}
 module Build.E05_PolyForFree where
 \end{code}
+_Problem Benefit Statement_:  
+Using language provided support for polymorphism (type classes in Haskell or what else have you elsewhere) 
+creates a coupling between implementation and consumption code which could be sometimes unwanted.
+This becomes more obvious with a strong type systems like Haskell's. 
+For example, I have decided that my Graph type classes (such as BuildableGraphDataSet) enforce purity 
+and, as result of that decision, I cannot implement a 'self-persisting' graph. Such decision may
+feel wise at some point and may end up to constricting moving forward.
+
+Implementing a DSL and separately writing interpreters which consume its AST resolves these issues.
+I can just write bunch of interpreters which are free to do whatever they want!
+This basically allows for do-it-yourself handcrafted set of Type Constraints.
+
+  > You can write your code and invoke it too. But, you really do not want to.
+
+What is the catch? One is obvious: go ahead and write a DSL and interpreter in your Java code and do it
+for all your major classes.  That is lots of work it will be hard to maintain and tedious to implement!
+Can you do that so it is composable: so 2 DSLs can work together?  This is basically hard stuff.
+
+The amazing thing is that it is not hard at all if you do it right and structure it correctly. That correct
+structure is called Free Monad.
+
+We will be producing a graph using a very simple DSL defined in:
 \begin{code}
 import qualified PolyForFree.GraphDSL as DSL
-import qualified Instances.ListGraphs as ListGraphs
-import qualified SampleInstances.FirstLastWord as SentenceGraph
+\end{code}
 
+we will consume our program using these interpreters
+\begin{code}
 import qualified Instances.ListGraphs.DslInterpreter as ListGraphsInterpreter
 import qualified SampleInstances.FirstLastWord.DslInterpreter as SentenceGrInterpreter
+\end{code}
 
+so we will get to play with specific types defined in
+\begin{code}
+import qualified Instances.ListGraphs as ListGraphs
+import qualified SampleInstances.FirstLastWord as SentenceGraph
+\end{code}
+
+The graph we will be working with looks like this:
+```
+         2
+       /   \
+0    1       4
+       \   /
+         3
+```
+
+_Production_:  Using DSL forces our code to be agnostic of any type specific stuff.  
+\begin{code}
 squareGraphProgram :: DSL.GraphDSL Int String
 squareGraphProgram = do
   DSL.addVertex 0
@@ -20,7 +67,10 @@ squareGraphProgram = do
   DSL.addEdgeWithData 2 4 "maybe implies"
   DSL.addEdgeWithData 1 3 "possibly yields"
   DSL.addEdgeWithData 3 4 "implies"
+\end{code}
 
+_Consumption_:
+\begin{code}
 showProgram :: String
 showProgram = DSL.programPrettyShow squareGraphProgram
 
@@ -29,7 +79,10 @@ edgesGraph = ListGraphsInterpreter.interpretAsNewDiGEdges squareGraphProgram
 
 sentenceGraph :: SentenceGraph.FLWordText
 sentenceGraph = SentenceGrInterpreter.interpretAsFirstLastWordDiGraph squareGraphProgram
+\end{code}
 
+And the code to evaluate to see how things work:
+\begin{code}
 allThisHardWork :: IO()
 allThisHardWork = do
     putStrLn "My program:"
@@ -39,3 +92,7 @@ allThisHardWork = do
     putStrLn "interpreted as sentences"
     putStrLn $ show sentenceGraph
 \end{code}
+
+Notice that 0 vertex has disappeared. This is because both 'destination' types I have picked ignore isolated vertices. 
+
+ 
