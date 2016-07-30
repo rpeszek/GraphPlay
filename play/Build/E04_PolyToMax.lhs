@@ -28,6 +28,7 @@ import Control.Arrow ((&&&))
 And we will show off our results at the end using graph instances found in:
 \begin{code}
 import qualified Instances.ListGraphs as ListGraphs
+import qualified Test.QuickCheck as Property
 \end{code}
 
 Grid is a directed graph with edges pointing up and right. 
@@ -79,7 +80,7 @@ What I want is a function which looks like this:
   > countGraphVertices:: Int -> Int  
     countGraphVertices gridSize = undefined
 
-It would be not logical, and (impressively!) Haskell compiler will not allow me, to use my 'grid' function in the implementation of
+It would be not logical, and Haskell powerful type system will not allow me, to use my 'grid' function in the implementation of
 'countGraphVertices' unless I specialize the use of 'grid' to a specific instance. This is precisely what I want to avoid.
 So I have 2 choices:
 
@@ -100,7 +101,7 @@ countGraphVertices _ n = Base.vCount (toPair . DiG.resolveDiEdge) (grid n (,) ::
      compute the count.  
 
    > _Missing_ Eq v? : We need unique vertex count. Where is the Eq v constraint?  
-      It is implied by the BuildableGraphDataSet contraint.
+      It is implied by the BuildableGraphDataSet constraint.
 
 _Code below_:  
 I am using a tree-like fold (PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold) for directed graphs. dfsFold
@@ -130,13 +131,22 @@ countTreeNodes _ n = getSum $ FastFold.dfsFold (grid n (,) :: g) treeNodeCounter
     because it is unclear if (+) or (*) should be used for 'appending'.
     Thus, I needed to create my own Num-like type and make it Monoid.
 
-That allows us to wrap up the code using a Haskell-like 'run' pattern:
+\begin{code}
+treeIsExponentiallySlower :: forall g v . (DiG.DiAdjacencyIndex g (Int,Int) (OPair (Int,Int)) [],
+                               B.BuildableGraphDataSet g (Int,Int) (OPair (Int,Int)) [])
+                                     =>  g -> Int -> Bool
+treeIsExponentiallySlower g n =
+                          let graphVSize = countGraphVertices g n
+                              treeSize   = countTreeNodes g n
+                          in  (n < 2) || treeSize `div` graphVSize >= (2 ^ (n-1)) `div` (n ^ 2)
+\end{code}
+We wrap up the code using a Haskell-like 'run' pattern:
 
 \begin{code}
 runProgram :: forall g v . (DiG.DiAdjacencyIndex g (Int,Int) (OPair (Int,Int)) [],
                                B.BuildableGraphDataSet g (Int,Int) (OPair (Int,Int)) [])
                                      =>  Int -> g -> [(Int, Int)]
-runProgram n g = map (countGraphVertices g &&& countTreeNodes g) [1..n]
+runProgram n g = map (countGraphVertices g &&& countTreeNodes g) [2..n]
 \end{code}
 
    > _About_ &&& : I could have replaced the the code within the parentheses with
@@ -160,7 +170,15 @@ allThisHardWork = do
     putStrLn $ show (runProgram 10 (on:: ListGraphs.Edges (Int,Int) (OPair (Int,Int))))
     putStrLn "Same comparison using Vertices instance which drops edges:"
     putStrLn $ show (runProgram 10 (on:: ListGraphs.Vertices (Int,Int) (OPair (Int,Int))))
+    putStrLn "Tree is exponentially slower"
+    putStrLn $ show (let prop = treeIsExponentiallySlower (on:: ListGraphs.Edges (Int,Int) (OPair (Int,Int)))
+                     in null $ filter (not . prop) [2..26])
+    putStrLn "Why just [2..27], Why not QuickCheck?"
 \end{code}
+
+   > I have used Int for counting the tree size.  At 27 that number overflows Int with a value
+     of -7534807705245191491 which kinda proves the point!
+
 Notice that the resulting numbers are different depending
 on the choice of instance type.  This is why types are needed at some point in the program.
 

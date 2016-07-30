@@ -43,7 +43,7 @@ safeDiamond v0 v1 v2 v3 =  ( v0 @+~>@ v1 ) .
                            ( v2 @+~>@ v3 ) $ emptyGraph
 \end{code}
 
-To achive safer code, the contruction of the v type is left to the consumption code.
+To achieve safer code, the construction of the v type is left to the consumption code.
 
 Still, I still want some flexibility. The proliferation of tools that are likely throw exceptions and have type:
 

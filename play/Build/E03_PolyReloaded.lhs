@@ -33,9 +33,9 @@ diamond0123Simple :: Simple.SimpleListDiGraph Int
 diamond0123Simple = Simple.SimpleGraph (map (OPair) edgeList) []
 \end{code}
 
-This library treats graphs as conceputually consisting of 2 things:
+This library treats graphs as conceptually consisting of 2 things:
   - A dataset aspect allowing to simply discover all edges and vertices.
-    This discovery is independed of the graph adjacency structure.
+    This discovery is independent of the graph adjacency structure.
     Dataset aspect is defined by GraphDataSet type class (PolyGraph.ReadOnly module)
   - Adjacency aspect (called an incidence function in Graph Theory)
     which resolves edges to pairs of adjacent vertices.
