@@ -11,7 +11,7 @@ _write code once and use it across may different types_ and in many ways it goes
 \begin{code}
 module Build.E05_PolyForFree where
 \end{code}
-_Problem Benefit Statement_:  
+_Problem - Benefit Statement_:  
 Using language provided support for polymorphism (type classes in Haskell or what else have you elsewhere) 
 creates a coupling between implementation and consumption code which could be sometimes unwanted.
 This becomes more obvious with a strong type systems like Haskell's. 
@@ -21,13 +21,11 @@ feel wise at some point and may end up to constricting moving forward.
 
 Implementing a DSL and separately writing interpreters which consume its AST resolves these issues.
 I can just write bunch of interpreters which are free to do whatever they want!
-This basically allows for do-it-yourself handcrafted set of Type Constraints.
+This think of this as a do-it-yourself handcrafted polymorphism.
 
   > You can write your code and invoke it too. But, you really do not want to.
 
-What is the catch? One is obvious: go ahead and write a DSL and interpreter in your Java code and do it
-for all your major classes.  That is lots of work it will be hard to maintain and tedious to implement!
-Can you do that so it is composable: so 2 DSLs can work together?  This is basically a very hard stuff.
+That sounds like a lot of tedious and complex work!  Can you do that so it is composable: so 2 DSLs can work together?  
 
 The amazing thing is that it is not hard at all if you do it right and structure it correctly. That correct
 structure is called Free Monad. Free monad is structurally a perfect match for both building a DSL and interpreters.

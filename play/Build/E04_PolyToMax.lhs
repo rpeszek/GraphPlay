@@ -46,9 +46,9 @@ grid 1 f = B.emptyGraph +@ (f 0 0) :: (B.BuildableGraphDataSet g v e t ) => g
 grid n f =
           let addHLine :: Int -> g -> g
               addHLine j g = foldr(\i -> (f i j) @+~>@ (f (i+1) j)) g [0..(n-2)]
-              addVBars j g = foldr(\i -> (f i j) @+~>@ (f i (j+1))) g [0..(n-1)]
+              addVBars j g = foldr(\i -> (f i j) @+~>@ (f i (j+1))) g [0..(n-2)]
               addVLine i g = foldr(\j -> (f i j) @+~>@ (f i (j+1))) g [0..(n-2)]
-              addHBars i g = foldr(\j -> (f i j) @+~>@ (f (i+1) j)) g [0..(n-1)]
+              addHBars i g = foldr(\j -> (f i j) @+~>@ (f (i+1) j)) g [0..(n-2)]
           in  addHLine (n-1) . addVBars (n-2) . addVLine (n-1) . addHBars (n-2) $ grid (n-1) f
 \end{code}
 
@@ -185,4 +185,4 @@ Notice that the resulting numbers are different depending
 on the choice of instance type.  This is why types are needed at some point in the program.
 
 And finally, if you are trying to compare this to OO, please notice that I am not constructing
-data anywhere in this program, I am constructing (or selecting) types, and I do that at the very end.
+data anywhere in this program, I am constructing (or selecting) types, and I do that only at the very end.
