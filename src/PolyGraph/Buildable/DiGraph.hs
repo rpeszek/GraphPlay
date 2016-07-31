@@ -1,10 +1,10 @@
 module PolyGraph.Buildable.DiGraph (
   (@+~>@)
  ,(^+~>^)
- , toSimpleDiGraph 
+ --, toSimpleDiGraph 
 )where
 
-import PolyGraph.Common (toPair)
+--import PolyGraph.Common (toPair)
 import PolyGraph.Buildable
 import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics(..))
 
@@ -19,4 +19,4 @@ import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics(..))
                   in  addDefaultEdge v1 v2 g
 
 toSimpleDiGraph :: forall g v e t . (Eq e, DiEdgeSemantics e v, BuildableGraphDataSet g v e t ) =>  g -> g
-toSimpleDiGraph = toSimpleGraphHelper $ toPair .resolveDiEdge
+toSimpleDiGraph = undefined

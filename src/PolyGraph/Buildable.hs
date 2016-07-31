@@ -7,13 +7,10 @@ module PolyGraph.Buildable (
    , addDefaultEdge
    , fromEdgeList
    , fromVertexList
-   , toSimpleGraphHelper
 ) where
 
 import qualified PolyGraph.ReadOnly as Base
 import qualified PolyGraph.Common as Common
-import Data.List (nub)
-import Data.Foldable (toList)
 
 class BuildableEdgeSemantics e v where
   defaultEdge :: v -> v -> e
@@ -74,10 +71,3 @@ fromEdgeList (e:xs) = e ~+ fromEdgeList xs
 fromVertexList :: forall g v e t . (BuildableGraphDataSet g v e t ) => [v] -> g
 fromVertexList [] = emptyGraph
 fromVertexList (v:xs) = v @+ fromVertexList xs
-
-toSimpleGraphHelper :: forall g v e t . (Eq e, BuildableGraphDataSet g v e t ) => (e -> (v,v)) -> g -> g
-toSimpleGraphHelper edgeRes g = 
-                let  notALoop :: e -> Bool
-                     notALoop e = let (v1,v2) = edgeRes e in v1 /= v2
-                     withoutIsolatedVerts = fromEdgeList . (filter notALoop) . nub . toList . Base.edges $ g
-                in withoutIsolatedVerts ++@ (toList . Base.isolatedVertices $ g)
