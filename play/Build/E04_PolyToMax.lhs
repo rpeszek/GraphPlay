@@ -33,6 +33,8 @@ import qualified Test.QuickCheck as Property
 
 Grid is a directed graph with edges pointing up and right. 
 We will be using a square n x n grid with n^2 vertices.
+Using a somewhat imperative code (I will redo it using more elegant applicative style in the future) 
+grid is produced as:
 \begin{code}
 grid :: forall g v e t. (
                           B.BuildableEdgeSemantics e v,
@@ -173,10 +175,10 @@ allThisHardWork = do
     putStrLn "Tree is exponentially slower"
     putStrLn $ show (let prop = treeIsExponentiallySlower (on:: ListGraphs.Edges (Int,Int) (OPair (Int,Int)))
                      in null $ filter (not . prop) [2..26])
-    putStrLn "Why just [2..27], Why not QuickCheck?"
+    putStrLn "Why just [2..26], Why not QuickCheck?"
 \end{code}
 
-   > I have used Int when calculating the tree size.  At 27 that number overflows Int with a value
+   > Why 26? I have used Int when calculating the tree size.  At 27 that number overflows Int with a value
      of -7534807705245191491 which kinda proves the point!
 
 Notice that the resulting numbers are different depending
