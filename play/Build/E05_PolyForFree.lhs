@@ -5,7 +5,7 @@ Examples 1 and 2 but is accomplished without type classes!  Our plan in a nutshe
   - build a graph using a DSL
   - use different interpreters to do different things with it
 
-Strictly speaking, this is approach is not polymorphism, but it can accomplish very similar goals of:
+Strictly speaking, this is approach is not polymorphism, but it can accomplish very similar goals:
 _write code once and use it across may different types_ and in many ways it goes beyond that.
  
 \begin{code}
@@ -16,7 +16,7 @@ Using language provided support for polymorphism (type classes in Haskell or wha
 creates a coupling between implementation and consumption code which could be sometimes unwanted.
 This becomes more obvious with a strong type systems like Haskell's. 
 For example, I have decided that my Graph type classes (such as BuildableGraphDataSet) enforce purity 
-and, as result of that decision, I cannot implement a 'self-persisting' graph. Such decision may
+and, as result of that decision, I cannot implement a 'self-persisting' graph as an instance. Such decision may
 feel wise at some point and may end up to constricting moving forward.
 
 Implementing a DSL and separately writing interpreters which consume its AST resolves these issues.
@@ -27,7 +27,7 @@ This basically allows for do-it-yourself handcrafted set of Type Constraints.
 
 What is the catch? One is obvious: go ahead and write a DSL and interpreter in your Java code and do it
 for all your major classes.  That is lots of work it will be hard to maintain and tedious to implement!
-Can you do that so it is composable: so 2 DSLs can work together?  This is basically hard stuff.
+Can you do that so it is composable: so 2 DSLs can work together?  This is basically a very hard stuff.
 
 The amazing thing is that it is not hard at all if you do it right and structure it correctly. That correct
 structure is called Free Monad. Free monad is structurally a perfect match for both building a DSL and interpreters.
