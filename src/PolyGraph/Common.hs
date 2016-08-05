@@ -4,9 +4,7 @@
 -- various helpers (typically exist defined somewhere else but wanted to limit library dependencies)
 --
 module PolyGraph.Common (
-  pairSecond
-  , pairFirst
-  , first
+  first
   , second
   , OPair (..)
   , UOPair (..)
@@ -53,10 +51,10 @@ oneElementPair pair =
         in v1 == v2
 
 first :: (PairLike e v) => e -> v
-first e = pairFirst . toPair $ e
+first e = fst . toPair $ e
 
 second :: (PairLike e v) => e -> v
-second e = pairSecond . toPair $ e
+second e = snd . toPair $ e
 
 --
 -- Type used to resolve directed edges.  Represents ordered 2-element list.
@@ -95,13 +93,6 @@ instance forall v. Hashable v => Hashable (UOPair v) where
 instance Functor (UOPair) where
     fmap f (UOPair (x,y)) = UOPair (f x, f y)
 
-
--- TODO probably should switch to using Arrow since it is part of the base.
-pairSecond :: (a,b) -> b
-pairSecond (_,x) = x
-
-pairFirst :: (a,b) -> a
-pairFirst (x,_) = x
 
 
 

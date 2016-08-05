@@ -61,7 +61,7 @@ dfsFoldM handler g logic v =
          _childEdgesM    =  g `cEdgesOf` v                              :: t e
          _foldedChildResults =
                         (mapM _recursion _childEdgesM) >>=
-                        (foldM (\a ea -> return $ (acc_applyEdge (Common.pairFirst ea)) `mappend` (Common.pairSecond ea) `mappend` a) mempty)
+                        (foldM (\a ea -> return $ (acc_applyEdge (fst ea)) `mappend` (snd ea) `mappend` a) mempty)
          _finalResult = (liftM (mappend acc_applyVertex)) _foldedChildResults  :: m a
      in
          _finalResult
@@ -80,7 +80,7 @@ _dfsFoldMS handler g logic v =
          _               = do Common.trace "visited" (show v) :: Common.GraphApp m ()
          _foldedChildResults =
                         (mapM _recursion _childEdgesM) >>=
-                        (foldM (\a ea -> return $ (acc_applyEdge (Common.pairFirst ea)) `mappend` (Common.pairSecond ea) `mappend` a) mempty)
+                        (foldM (\a ea -> return $ (acc_applyEdge (fst ea)) `mappend` (snd ea) `mappend` a) mempty)
          _finalResult = (liftM (mappend acc_applyVertex)) _foldedChildResults  :: Common.GraphApp m a
      in
          _finalResult
