@@ -9,7 +9,7 @@ Strictly speaking, this is approach is not polymorphism, but it can accomplish v
 _write code once and use it across may different types_ and in many ways it goes beyond that.
  
 \begin{code}
-module Build.E05_PolyForFree where
+module Build.E05_PolyForFree (allThisHardWork) where
 \end{code}
 _Problem - Benefit Statement_:  
 Using language provided support for polymorphism (type classes in Haskell or what else have you elsewhere) 
