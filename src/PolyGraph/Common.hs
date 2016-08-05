@@ -15,7 +15,8 @@ module PolyGraph.Common (
   , GraphApp
   , liftOut
   , runApp
-  , addLogEntry
+  , trace
+  , withTrace
   , Trace
 ) where
 
@@ -27,8 +28,11 @@ import qualified Control.Monad.Trans.Class as MTL
 type GraphApp m  = W.WriterT Trace m
 type Trace = [String]
 
-addLogEntry :: Monad m => String -> GraphApp m ()
-addLogEntry s = W.tell [s]
+trace :: (Monad m, Show a) => String -> a -> GraphApp m ()
+trace s a = W.tell [s ++ show a]
+
+withTrace :: (Monad m, Show a) => String -> a -> GraphApp m a
+withTrace s a = W.tell [s ++ show a] >> return a
 
 liftOut :: Monad m => m a -> GraphApp m a
 liftOut = MTL.lift

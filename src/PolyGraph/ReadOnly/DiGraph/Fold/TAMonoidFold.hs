@@ -70,7 +70,7 @@ _dfsFoldMS handler g logic v =
          _recursionE     = _recursionV . Common.second . resolveDiEdge           :: e ->  Common.GraphApp m a
          _recursion      = (\e -> (liftPairHelper e) . _recursionE $ e) :: e ->  Common.GraphApp m (e, a)
          _childEdgesM    =  g `cEdgesOf` v                              :: t e
-         _               = do Common.addLogEntry $ show v :: Common.GraphApp m ()
+         _               = do Common.trace "visited" (show v) :: Common.GraphApp m ()
          _foldedChildResults =
                         (mapM _recursion _childEdgesM) >>=
                         (foldM (\a ea -> return $ (acc_applyEdge (Common.pairFirst ea)) `mappend` (Common.pairSecond ea) `mappend` a) mempty)
