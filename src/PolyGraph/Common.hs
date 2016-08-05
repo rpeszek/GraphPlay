@@ -12,10 +12,31 @@ module PolyGraph.Common (
   , UOPair (..)
   , PairLike (..)
   , oneElementPair
+  , GraphApp
+  , liftOut
+  , runApp
+  , addLogEntry
+  , Trace
 ) where
 
 import Data.Hashable (Hashable, hashWithSalt)
+import qualified Control.Monad.Writer as W
+import qualified Control.Monad.Trans.Class as MTL
 
+-- tranformer used if tracing is needed --
+type GraphApp m  = W.WriterT Trace m
+type Trace = [String]
+
+addLogEntry :: Monad m => String -> GraphApp m ()
+addLogEntry s = W.tell [s]
+
+liftOut :: Monad m => m a -> GraphApp m a
+liftOut = MTL.lift
+
+runApp ::  GraphApp m a -> m (a, Trace)
+runApp app  = W.runWriterT app
+
+-- end App transformer stack --
 
 -- Helper class and types --
 class PairLike a b | a-> b where

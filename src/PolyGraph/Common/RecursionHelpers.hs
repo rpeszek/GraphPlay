@@ -70,53 +70,55 @@ dumpMemoStore h = do
 -- TESTS ---
 -- TMemoExperiments have code that traces
 
-fib :: Int -> St.ST s Int
-fib 0 = return 0
-fib 1 = return 1
-fib i = do
-         f1 <- fib (i-1)
-         f2 <- fib (i-2)
+_fib :: Int -> St.ST s Int
+_fib 0 = return 0
+_fib 1 = return 1
+_fib i = do
+         f1 <- _fib (i-1)
+         f2 <- _fib (i-2)
          return (f1 + f2)
 
-fibX :: HashTable s Int Int -> Int -> St.ST s Int
-fibX _ 0 = return 0
-fibX _ 1 = return 1
-fibX h i = do
-         f1 <- memo h (fibX h) $ (i-1)
-         f2 <- memo h (fibX h) $ (i-2)
+_fibX :: HashTable s Int Int -> Int -> St.ST s Int
+_fibX _ 0 = return 0
+_fibX _ 1 = return 1
+_fibX h i = do
+         f1 <- memo h (_fibX h) $ (i-1)
+         f2 <- memo h (_fibX h) $ (i-2)
          return (f1 + f2)
 
-runFib :: Int -> St.ST s Int
-runFib i = do
+_runFib :: Int -> St.ST s Int
+_runFib i = do
   ht <- H.new:: St.ST s (HashTable s Int Int)
-  f <- fibX ht i
+  f <- _fibX ht i
   return f
 
-fibY :: HashTable s Int Bool -> HashTable s Int Int -> Int -> St.ST s Int
-fibY _  _ 0 = return 0
-fibY _  _ 1 = return 1
-fibY h0 h i = do
-           f1 <- ((memo h) . (noReentry h0)) (fibY h0 h) $ (i-1)
-           f2 <- ((memo h) . (noReentry h0)) (fibY h0 h) $ (i-2)
+_fibY :: HashTable s Int Bool -> HashTable s Int Int -> Int -> St.ST s Int
+_fibY _  _ 0 = return 0
+_fibY _  _ 1 = return 1
+_fibY h0 h i = do
+           f1 <- ((memo h) . (noReentry h0)) (_fibY h0 h) $ (i-1)
+           f2 <- ((memo h) . (noReentry h0)) (_fibY h0 h) $ (i-2)
            return (f1 + f2)
 
-runFibY :: Int -> St.ST s Int
-runFibY i = do
+_runFibY :: Int -> St.ST s Int
+_runFibY i = do
   ht0 <- H.new :: St.ST s (HashTable s Int Bool)
   ht <- H.new:: St.ST s (HashTable s Int Int)
-  f <- fibY ht0 ht i
+  f <- _fibY ht0 ht i
   return f
 
-regFibIO  n = St.stToIO $ fib n
-fastFibIO n = St.stToIO (runFib n)
-regFib n = St.runST $ fib n
-fastFib n = St.runST (runFib n)
+{-
+_regFibIO  n = St.stToIO $ _fib n
+_fastFibIO n = St.stToIO (_runFib n)
+_regFib n = St.runST $ _fib n
+_fastFib n = St.runST (_runFib n)
+-}
 
-compareFibs :: Int -> IO ([(Int, Int)])
-compareFibs n = St.stToIO ( do
+_compareFibs :: Int -> IO ([(Int, Int)])
+_compareFibs n = St.stToIO ( do
      forM [1..n] (\i -> do
-                     slow <- fib i
-                     fast <- runFib i
+                     slow <- _fib i
+                     fast <- _runFib i
                      return (slow, fast)
                   ))
 

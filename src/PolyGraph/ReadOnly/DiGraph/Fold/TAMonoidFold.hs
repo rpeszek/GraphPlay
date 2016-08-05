@@ -60,8 +60,27 @@ dfsFoldM handler g logic v =
          _finalResult
 
 --
+-- currently not used
+-- 
+_dfsFoldMS :: forall m g v e t a. (Monoid a, Monad m, DiAdjacencyIndex g v e t, Show v) => RecHelp.RecursionHandler (Common.GraphApp m) v a -> g ->  MonoidFoldAccLogic v e a  -> v -> Common.GraphApp m a
+_dfsFoldMS handler g logic v =
+     let acc_applyVertex =  applyVertex logic v   :: a
+         acc_applyEdge   =  applyEdge   logic     :: e -> a
+         _recursionV     =  RecHelp.handle handler (_dfsFoldMS handler g logic)   :: v ->  Common.GraphApp m a
+         _recursionE     = _recursionV . Common.second . resolveDiEdge           :: e ->  Common.GraphApp m a
+         _recursion      = (\e -> (liftPairHelper e) . _recursionE $ e) :: e ->  Common.GraphApp m (e, a)
+         _childEdgesM    =  g `cEdgesOf` v                              :: t e
+         _               = do Common.addLogEntry $ show v :: Common.GraphApp m ()
+         _foldedChildResults =
+                        (mapM _recursion _childEdgesM) >>=
+                        (foldM (\a ea -> return $ (acc_applyEdge (Common.pairFirst ea)) `mappend` (Common.pairSecond ea) `mappend` a) mempty)
+         _finalResult = (liftM (mappend acc_applyVertex)) _foldedChildResults  :: Common.GraphApp m a
+     in
+         _finalResult
+
+--
 -- This walks the grah without remembering visited vertices (effectively walks a tree)
--- will not work if DiGraph has cycles
+-- will not work if DiGraph has cycles, and will be slow
 --
 dfsFoldExponential :: forall g v e t a. (Monoid a, DiAdjacencyIndex g v e t) => g -> MonoidFoldAccLogic v e a  -> v -> a
 dfsFoldExponential g logic v =
