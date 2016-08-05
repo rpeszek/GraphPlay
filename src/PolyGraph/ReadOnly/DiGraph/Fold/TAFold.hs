@@ -8,11 +8,18 @@
 -- each vertex v is visited pe(v) times (number of parent edges of the folded subgraph)
 --
 
-module PolyGraph.ReadOnly.DiGraph.Fold.TAFold where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.ReadOnly.DiGraph.Fold.TAFold (
+   AccError (..)
+  , FoldAccLogic(..)
+  , dfsFold
+  , dfsFoldFast
+  , dfsFoldExponential
+
+) where 
 
 import Control.Lens
 import Data.Hashable                      (Hashable)
-import Control.Monad                      (liftM, forM)
+import Control.Monad                      (forM)
 import Control.Monad.ST                   (ST, runST)
 import qualified Data.HashTable.Class     as HT
 import qualified PolyGraph.Common         as Common

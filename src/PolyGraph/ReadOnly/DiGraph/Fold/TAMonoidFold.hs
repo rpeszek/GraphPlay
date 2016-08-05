@@ -4,7 +4,14 @@
 -- Each graph vertex is computed only once.
 --
 
-module PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold where --TODO exports everything, a terrible programmer wrote it
+module PolyGraph.ReadOnly.DiGraph.Fold.TAMonoidFold (
+  AccError (..)
+  , MonoidFoldAccLogic (..)
+  , defaultMonoidFoldAccLogic
+  , dfsFold
+  , dfsFoldFast
+  , dfsFoldExponential
+) where 
 
 import Control.Lens
 import Data.Hashable

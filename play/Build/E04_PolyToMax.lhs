@@ -28,7 +28,6 @@ import Control.Arrow ((&&&))
 And we will show off our results at the end using graph instances found in:
 \begin{code}
 import qualified Instances.ListGraphs as ListGraphs
-import qualified Test.QuickCheck as Property
 \end{code}
 
 Grid is a directed graph with edges pointing up and right. 
@@ -178,8 +177,7 @@ allThisHardWork = do
     putStrLn "Why just [2..26], Why not QuickCheck?"
 \end{code}
 
-   > Why 26? I have used Int when calculating the tree size.  At 27 that number overflows Int with a value
-     of -7534807705245191491 which kinda proves the point!
+   > Why just 26? Tree size overflows Int quite fast and the countTreeNodes results become negative, which kinda proves the point!
 
 Notice that the resulting numbers are different depending
 on the choice of instance type.  This is why types are needed at some point in the program.
