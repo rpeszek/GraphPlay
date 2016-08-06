@@ -39,6 +39,8 @@ library
                        , PolyGraph.Buildable.Properties
                        , PolyGraph.Adjustable
                        , PolyGraph.Common.PropertySupport
+                       , PolyGraph.Common.NonBlockingQueue
+                       , PolyGraph.Common.NonBlockingQueue.Properties
                        , PolyForFree.GraphDSL
                        , Instances.DiGraph.DiEdgesByVertexMap
                        , Instances.AdjacencyMatrix

@@ -173,7 +173,7 @@ allThisHardWork = do
     putStrLn $ show (runProgram 10 (on:: ListGraphs.Vertices (Int,Int) (OPair (Int,Int))))
     putStrLn "Tree is exponentially slower"
     putStrLn $ show (let prop = treeIsExponentiallySlower (on:: ListGraphs.Edges (Int,Int) (OPair (Int,Int)))
-                     in null $ filter (not . prop) [2..26])
+                     in all (prop) [2..26])
     putStrLn "Why just [2..26], Why not QuickCheck?"
 \end{code}
 
