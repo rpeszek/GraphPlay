@@ -1,5 +1,8 @@
 {-
- Simple non-blocking queue
+ Simple non-blocking queue implemented as 2 lists.
+ enqueue operation puts element on the inList
+ dequeue operation removes elements from the outList, when outList gets empty it 
+ gets reloaded with elements from the inList.
 -}
 
 module PolyGraph.Common.NonBlockingQueue (
