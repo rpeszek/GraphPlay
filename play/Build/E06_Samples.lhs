@@ -1,6 +1,6 @@
 GraphPlay Example 6. Sample Graphs
 ------
-This program uses expressive power of applicative list and list monad to create some 
+This program uses expressive powers of applicative list and list monad to create some 
 sample graphs.
 I will use these graphs in future examples.
 
@@ -122,5 +122,5 @@ allThisHardWork = do
   putStrLn $ show (completeGraph id 4 :: ListGraphs.GEdges Int)
 \end{code}
 
-Applicative and Monad are some of the most polymorphic concepts known to mankind so
-I think it is only fitting to have these drive PolyGraph future examples.
+Applicative and Monad are on a short list of the most polymorphic concepts so
+I think it is only fitting to have these used as PolyGraph sample graphs.

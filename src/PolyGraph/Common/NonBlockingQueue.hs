@@ -22,7 +22,7 @@ isEmpty (SimpleQueue [] []) = True
 isEmpty _ = False
 
 enqueue :: a -> SimpleQueue a -> SimpleQueue a
-enqueue a (SimpleQueue inL outL) = SimpleQueue inL (a : outL)
+enqueue a (SimpleQueue inL outL) = SimpleQueue (a : inL) outL
 
 dequeue :: SimpleQueue a -> (Maybe a, SimpleQueue a)
 dequeue  (SimpleQueue []  [])  = (Nothing, SimpleQueue [] [])

@@ -16,6 +16,7 @@ module PolyGraph.Common (
   , trace
   , withTrace
   , Trace
+  , fstOrSnd
 ) where
 
 import Data.Hashable (Hashable, hashWithSalt)
@@ -39,6 +40,10 @@ runApp ::  GraphApp m a -> m (a, Trace)
 runApp app  = W.runWriterT app
 
 -- end App transformer stack --
+
+-- Helper funcitons
+fstOrSnd ::  a -> a -> Bool -> a
+fstOrSnd a1 a2 b = if b then a1 else a2
 
 -- Helper class and types --
 class PairLike a b | a-> b where

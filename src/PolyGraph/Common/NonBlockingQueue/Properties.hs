@@ -2,11 +2,35 @@
 module PolyGraph.Common.NonBlockingQueue.Properties (
     isFifo
     , dequeuesUnlessEmpty
+    , QueueInstruction(..)
 ) where
   
+import qualified PolyGraph.Common as Common
 import qualified PolyGraph.Common.NonBlockingQueue as Q
 import qualified Data.List as L
 import qualified Data.Maybe as M
+import qualified Test.QuickCheck as Property
+
+data QueueInstruction = Enqueue | Dequeue deriving (Eq, Show, Read)
+
+instance Property.Arbitrary QueueInstruction where
+   arbitrary = (Property.arbitrary :: Property.Gen Bool) >>= (return . (Common.fstOrSnd Enqueue Dequeue))
+
+--
+-- Properties which make for a valid NonBlocking Queue
+--
+isFifo :: Eq a => ([a],[QueueInstruction]) -> Bool
+isFifo (source, instructions) =
+          let  results  = runQueue (source, instructions) Q.emptyQueue
+               hitResults = map M.fromJust . L.filter (M.isJust) . map fst $ results
+               hitSize = L.length hitResults
+          in hitResults == L.take hitSize source
+
+dequeuesUnlessEmpty :: ([a],[QueueInstruction]) -> Bool
+dequeuesUnlessEmpty (source, instructions) =
+          let results = runQueue (source, instructions) Q.emptyQueue
+           in all (Q.isEmpty . snd) . L.filter (M.isNothing . fst) $ results
+
 
 --
 -- runQueue (sourceList, instructionList) initialQueue
@@ -17,26 +41,14 @@ import qualified Data.Maybe as M
 --
 -- Runs queue instructions against source and returns
 -- Maybe results from all dequeue operations and current queue states.
--- If sourceList is exausted, it just runs remaining dequeue operations
+-- If sourceList is exhausted, it just runs moreInst dequeue operations
 --
-runQueue :: ([a],[Bool]) -> Q.SimpleQueue a -> [(Maybe a, Q.SimpleQueue a)]
-runQueue (_,      [])           _  = []
-runQueue (src,    (False : xs)) q  = 
+runQueue :: ([a],[QueueInstruction]) -> Q.SimpleQueue a -> [(Maybe a, Q.SimpleQueue a)]
+runQueue (_,           []                  ) _  = []
+runQueue (src,         (Dequeue : moreInst)) q  =
                               let (x, newQ) = Q.dequeue q
-                              in (x, q) : (runQueue (src, xs) newQ)
-runQueue ([],     (True : xs))  q  = runQueue ([], xs) q
-runQueue ((a:as), (True : xs))  q  = 
+                              in (x, q) : (runQueue (src, moreInst) newQ)
+runQueue ([],          (Enqueue : moreInst))  q  = runQueue ([], moreInst) q
+runQueue ((a:moreSrc), (Enqueue : moreInst))  q  =
                               let newQ = a `Q.enqueue` q
-                              in runQueue (as, xs) newQ 
-
-isFifo :: Eq a => ([a],[Bool]) -> Bool
-isFifo (source, enqOrDeq) =
-          let  results  = runQueue (source, enqOrDeq) Q.emptyQueue
-               hitResults = map M.fromJust . L.filter (M.isJust) . map fst $ results
-               hitSize = L.length hitResults
-          in hitResults == L.take hitSize source
-
-dequeuesUnlessEmpty :: ([a],[Bool]) -> Bool
-dequeuesUnlessEmpty (source, enqOrDeq) =
-          let results = runQueue (source, enqOrDeq) Q.emptyQueue
-           in all (Q.isEmpty . snd) . L.filter (M.isNothing . fst) $ results
+                              in runQueue (moreSrc, moreInst) newQ
