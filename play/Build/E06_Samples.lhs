@@ -30,8 +30,9 @@ Bipartite (undirected) Graph is a graph obtained by taking 2 disjoint sets of ve
 and connecting every element from X1 with every element from X2.
 The following logic does not validate that lists of vertices are disjoint.
 If they intersect, the created graph will have loops and multiedges.
-I believe that thinking about bipartite graphs can help with building intuition about
-'standard' applicative list behavior, and you can just guess what 
+
+Bipartite graphs provide geometric intuition about 'standard' applicative list behavior. 
+Connecting every element from partitionX set with every element form partitionY set is exactly what 
 (@+~~@) <$> partitionX <*> partitionY does.
 
 \begin{code}
@@ -40,9 +41,9 @@ bipartiteGraph :: forall g v e t . (BuildableEdgeSemantics e v,
                                    BuildableGraphDataSet g v e t)
                                      =>  ([v],[v]) -> g
 bipartiteGraph bipartition = 
-                             let (partitionX, partitionY) = bipartition
-                             in foldr ($) emptyGraph $ 
-                                   (@+~~@) <$> partitionX <*> partitionY
+                    let (partitionX, partitionY) = bipartition
+                    in foldr ($) emptyGraph $ 
+                        (@+~~@) <$> partitionX <*> partitionY
 \end{code}
 
 Cycle (undirected) Graph uses list as ZipList applicative. Again, I think, this could
@@ -54,15 +55,15 @@ cycleGraph :: forall g v e t . (BuildableEdgeSemantics e v,
                                    BuildableGraphDataSet g v e t)
                                      =>  (Int->v) -> Int -> g
 cycleGraph vInx size = 
-               let vertexZlist :: [Int] -> ZipList v
-                   vertexZlist indxs = ZipList $ map vInx indxs
-                in (foldr ($) emptyGraph) . getZipList $ 
-                      (@+~~@) <$> vertexZlist ((size-1):[0..(size-2)]) <*> vertexZlist [0..(size-1)]    
+         let vertexList :: [Int] -> ZipList v
+             vertexList indxs = ZipList $ map vInx indxs
+          in (foldr ($) emptyGraph) . getZipList $ 
+            (@+~~@) <$> vertexList ((size-1):[0..(size-2)]) <*> vertexList [0..(size-1)]    
 \end{code}
 
-I have defined grid in example 4.  Here is a more applicative code equivalent of the same logic.
+I have defined grid in example 4.  Here is an applicative equivalent of the same logic.
 I find this code more intuitive as I can picture how lists of vertices are connecting with each other
-to create a line fragments and then to connect back to the smaller graph. All using the 'zip'
+to create a line fragments and then connect back to the smaller graph. All using the 'zip' list
 \begin{code}
 grid :: forall g v e t. (
                           BuildableEdgeSemantics e v,
@@ -92,7 +93,7 @@ grid n f =
 \end{code}
 
 Complete (undirected) Graph is one where each pair of two vertices is connected using exactly one edge.
-Applicative is not the best choice here because I have no guards (no easy way to prevent muliedges).
+Applicative is not the best choice here because I have no easy way to prevent muliedges.
 Monadic list comprehension works great (and I just love the set-theoretic look of it).
 Again, indexing function is used to keep the vertex type general. 
 \begin{code}
@@ -122,5 +123,5 @@ allThisHardWork = do
   putStrLn $ show (completeGraph id 4 :: ListGraphs.GEdges Int)
 \end{code}
 
-Applicative and Monad are on a short list of the most polymorphic concepts so
+Applicative and Monad are among the most polymorphic concepts out there.
 I think it is only fitting to have these used as PolyGraph sample graphs.

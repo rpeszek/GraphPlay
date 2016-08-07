@@ -120,6 +120,7 @@ test-suite graphplay-test
 
   other-modules:      Buildable.PropertiesSpec
                       , ReadOnly.EqualitySpec
+                      , Common.NonBlockingQueueSpec
 
 source-repository head
   type:     git
