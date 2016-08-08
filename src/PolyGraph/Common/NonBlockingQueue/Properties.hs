@@ -13,13 +13,6 @@ import qualified Test.QuickCheck as Property
 
 data QueueInstruction a = Enqueue a | Dequeue deriving (Eq, Show, Read)
 
-instance Property.Arbitrary a => Property.Arbitrary (QueueInstruction a) where
-   arbitrary = do 
-      enqueue <- Property.arbitrary
-      if enqueue
-      then liftM Enqueue Property.arbitrary
-      else return Dequeue
-
 --
 -- Properties which make for a valid NonBlocking Queue
 --
@@ -51,3 +44,12 @@ runQueue (Dequeue : moreInst) q  =
 runQueue (Enqueue a: moreInst) q  =
                               let newQ = a `Q.enqueue` q
                               in runQueue moreInst newQ
+----------------
+-- instances  --
+----------------
+instance Property.Arbitrary a => Property.Arbitrary (QueueInstruction a) where
+   arbitrary = do 
+      enqueue <- Property.arbitrary
+      if enqueue
+      then liftM Enqueue Property.arbitrary
+      else return Dequeue
