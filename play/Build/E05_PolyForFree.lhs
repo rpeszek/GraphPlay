@@ -33,7 +33,7 @@ The cost is often one line of code for DSL and one line of code per interpreter 
 
 We will be producing a graph using a very simple DSL defined in:
 \begin{code}
-import qualified PolyForFree.GraphDSL as DSL
+import qualified FreeDSL.GraphBuilder as DSL
 \end{code}
 
 we will consume our program using these interpreters

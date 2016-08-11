@@ -41,7 +41,7 @@ library
                        , PolyGraph.Common.PropertySupport
                        , PolyGraph.Common.NonBlockingQueue
                        , PolyGraph.Common.NonBlockingQueue.Properties
-                       , PolyForFree.GraphDSL
+                       , FreeDSL.GraphBuilder
                        , Instances.DiGraph.DiEdgesByVertexMap
                        , Instances.AdjacencyMatrix
                        , Instances.ListGraphs

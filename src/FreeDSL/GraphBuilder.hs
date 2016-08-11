@@ -1,4 +1,4 @@
-module PolyForFree.GraphDSL (
+module FreeDSL.GraphBuilder (
     GraphDSL
     , addVertex
     , addEdgeWithData

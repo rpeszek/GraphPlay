@@ -5,7 +5,7 @@ module Instances.ListGraphs.DslInterpreter (
 ) where
 
 import PolyGraph.Common (OPair(..))
-import qualified PolyForFree.GraphDSL as DSL
+import qualified FreeDSL.GraphBuilder as DSL
 import qualified Instances.ListGraphs as ListGraphs
 
 interpretAsNewDiGEdges :: forall v edata . (Eq v) => DSL.GraphDSL v edata  -> ListGraphs.DiEdges v

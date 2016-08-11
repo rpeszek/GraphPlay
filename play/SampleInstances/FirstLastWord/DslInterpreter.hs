@@ -2,7 +2,7 @@
 module SampleInstances.FirstLastWord.DslInterpreter where
   
 import PolyGraph.Common (OPair(..))
-import qualified PolyForFree.GraphDSL as DSL
+import qualified FreeDSL.GraphBuilder as DSL
 import qualified SampleInstances.FirstLastWord as SentenceGraph
 
 interpretAsFirstLastWordDiGraph :: forall v edata . (Eq v, Show v, Show edata)
