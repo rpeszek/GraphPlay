@@ -72,12 +72,24 @@ instance forall v t. (Eq v, Foldable t, BuildableCollection (t (OPair v)) (OPair
                            else tvv
                 in F.toList $ foldr addEdge emptyBuildableCollection (getEdges g)
 
+instance forall v t. (Eq v, Foldable t, BuildableCollection (t (UOPair v)) (UOPair v)) =>
+                                                      (AdjacencyIndex (SimpleGraph v (UOPair v) t) v (UOPair v) []) where
+  edgesOf g ver =
+                let addEdge :: (UOPair v) -> t (UOPair v) -> t (UOPair v)
+                    addEdge vv tvv =
+                           if (first vv == ver || second vv == ver)
+                           then addBuildableElement vv tvv
+                           else tvv
+                in F.toList $ foldr addEdge emptyBuildableCollection (getEdges g)
+
 --
--- NOTE:
--- I do an override with faster implementation without OVERLAPPING hint like so:
+-- an override with faster implementation without OVERLAPPING hint? 
 --
 instance forall v t. (Eq v) => (DiAdjacencyIndex (SimpleSetDiGraph v) v (OPair v) []) where
   cEdgesOf g ver = HS.toList . HS.filter (\vv -> first vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
+
+instance forall v t. (Eq v) => (AdjacencyIndex (SimpleSetGraph v) v (UOPair v) []) where
+  edgesOf g ver = HS.toList . HS.filter (\vv -> first vv == ver || second vv == ver) . getEdges $ g  --(:t) g -> v -> [e]
 
 instance  forall v t. (Eq v, Foldable t) => (Graph (SimpleGraph v (UOPair v) t) v (UOPair v) t)
 

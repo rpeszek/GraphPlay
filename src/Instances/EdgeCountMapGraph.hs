@@ -5,8 +5,8 @@
 -}
 
 module Instances.EdgeCountMapGraph (
-    EdgeCountMapGraph (..)
-    , EdgeCountMapDiGraph (..)
+    EdgeCountMapGraph -- (..)
+    , EdgeCountMapDiGraph -- (..)
     , EdgeCountMap (..)
 ) where
 
@@ -14,13 +14,13 @@ import PolyGraph.ReadOnly
 import PolyGraph.ReadOnly.Graph
 import PolyGraph.ReadOnly.DiGraph
 import PolyGraph.Buildable
-import PolyGraph.Adjustable
+--import PolyGraph.Adjustable
 import PolyGraph.Common
 import Data.Hashable
 import qualified Data.HashMap.Strict as HM
 import qualified Data.HashSet as HS
 import qualified Data.Sequence as S
-import Data.Matrix as M
+--import Data.Matrix as M
 
 
 --
@@ -48,11 +48,11 @@ instance  forall v e. (Eq v, Hashable v, Eq e, Hashable e, PairLike e v) =>
   isolatedVertices g =
                     let foldF :: e -> Int -> HS.HashSet v -> HS.HashSet v
                         foldF _ 0 vertices = vertices
-                        foldF edge count vertices =
+                        foldF edge _ vertices =
                                     let (v1,v2) = toPair edge
                                     in foldr HS.delete vertices [v1,v2]
-                        isolatedVertices = HM.foldrWithKey foldF (getVertices g) (getMap g)
-                    in S.fromList . HS.toList $ isolatedVertices
+                        isolatedVs = HM.foldrWithKey foldF (getVertices g) (getMap g)
+                    in S.fromList . HS.toList $ isolatedVs
 
   -- | edges replay same OPair several times for multiedge graphs
   edges g  =
