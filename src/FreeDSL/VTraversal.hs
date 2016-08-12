@@ -3,7 +3,7 @@ module FreeDSL.VTraversal (
   , VTraversal
   , VObservation(..)
   -- low level API
-  , startAt
+  , rootAt
   , nextObservation
   , currentObservation
   , put
@@ -13,6 +13,7 @@ module FreeDSL.VTraversal (
   , label
   , getLabel
   , appendLabel
+  , currentVertex
 ) where
   
 --import Control.Monad
@@ -35,8 +36,8 @@ data VTraverseDslCmds a v n =
 
 type VTraversal a v = Free (VTraverseDslCmds a v)
 
-startAt :: forall a v .  v -> VTraversal a v ()
-startAt v  = liftF (StartAt v ())
+rootAt :: forall a v .  v -> VTraversal a v ()
+rootAt v  = liftF (StartAt v ())
 
 nextObservation :: forall a v . VTraversal a v (VObservation v)
 nextObservation  = liftF (NextVObs  id)
@@ -53,8 +54,15 @@ get v = liftF (Get v id)
 getWithDefault :: forall a v .  a -> v -> VTraversal a v a
 getWithDefault defA v = get v >>= return . (maybe defA id) 
 
-startWith :: forall a v .  v -> a -> VTraversal a v ()
-startWith v a = startAt v >> put v a
+startWith :: forall a v .  v -> a -> VTraversal a v (VObservation v)
+startWith v a = rootAt v >> put v a >> nextObservation
+
+currentVertex :: forall a v . VTraversal a v (Maybe v)
+currentVertex = currentObservation >>= 
+              (\obs -> case obs of
+                           NoMore -> return Nothing
+                           Observe _ v2 -> return $ Just v2
+              )
 
 label :: forall a v . a -> VTraversal a v ()
 label a = currentObservation >>= 

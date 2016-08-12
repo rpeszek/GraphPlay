@@ -74,6 +74,7 @@ library
                       , matrix
                       , QuickCheck
                       , free
+                      , monad-loops
                       --, derive
   default-language:    Haskell2010
   extensions:          TemplateHaskell
