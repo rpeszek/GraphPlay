@@ -43,7 +43,7 @@ library
                        , PolyGraph.Common.NonBlockingQueue.Properties
                        , FreeDSL.GraphBuilder
                        , FreeDSL.VTraversal
-                       , FreeDSL.VTraversal.BSF
+                       , FreeDSL.VTraversal.BFS
                        , Instances.DiGraph.DiEdgesByVertexMap
                        , Instances.AdjacencyMatrix
                        , Instances.ListGraphs

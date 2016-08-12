@@ -12,6 +12,7 @@ module FreeDSL.VTraversal (
   -- easy API
   , startWithLabel
   , rootWithLabel
+  , nextVertex
   , label
   , adjustLabel
   , getLabel
@@ -62,6 +63,13 @@ rootWithLabel v a = rootAt v >> put v a
 
 startWithLabel :: forall a v .  v -> a -> VTraversal a v (VObservation v)
 startWithLabel v a = rootWithLabel v a >> nextObservation
+
+nextVertex :: forall a v . VTraversal a v (Maybe v)
+nextVertex  = nextObservation >>= 
+              (\obs -> case obs of
+                           NoMore -> return Nothing
+                           Observe _ v2 -> return $ Just v2
+              )
 
 currentVertex :: forall a v . VTraversal a v (Maybe v)
 currentVertex = currentObservation >>= 

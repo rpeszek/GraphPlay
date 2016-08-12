@@ -1,7 +1,7 @@
 
-module FreeDSL.VTraversal.BSF (
-  runBSFState
-  , runBSF
+module FreeDSL.VTraversal.BFS (
+  runBFSState
+  , runBFS
 ) where
   
 import Data.Hashable
@@ -20,16 +20,16 @@ import qualified Data.HashSet as HS
 -- State (currentObservation, Maybe workingFromV, workingNeighbors, queue, visited, storage)
 
 
-runBSFState :: forall a g v e t r . (Hashable v, Eq v, AdjacencyIndex g v e t) => 
+runBFSState :: forall a g v e t r . (Hashable v, Eq v, AdjacencyIndex g v e t) => 
                                DSL.VTraversal a v r -> g -> HM.HashMap v a
-runBSFState program g  = 
+runBFSState program g  = 
                         let initdata = (DSL.NoMore, Nothing, [], Q.emptyQueue, HS.empty, HM.empty)
                             (_,_,_,_,_,hm) = execState (interpretBSF g program) initdata
                         in hm
 
-runBSF :: forall a g v e t . (Hashable v, Eq v, AdjacencyIndex g v e t) => 
-                               DSL.VTraversal a v a -> g -> a
-runBSF program g  = evalState (interpretBSF g program) (DSL.NoMore, Nothing, [], Q.emptyQueue, HS.empty, HM.empty)
+runBFS :: forall a b g v e t . (Hashable v, Eq v, AdjacencyIndex g v e t) => 
+                               DSL.VTraversal a v b -> g -> b
+runBFS program g  = evalState (interpretBSF g program) (DSL.NoMore, Nothing, [], Q.emptyQueue, HS.empty, HM.empty)
 
 type BSFState v a = (DSL.VObservation v, Maybe v, [v], Q.SimpleQueue v, HS.HashSet v, HM.HashMap v a)
 
