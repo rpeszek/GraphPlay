@@ -19,7 +19,7 @@ import PolyGraph.ReadOnly.Graph (EdgeSemantics)
 import PolyGraph.Buildable ((+@))
 import PolyGraph.Buildable.Graph ((@+~~@), toSimpleGraph)
 import PolyGraph.ReadOnly.DiGraph (DiEdgeSemantics)
-import PolyGraph.Buildable.DiGraph ((@+~>@))
+--import PolyGraph.Buildable.DiGraph ((@+~>@))
 import PolyGraph.Buildable (BuildableEdgeSemantics, BuildableGraphDataSet, emptyGraph)
 
 import qualified Instances.SimpleGraph as Simple
@@ -62,12 +62,13 @@ cycleGraph vInx size =
 \end{code}
 
 I have defined grid in example 4.  Here is an applicative equivalent of the same logic.
+I will do undirected version to make it a bit different.
 I find this code more intuitive as I can picture how lists of vertices are connecting with each other
 to create a line fragments and then connect back to the smaller graph. All using the 'zip' list
 \begin{code}
 grid :: forall g v e t. (
                           BuildableEdgeSemantics e v,
-                          DiEdgeSemantics e v,
+                          EdgeSemantics e v,
                           BuildableGraphDataSet g v e t)
                                    =>  Int -> (Int -> Int -> v) -> g
 grid 0 _ = emptyGraph
@@ -81,13 +82,13 @@ grid n f =
               applyToGraph list g = foldr ($) g $ getZipList list
 
               addHLine y  = applyToGraph $
-                             (@+~>@) <$> rowFragment y (0, (n-2)) <*> rowFragment y     (1, (n-1))
+                             (@+~~@) <$> rowFragment y (0, (n-2)) <*> rowFragment y     (1, (n-1))
               addVBars y  = applyToGraph $
-                             (@+~>@) <$> rowFragment y (0, (n-2)) <*> rowFragment (y+1) (0, (n-2))
+                             (@+~~@) <$> rowFragment y (0, (n-2)) <*> rowFragment (y+1) (0, (n-2))
               addVLine x  = applyToGraph $
-                             (@+~>@) <$> colFragment x (0, (n-2)) <*> colFragment x     (1, (n-1))
+                             (@+~~@) <$> colFragment x (0, (n-2)) <*> colFragment x     (1, (n-1))
               addHBars x  = applyToGraph $ 
-                             (@+~>@) <$> colFragment x (0, (n-2)) <*> colFragment (x+1) (0, (n-2))
+                             (@+~~@) <$> colFragment x (0, (n-2)) <*> colFragment (x+1) (0, (n-2))
 
           in  addHLine (n-1) . addVBars (n-2) . addVLine (n-1) . addHBars (n-2) $ grid (n-1) f
 \end{code}
@@ -117,7 +118,7 @@ allThisHardWork = do
   putStrLn "Cycle:"
   putStrLn $ show (cycleGraph id 4 :: ListGraphs.GEdges Int)
   putStrLn "GridDiGraph:"
-  putStrLn $ show (grid 3 (,) :: ListGraphs.DiEdges (Int,Int))
+  putStrLn $ show (grid 3 (,) :: ListGraphs.GEdges (Int, Int))
   putStrLn "CompleteGraph:"
   putStrLn $ show (completeGraph id 4 :: Simple.SimpleListGraph Int)
   putStrLn $ show (completeGraph id 4 :: ListGraphs.GEdges Int)
