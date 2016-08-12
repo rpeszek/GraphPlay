@@ -1,6 +1,7 @@
 
 module FreeDSL.VTraversal.BFS (
   runBFSState
+  , runBFSFullState
   , runBFS
 ) where
   
@@ -27,6 +28,12 @@ runBFSState program g  =
                             (_,_,_,_,_,hm) = execState (interpretBSF g program) initdata
                         in hm
 
+runBFSFullState :: forall a g v e t r . (Hashable v, Eq v, AdjacencyIndex g v e t) => 
+                               DSL.VTraversal a v r -> g -> BSFState v a
+runBFSFullState program g  = 
+                        let initdata = (DSL.NoMore, Nothing, [], Q.emptyQueue, HS.empty, HM.empty)
+                        in execState (interpretBSF g program) initdata
+
 runBFS :: forall a b g v e t . (Hashable v, Eq v, AdjacencyIndex g v e t) => 
                                DSL.VTraversal a v b -> g -> b
 runBFS program g  = evalState (interpretBSF g program) (DSL.NoMore, Nothing, [], Q.emptyQueue, HS.empty, HM.empty)
@@ -36,7 +43,7 @@ type BSFState v a = (DSL.VObservation v, Maybe v, [v], Q.SimpleQueue v, HS.HashS
 interpretBSF :: forall a g v e t r . (Hashable v, Eq v, AdjacencyIndex g v e t) => 
                                g -> DSL.VTraversal a v r -> State (BSFState v a) r
 
-interpretBSF g (Free (DSL.StartAt root next)) = (put (DSL.NoMore, Nothing, [], Q.enqueue root Q.emptyQueue, HS.empty, HM.empty)) >> interpretBSF g next
+interpretBSF g (Free (DSL.StartAt root next)) = (put (DSL.NoMore, Nothing, [], Q.enqueue root Q.emptyQueue, HS.singleton root, HM.empty)) >> interpretBSF g next
 interpretBSF g (Free (DSL.NextVObs vNext)) = do
              s <- get
              let (obs,ns) = traversalHelper g s

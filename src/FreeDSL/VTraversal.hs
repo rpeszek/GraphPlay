@@ -28,7 +28,7 @@ import Control.Monad.Free (Free(..),liftF)
 data VObservation v = Observe {
    on    :: v, 
    neighbor :: v
-} | NoMore
+} | NoMore deriving Show
 
 data VTraverseDslCmds a v n = 
                     StartAt   v n                     |
@@ -85,6 +85,15 @@ label a = currentObservation >>=
                           Observe _ v2 -> put v2 a
              )
 
+labelR :: forall a v . a -> VTraversal a v (Maybe a)
+labelR a = currentObservation >>= 
+             (\obs -> case obs of
+                    NoMore -> return Nothing
+                    Observe _ v2 -> do 
+                                      put v2 a
+                                      return $ Just a
+             )
+
 getLabel :: forall a v . VTraversal a v (Maybe a)
 getLabel = currentObservation >>= 
           (\obs -> case obs of
@@ -93,7 +102,11 @@ getLabel = currentObservation >>=
           )
 
 adjustLabel :: forall a v . (a -> a) ->  VTraversal a v (Maybe a)
-adjustLabel f = getLabel >>= return . (maybe Nothing (Just . f))
+adjustLabel f = getLabel >>= maybe (return Nothing) (labelR . f)
+
+            
+                       
+--return . (maybe Nothing (Just . f))
 
 appendLabel :: forall a v . Monoid a => a -> VTraversal a v (Maybe a)
 appendLabel a = getLabel >>= return . (maybe Nothing (Just . mappend a))

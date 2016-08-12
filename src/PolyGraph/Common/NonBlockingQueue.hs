@@ -15,7 +15,7 @@ module PolyGraph.Common.NonBlockingQueue (
 
 import qualified Data.List as L
 
-data SimpleQueue a = SimpleQueue [a] [a]
+data SimpleQueue a = SimpleQueue [a] [a] deriving Show
 
 emptyQueue :: SimpleQueue a
 emptyQueue = SimpleQueue [] []
