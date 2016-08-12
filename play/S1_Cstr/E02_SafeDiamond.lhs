@@ -1,9 +1,9 @@
-GraphPlay Example 2. Polymorphic graph creation
+1.02 Constraint Polymorphism.  Polymorphic graph data structures.
 ------
 This example is very similar to Example 1 only without automatic deserialization
 
 \begin{code}
-module Build.E02_SafeDiamond (allThisHardWork) where
+module S1_Cstr.E02_SafeDiamond (allThisHardWork) where
 \end{code}
 
 \begin{code}

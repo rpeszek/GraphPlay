@@ -56,12 +56,12 @@ library
                        , Deprecated.DiGraph.TreeFoldOnSimpleGraph
                        , Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph
                        , Deprecated.DiGraph.IndexedFolds
-                       , Build.E01_UnsafeDiamond
-                       , Build.E02_SafeDiamond
-                       , Build.E03_PolyReloaded
-                       , Build.E04_PolyToMax
-                       , Build.E05_PolyForFree
-                       , Build.E06_Samples
+                       , S1_Cstr.E01_UnsafeDiamond
+                       , S1_Cstr.E02_SafeDiamond
+                       , S1_Cstr.E03_PolyReloaded
+                       , S1_Cstr.E04_PolyToMax
+                       , S2_Free.E01_PolyForFree
+                       , S1_Cstr.E05_Samples
                        , Deprecated.DiGraph.PolyRebuild
   build-depends:       base >= 4.7 && < 5
                       , lens

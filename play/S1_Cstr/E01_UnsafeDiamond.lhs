@@ -1,9 +1,9 @@
-GraphPlay Example 1. Polymorphic graph creation
+1.01 Constraint Polymorphism.  Polymorphic graph data structures.
 ------
 If you are like me and have many years of OO habits, this example will look strange.
 
 \begin{code}
-module Build.E01_UnsafeDiamond (allThisHardWork) where
+module S1_Cstr.E01_UnsafeDiamond (allThisHardWork) where
 \end{code}
 
 This program shows polymorphic production of graph data structures

@@ -1,9 +1,9 @@
 
-import qualified Build.E01_UnsafeDiamond as E01
-import qualified Build.E02_SafeDiamond as E02
-import qualified Build.E03_PolyReloaded as E03
-import qualified Build.E04_PolyToMax as E04
-import qualified Build.E05_PolyForFree as E05
+import qualified S1_Cstr.E01_UnsafeDiamond as E01
+import qualified S1_Cstr.E02_SafeDiamond as E02
+import qualified S1_Cstr.E03_PolyReloaded as E03
+import qualified S1_Cstr.E04_PolyToMax as E04
+import qualified S2_Free.E01_PolyForFree as E05
 import qualified Deprecated.DiGraph.TreeFoldOnSimpleGraph as FSG
 import qualified Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph as MFSG
 import qualified Deprecated.DiGraph.IndexedFolds as IND1

@@ -1,4 +1,4 @@
-GraphPlay Example 4. Polymorphism to the max
+1.04 Constraint Polymorphism.  Polymorphism to the max.
 ------
 Previous examples were more about demonstrating various weird things you can do with
 polymorphism based on type constraints.  It is time to actually compute something.
@@ -6,7 +6,7 @@ In this example we will compute the difference between sizes of a directed grid 
 a corresponding tree structure.
 
 \begin{code}
-module Build.E04_PolyToMax (allThisHardWork, grid) where
+module S1_Cstr.E04_PolyToMax (allThisHardWork, diGrid) where
 \end{code}
 
 We will need our polymorphic graph building machinery:
@@ -35,20 +35,20 @@ We will be using a square n x n grid with n^2 vertices.
 Using a somewhat imperative code (I will redo it using more elegant applicative style in the future) 
 grid is produced as:
 \begin{code}
-grid :: forall g v e t. (
+diGrid :: forall g v e t. (
                           B.BuildableEdgeSemantics e v,
                           DiG.DiEdgeSemantics e v,
                           B.BuildableGraphDataSet g v e t)
                                    =>  Int -> (Int -> Int -> v) -> g
-grid 0 _ = B.emptyGraph
-grid 1 f = B.emptyGraph +@ (f 0 0) :: (B.BuildableGraphDataSet g v e t ) => g
-grid n f =
+diGrid 0 _ = B.emptyGraph
+diGrid 1 f = B.emptyGraph +@ (f 0 0) :: (B.BuildableGraphDataSet g v e t ) => g
+diGrid n f =
           let addHLine :: Int -> g -> g
               addHLine j g = foldr(\i -> (f i j) @+~>@ (f (i+1) j)) g [0..(n-2)]
               addVBars j g = foldr(\i -> (f i j) @+~>@ (f i (j+1))) g [0..(n-2)]
               addVLine i g = foldr(\j -> (f i j) @+~>@ (f i (j+1))) g [0..(n-2)]
               addHBars i g = foldr(\j -> (f i j) @+~>@ (f (i+1) j)) g [0..(n-2)]
-          in  addHLine (n-1) . addVBars (n-2) . addVLine (n-1) . addHBars (n-2) $ grid (n-1) f
+          in  addHLine (n-1) . addVBars (n-2) . addVLine (n-1) . addHBars (n-2) $ diGrid (n-1) f
 \end{code}
 
 We have 2 motivations for what we are about to do:
@@ -81,11 +81,11 @@ What I want is a function which looks like this:
   > countGraphVertices:: Int -> Int  
     countGraphVertices gridSize = undefined
 
-It would be not logical, and Haskell powerful type system will not allow me, to use my 'grid' function in the implementation of
-'countGraphVertices' unless I specialize the use of 'grid' to a specific instance. This is precisely what I want to avoid.
+It would be not logical, and Haskell powerful type system will not allow me, to use my 'diGrid' function in the implementation of
+'countGraphVertices' unless I specialize the use of 'diGrid' to a specific instance. This is precisely what I want to avoid.
 So I have 2 choices:
 
-  - accept a bogus input parameter (similar to Java List.toArray) to tell compiler about my polymorphic 'grid' and its contraints
+  - accept a bogus input parameter (similar to Java List.toArray) to tell compiler about my polymorphic 'diGrid' and its contraints
   - include polymorphic grid type in the result for the same purpose
 
 Since the first approach is more familiar to OO coders I will run with it:
@@ -93,7 +93,7 @@ Since the first approach is more familiar to OO coders I will run with it:
 \begin{code}
 countGraphVertices  :: forall g v . (B.BuildableGraphDataSet g (Int,Int) (OPair (Int,Int)) [])
                                     => g -> Int -> Int
-countGraphVertices _ n = Base.vCount (toPair . DiG.resolveDiEdge) (grid n (,) :: g)
+countGraphVertices _ n = Base.vCount (toPair . DiG.resolveDiEdge) (diGrid n (,) :: g)
 \end{code}
 
    > _About_ resolveDiEdge : it maybe confusing why I need it.  
@@ -124,7 +124,7 @@ treeNodeCounter = FastFold.defaultMonoidFoldAccLogic {
 countTreeNodes:: forall g v . (DiG.DiAdjacencyIndex g (Int,Int) (OPair (Int,Int)) [],
                               B.BuildableGraphDataSet g (Int,Int) (OPair (Int,Int)) [])
                                  => g -> Int -> Int
-countTreeNodes _ n = getSum $ FastFold.dfsFold (grid n (,) :: g) treeNodeCounter (0,0)
+countTreeNodes _ n = getSum $ FastFold.dfsFold (diGrid n (,) :: g) treeNodeCounter (0,0)
 \end{code}
 
   > About Monoids: Monoids are for 'appending' things.  

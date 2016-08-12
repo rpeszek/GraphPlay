@@ -1,15 +1,15 @@
-GraphPlay Example 5. Free Decoupling and Polymorphism for free.
+2. Free DSL Polymorphism.  Free Decoupling and Polymorphism for free.
 ------
 This example presents decoupling of data production and consumption with benefits similar to 
-Examples 1 and 2 but is accomplished without type classes!  Our plan in a nutshell is:
+Examples 1.01 and 1.02 but is accomplished without type classes!  Our plan in a nutshell is:
   - build a graph using a DSL
   - use different interpreters to do different things with it
 
-Strictly speaking, this is approach is not polymorphism, but it can accomplish very similar goals:
+This approach can accomplish very similar goals to polymorphism:
 _write code once and use it across may different types_ and in many ways it goes beyond that.
  
 \begin{code}
-module Build.E05_PolyForFree (allThisHardWork) where
+module S2_Free.E01_PolyForFree (allThisHardWork) where
 \end{code}
 _Problem - Benefit Statement_:  
 Using language provided support for polymorphism (type classes in Haskell or what else have you elsewhere) 

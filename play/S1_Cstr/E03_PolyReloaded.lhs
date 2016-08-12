@@ -1,10 +1,10 @@
-GraphPlay Example 3. Polymorphic graph reload
+1.03 Constraint Polymorphism.  Polymorphic graph reload.
 ------
 In this example I will start by creating data of a specific type and reload it (or re-play it)
 into a polymorphic data structure.
 
 \begin{code}
-module Build.E03_PolyReloaded (allThisHardWork) where
+module S1_Cstr.E03_PolyReloaded (allThisHardWork) where
 \end{code}
 
 We will need these modules:

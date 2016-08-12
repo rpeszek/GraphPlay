@@ -1,11 +1,11 @@
-GraphPlay Example 6. Sample Graphs
+1.05 Constraint Polymorphism. Sample Graphs.
 ------
 This program uses expressive powers of applicative list and list monad to create some 
 sample graphs.
 I will use these graphs in future examples.
 
 \begin{code}
-module Build.E06_Samples (
+module S1_Cstr.E05_Samples (
    allThisHardWork
    , bipartiteGraph
    , cycleGraph
