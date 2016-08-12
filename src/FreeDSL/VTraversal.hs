@@ -7,10 +7,13 @@ module FreeDSL.VTraversal (
   , nextObservation
   , currentObservation
   , put
-  -- easy API
+  , get
   , getWithDefault
-  , startWith
+  -- easy API
+  , startWithLabel
+  , rootWithLabel
   , label
+  , adjustLabel
   , getLabel
   , appendLabel
   , currentVertex
@@ -54,8 +57,11 @@ get v = liftF (Get v id)
 getWithDefault :: forall a v .  a -> v -> VTraversal a v a
 getWithDefault defA v = get v >>= return . (maybe defA id) 
 
-startWith :: forall a v .  v -> a -> VTraversal a v (VObservation v)
-startWith v a = rootAt v >> put v a >> nextObservation
+rootWithLabel :: forall a v .  v -> a -> VTraversal a v ()
+rootWithLabel v a = rootAt v >> put v a 
+
+startWithLabel :: forall a v .  v -> a -> VTraversal a v (VObservation v)
+startWithLabel v a = rootWithLabel v a >> nextObservation
 
 currentVertex :: forall a v . VTraversal a v (Maybe v)
 currentVertex = currentObservation >>= 
@@ -77,6 +83,9 @@ getLabel = currentObservation >>=
                        NoMore -> return Nothing
                        Observe v1 _ -> get v1
           )
+
+adjustLabel :: forall a v . (a -> a) ->  VTraversal a v (Maybe a)
+adjustLabel f = getLabel >>= return . (maybe Nothing (Just . f))
 
 appendLabel :: forall a v . Monoid a => a -> VTraversal a v (Maybe a)
 appendLabel a = getLabel >>= return . (maybe Nothing (Just . mappend a))
