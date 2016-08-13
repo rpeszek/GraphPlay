@@ -57,7 +57,8 @@ The graph we will be working with looks like this:
          3
 ```
 
-_Production_:  Using DSL forces our code to be agnostic of any type specific stuff.  
+_Production_:  My DSL allows to associate extra data (weight) with edges.  Here this weight
+is of type String  It is important to notice how lax type constraints are when using DSL:    
 \begin{code}
 squareGraphProgram :: DSL.GraphDSL Int String
 squareGraphProgram = do
