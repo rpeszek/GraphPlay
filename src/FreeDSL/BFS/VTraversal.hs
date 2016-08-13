@@ -1,4 +1,4 @@
-module FreeDSL.VTraversal (
+module FreeDSL.BFS.VTraversal (
   VTraverseDslCmds(..)
   , VTraversal
   , VObservation(..)

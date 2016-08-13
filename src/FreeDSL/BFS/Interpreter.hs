@@ -1,5 +1,5 @@
 
-module FreeDSL.VTraversal.BFS (
+module FreeDSL.BFS.Interpreter (
   runBFSState
   , runBFSFullState
   , runBFS
@@ -10,7 +10,7 @@ import Data.Hashable
 --import Data.Maybe (maybe)
 import Control.Monad.Free (Free(..))
 import PolyGraph.ReadOnly.Graph (AdjacencyIndex(..), neighborsOf)
-import qualified FreeDSL.VTraversal as DSL
+import qualified FreeDSL.BFS.VTraversal as DSL
 import qualified PolyGraph.Common.NonBlockingQueue as Q
 import Control.Monad.State (State, execState, evalState, modify, get, put)
 import qualified Data.HashMap.Strict as HM

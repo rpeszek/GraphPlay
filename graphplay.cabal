@@ -42,8 +42,8 @@ library
                        , PolyGraph.Common.NonBlockingQueue
                        , PolyGraph.Common.NonBlockingQueue.Properties
                        , FreeDSL.GraphBuilder
-                       , FreeDSL.VTraversal
-                       , FreeDSL.VTraversal.BFS
+                       , FreeDSL.BFS.VTraversal
+                       , FreeDSL.BFS.Interpreter
                        , Instances.DiGraph.DiEdgesByVertexMap
                        , Instances.AdjacencyMatrix
                        , Instances.ListGraphs

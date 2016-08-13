@@ -17,8 +17,8 @@ module S2_Free.E02_BFS (allThisHardWork) where
 
 DLS and interpreter are defined in:
 \begin{code}
-import FreeDSL.VTraversal
-import qualified FreeDSL.VTraversal.BFS as Interpreter
+import FreeDSL.BFS.VTraversal
+import qualified FreeDSL.BFS.Interpreter as Interpreter
 \end{code}
 
 I will need these to spell in my language:
