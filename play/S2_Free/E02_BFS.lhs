@@ -137,5 +137,5 @@ allThisHardWork = do
     Except of stdout IO effect in allThisHardWork,
     no variables have been mutated or otherwise harmed. I think that is kinda slick. 
 
-Hopefully this example provides a nice baseline for a Traversal DSL.  
+This example provides a nice baseline for a Traversal DSL.  
 My goal moving forward is to improve on that baseline.
