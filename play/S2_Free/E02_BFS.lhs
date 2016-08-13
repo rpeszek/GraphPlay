@@ -9,7 +9,8 @@ and some care only about vertices.
 Computations which care about edges (like computations on a weighted graph) tend to be
 more general but also slower since there are typically more edges (O(v^2)) than vertices. 
 
-In this example we will look at BFS traversal which is vertex-centric.
+For now, I am ignoring my dreams of general API.
+In this example I will look at BFS traversal which is vertex-centric.
 \begin{code}
 module S2_Free.E02_BFS (allThisHardWork) where
 \end{code}
@@ -34,25 +35,26 @@ import qualified Test.QuickCheck as Property
 \end{code}
 
 The traversal DSL is defined as VTraversal a v r type where 
- * a - what is being accumulated
+ * a - what is being accumulated during traversal
  * v - vertex type
  * r - computation result type
-Notice that this does not include graph type or edge type. I see it as a double edge 
-sward in Free Monad DSL design. Type safety becomes a design factor to think about. 
-Again, I hope to dwell on this more in the future.
+
+Notice that this does not include graph type or edge type. I see this as a double edged sword
+when using Free Monad DSL design. Type safety becomes a design factor to think about. 
+Again, I hope to dwell on this more in the future and ignore this issue for now.
 
 My DSL has about 15 commands, some of them should become clear when looking at code that follows.
 
 We will be computing distance on an unweighted (undirected) graph. 
 BSF traversal needs to terminate when the 'to' node is reached or when BSF exhausts 
-all vertices.  This is expressed here:
+all vertices.  This is expressed here as a computation:
 
 \begin{code}
 termination :: Eq v => v -> VTraversal a v Bool
 termination v = currentVertex >>= return . maybe True (== v)
 \end{code}
 
-Here is the distance calculation using my DSL
+And the distance calculation is:
 \begin{code}
 computeDistance :: (Eq v) => v -> v -> VTraversal Int v (Maybe Int)
 computeDistance root to = 
@@ -76,8 +78,8 @@ computeDistance' root to = do
             do
               runningDist <- getAnnotationAt v1
               case runningDist of 
-                Nothing -> return ()
-                Just dist  -> annotateAt v2 (dist+1)
+                Nothing   -> return ()
+                Just dist -> annotateAt v2 (dist+1)
       ) (termination to)
      getAnnotationAt to
 \end{code}
@@ -87,14 +89,14 @@ This can be done using explicit annotateAt v, getAnnotationAt v methods or using
 annotate, getAnnotation, adjustAnnotation methods where the v-s are implicit. 
 
 In BFS, when observing edge (v1,v2) the client should always annotate/write 'the front' (v2) and 
-read the back (v1). This way (unless the graph is an isolated vertex) reading is never Nothing.
-Since reading from the back and writing to the front is the rule here the implicit methods do just that.  
+read annotated back (v1). This way (unless the graph is an isolated vertex) reading is never Nothing.
+Since reading from the back and writing to the front is the rule, the implicit methods do just that automatically.  
 adjustAnnotation method is an interesting one:
 
 ```
 adjustAnnotation :: (a -> a) ->  VTraversal a v (Maybe a)
 ```
-When observing (v1, v2) it applies function to the v1 annotation and uses the result to annotate v1.
+When observing (v1, v2) it applies function to the v1 annotation and uses the result to annotate v2.
 
 We will test our program using square grid graph of size 10 (from Example 1.05):
 \begin{code}
@@ -107,7 +109,7 @@ distanceFromRoot  to = Interpreter.runBFS (computeDistance  (0,0) to) myGraph
 distanceFromRoot' to = Interpreter.runBFS (computeDistance' (0,0) to) myGraph
 \end{code}
 
-Distance on a grid has an obvious formula (Range is used to implement confinement to 
+Distance on a grid has an obvious formula (Range is used to implement a confinement to 
 size 10 grid):
 \begin{code}
 mightHaveGuessed :: (Range, Range) -> Bool
@@ -123,11 +125,12 @@ instance Property.Arbitrary Range where
 \end{code}
 
 This provides a nice property to test my computation:
-
-This provides a nice property to test my computation:
 \begin{code}
 allThisHardWork :: IO()
 allThisHardWork = do
     putStrLn "Distance works:"
     Property.quickCheck mightHaveGuessed
 \end{code}
+
+Hopefully this example provides a nice baseline for a Traversal DSL.  
+My goal moving forward is to improve on that baseline.
