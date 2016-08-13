@@ -1,4 +1,4 @@
-2.01 Free Polymorphism.  DLS for BFS traversal.
+2.01 Free Polymorphism.  DSL for Breadth-first Search Traversal.
 ------
 A fascinating question to me is: Is it possible to write a traversal program agnostic
 to which algorithm is being used.  I believe the answer, in general, is no, but the 
@@ -41,12 +41,12 @@ The traversal DSL is defined as VTraversal a v r type where
 
 Notice that this does not include graph type or edge type. I see this as a double edged sword
 when using Free Monad DSL design. Type safety becomes a design factor to think about. 
-Again, I hope to dwell on this more in the future and ignore this issue for now.
+Again, I hope to dwell into this more in the future and ignore this issue for now.
 
-My DSL has about 15 commands, some of them should become clear when looking at code that follows.
+My DSL has about 15 commands, some of them should become clear when looking at the code that follows.
 
 We will be computing distance on an unweighted (undirected) graph. 
-BSF traversal needs to terminate when the 'to' node is reached or when BSF exhausts 
+BSF traversal needs to terminate when the 'to' vertex is reached or when BFS exhausts 
 all vertices.  This is expressed here as a computation:
 
 \begin{code}
@@ -64,7 +64,7 @@ computeDistance root to =
      >> getAnnotationAt to
 \end{code}
 
-To see more what is going on, here is arguably uglier but a more spelled out version:
+To see more what is going on, here is arguably uglier but also a more spelled out version:
 \begin{code}
 computeDistance' :: (Eq v) => v -> v -> VTraversal Int v (Maybe Int)
 computeDistance' root to = do
@@ -90,7 +90,8 @@ annotate, getAnnotation, adjustAnnotation methods where the v-s are implicit.
 
 In BFS, when observing edge (v1,v2) the client should always annotate/write 'the front' (v2) and 
 read annotated back (v1). This way (unless the graph is an isolated vertex) reading is never Nothing.
-Since reading from the back and writing to the front is the rule, the implicit methods do just that automatically.  
+Also vertices are only annotated once.
+Since reading from the back and writing to the front is the rule, the implicit methods do just that.  
 adjustAnnotation method is an interesting one:
 
 ```
@@ -131,6 +132,10 @@ allThisHardWork = do
     putStrLn "Distance works:"
     Property.quickCheck mightHaveGuessed
 \end{code}
+
+  > Presented DSL API has a very statefull appearance. however it is all pure FP.
+    Except of stdout IO effect in allThisHardWork,
+    no variables have been mutated or otherwise harmed. I think that is kinda slick. 
 
 Hopefully this example provides a nice baseline for a Traversal DSL.  
 My goal moving forward is to improve on that baseline.
