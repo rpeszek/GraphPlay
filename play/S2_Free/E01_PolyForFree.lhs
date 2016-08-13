@@ -1,4 +1,4 @@
-2. Free DSL Polymorphism.  Free Decoupling and Polymorphism for free.
+2.01 Free Polymorphism.  Free Decoupling and Polymorphism for free.
 ------
 This example presents decoupling of data production and consumption with benefits similar to 
 Examples 1.01 and 1.02 but is accomplished without type classes!  Our plan in a nutshell is:

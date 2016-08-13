@@ -3,7 +3,8 @@ import qualified S1_Cstr.E01_UnsafeDiamond as E01
 import qualified S1_Cstr.E02_SafeDiamond as E02
 import qualified S1_Cstr.E03_PolyReloaded as E03
 import qualified S1_Cstr.E04_PolyToMax as E04
-import qualified S2_Free.E01_PolyForFree as E05
+import qualified S2_Free.E01_PolyForFree as E2_01
+import qualified S2_Free.E02_BFS as E2_02
 import qualified Deprecated.DiGraph.TreeFoldOnSimpleGraph as FSG
 import qualified Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph as MFSG
 import qualified Deprecated.DiGraph.IndexedFolds as IND1
@@ -11,16 +12,18 @@ import qualified Deprecated.DiGraph.PolyRebuild as PRB
 
 main :: IO ()
 main = do
-  putStrLn "E01:"
+  putStrLn "E1_01:"
   E01.allThisHardWork
-  putStrLn "E02:"
+  putStrLn "E1_02:"
   E02.allThisHardWork
-  putStrLn "E03:"
+  putStrLn "E1_03:"
   E03.allThisHardWork
-  putStrLn "E04:"
+  putStrLn "E1_04:"
   E04.allThisHardWork
-  putStrLn "E05:"
-  E05.allThisHardWork
+  putStrLn "E2_01:"
+  E2_01.allThisHardWork
+  putStrLn "E2_02:"
+  E2_02.allThisHardWork
   putStrLn ""
   putStrLn "Examples that need rework:"
   putStrLn "Folds:"

@@ -6,17 +6,17 @@ module FreeDSL.VTraversal (
   , rootAt
   , nextObservation
   , currentObservation
-  , put
-  , get
+  , annotateAt
+  , getAnnotationAt
   , getWithDefault
   -- easy API
-  , startWithLabel
-  , rootWithLabel
+  , startWithAnnotation
+  , rootWithAnnotation
   , nextVertex
-  , label
-  , adjustLabel
-  , getLabel
-  , appendLabel
+  , annotate
+  , adjustAnnotation
+  , getAnnotation
+  , appendAnnotation
   , currentVertex
 ) where
   
@@ -49,20 +49,20 @@ nextObservation  = liftF (NextVObs  id)
 currentObservation :: forall a v . VTraversal a v (VObservation v)
 currentObservation  = liftF (CurrentVObs  id)
 
-put :: forall a v .  v -> a -> VTraversal a v ()
-put  v a = liftF (Put (v,a) ())
+annotateAt :: forall a v .  v -> a -> VTraversal a v ()
+annotateAt  v a = liftF (Put (v,a) ())
 
-get :: forall a v .   v -> VTraversal a v (Maybe a)
-get v = liftF (Get v id)
+getAnnotationAt :: forall a v .   v -> VTraversal a v (Maybe a)
+getAnnotationAt v = liftF (Get v id)
 
 getWithDefault :: forall a v .  a -> v -> VTraversal a v a
-getWithDefault defA v = get v >>= return . (maybe defA id) 
+getWithDefault defA v = getAnnotationAt v >>= return . (maybe defA id) 
 
-rootWithLabel :: forall a v .  v -> a -> VTraversal a v ()
-rootWithLabel v a = rootAt v >> put v a 
+rootWithAnnotation :: forall a v .  v -> a -> VTraversal a v ()
+rootWithAnnotation v a = rootAt v >> annotateAt v a 
 
-startWithLabel :: forall a v .  v -> a -> VTraversal a v (VObservation v)
-startWithLabel v a = rootWithLabel v a >> nextObservation
+startWithAnnotation :: forall a v .  v -> a -> VTraversal a v (VObservation v)
+startWithAnnotation v a = rootWithAnnotation v a >> nextObservation
 
 nextVertex :: forall a v . VTraversal a v (Maybe v)
 nextVertex  = nextObservation >>= 
@@ -78,35 +78,35 @@ currentVertex = currentObservation >>=
                            Observe _ v2 -> return $ Just v2
               )
 
-label :: forall a v . a -> VTraversal a v ()
-label a = currentObservation >>= 
+annotate :: forall a v . a -> VTraversal a v ()
+annotate a = currentObservation >>= 
              (\obs -> case obs of
                           NoMore -> return ()
-                          Observe _ v2 -> put v2 a
+                          Observe _ v2 -> annotateAt v2 a
              )
 
-labelR :: forall a v . a -> VTraversal a v (Maybe a)
-labelR a = currentObservation >>= 
+annotateR :: forall a v . a -> VTraversal a v (Maybe a)
+annotateR a = currentObservation >>= 
              (\obs -> case obs of
                     NoMore -> return Nothing
                     Observe _ v2 -> do 
-                                      put v2 a
+                                      annotateAt v2 a
                                       return $ Just a
              )
 
-getLabel :: forall a v . VTraversal a v (Maybe a)
-getLabel = currentObservation >>= 
+getAnnotation :: forall a v . VTraversal a v (Maybe a)
+getAnnotation = currentObservation >>= 
           (\obs -> case obs of
                        NoMore -> return Nothing
-                       Observe v1 _ -> get v1
+                       Observe v1 _ -> getAnnotationAt v1
           )
 
-adjustLabel :: forall a v . (a -> a) ->  VTraversal a v (Maybe a)
-adjustLabel f = getLabel >>= maybe (return Nothing) (labelR . f)
+adjustAnnotation :: forall a v . (a -> a) ->  VTraversal a v (Maybe a)
+adjustAnnotation f = getAnnotation >>= maybe (return Nothing) (annotateR . f)
 
             
                        
 --return . (maybe Nothing (Just . f))
 
-appendLabel :: forall a v . Monoid a => a -> VTraversal a v (Maybe a)
-appendLabel a = getLabel >>= return . (maybe Nothing (Just . mappend a))
+appendAnnotation :: forall a v . Monoid a => a -> VTraversal a v (Maybe a)
+appendAnnotation a = getAnnotation >>= return . (maybe Nothing (Just . mappend a))

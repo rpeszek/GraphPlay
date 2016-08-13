@@ -52,16 +52,17 @@ library
                        , Instances.SimpleGraph
                        , SampleInstances.FirstLastWord
                        , SampleInstances.FirstLastWord.DslInterpreter
-                       , Deprecated.DiGraph.SampleData
-                       , Deprecated.DiGraph.TreeFoldOnSimpleGraph
-                       , Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph
-                       , Deprecated.DiGraph.IndexedFolds
                        , S1_Cstr.E01_UnsafeDiamond
                        , S1_Cstr.E02_SafeDiamond
                        , S1_Cstr.E03_PolyReloaded
                        , S1_Cstr.E04_PolyToMax
-                       , S2_Free.E01_PolyForFree
                        , S1_Cstr.E05_Samples
+                       , S2_Free.E01_PolyForFree
+                       , S2_Free.E02_BFS
+                       , Deprecated.DiGraph.SampleData
+                       , Deprecated.DiGraph.TreeFoldOnSimpleGraph
+                       , Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph
+                       , Deprecated.DiGraph.IndexedFolds
                        , Deprecated.DiGraph.PolyRebuild
   build-depends:       base >= 4.7 && < 5
                       , lens
@@ -88,6 +89,7 @@ library
                       , RankNTypes
                       , DeriveFunctor
                       -- GADT
+                      , GeneralizedNewtypeDeriving
 
 -- change OverlappingInstances to OVERLAPPING/OVERLAPPABLE/OVERLAPS
 -- https://mail.haskell.org/pipermail/ghc-devs/2014-July/005830.html
