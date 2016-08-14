@@ -31,7 +31,6 @@ And I will check the results using:
 import S1_Cstr.E05_Samples (grid)
 import qualified Instances.ListGraphs as ListGraphs
 import qualified Test.QuickCheck as Property
-import PolyGraph.Common.PropertySupport ((&&&))
 \end{code}
 
 The traversal DSL is defined by 'VTraversal a v r' type where 
