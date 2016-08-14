@@ -57,11 +57,11 @@ termination v = currentVertex >>= return . maybe True (== v)
 And the distance calculation is:
 \begin{code}
 computeDistance :: (Eq v) => v -> v -> VTraversal Int v Int
-computeDistance root to = 
+computeDistance root to = do
      (rootWithAnnotation root 0) 
-     >> untilM_ ( nextVertex >> adjustAnnotation (+ 1))
+     untilM_ ( nextVertex >> adjustAnnotation (+ 1))
         (termination to)
-     >> getAnnotationAt to >>= return . fromJust
+     (liftM fromJust) . getAnnotationAt $ to
 \end{code}
 
 To see more what is going on, here is arguably uglier but also a more spelled out version:

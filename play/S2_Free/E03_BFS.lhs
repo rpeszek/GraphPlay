@@ -16,6 +16,7 @@ I need the same imports
 import FreeDSL.BFS.VTraversal
 import qualified FreeDSL.BFS.Interpreter as Interpreter
 import Data.Maybe (fromJust)
+import Control.Monad
 import Control.Monad.Loops
 import qualified Instances.ListGraphs as ListGraphs
 import qualified Test.QuickCheck as Property
@@ -34,11 +35,11 @@ I need some annotating function annF :: v -> a and my new type 'a' needs to have
 \begin{code}
 generalizedDistance :: (Eq v, Monoid a) => 
                              (v -> a) -> v -> v -> VTraversal a v a
-generalizedDistance annF root to = 
+generalizedDistance annF root to = do
      (rootWithAnnotation root mempty) 
-     >> untilM_ ( nextVertex >>= maybe (return Nothing) (adjustAnnotation . mappend . annF))
+     untilM_ ( nextVertex >>= maybe (return Nothing) (adjustAnnotation . mappend . annF))
         (E02.termination to)
-     >> getAnnotationAt to >>= return . fromJust
+     (liftM fromJust) . getAnnotationAt $ to 
 \end{code}
 
 I need to tell Haskell to aggregate Integers using (+ and 0):
