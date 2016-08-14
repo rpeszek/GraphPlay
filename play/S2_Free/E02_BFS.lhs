@@ -1,16 +1,6 @@
 2.02 Free Polymorphism.  DSL for Breadth-first Search Traversal.
 ------
-Is it possible to write a traversal program agnostic to which algorithm is being used.  
-I believe the answer, in general, is no, but this 
-question has more depth and I will try to examine it closer in the future. 
-
-First problem in my quest for a universal API is that some graph traversals care about edges
-and some care only about vertices. 
-Computations which care about edges (like computations on a weighted graph) tend to be
-more general but also slower since there is typically more edges (O(v^2)) than vertices. 
-
-For now, I am ignoring my dreams of a general API.
-In this example I will look at BFS traversal which is vertex-centric.
+In this example I will look at a DSL that consumes BFS traversal.
 
   > [Wikipedia](https://en.wikipedia.org/wiki/Breadth-first_search) has nice imperative pseudo-code for graph BFS.
  
@@ -24,7 +14,7 @@ module S2_Free.E02_BFS (
 ) where
 \end{code}
 
-DLS and interpreter are defined in:
+DLS for consuming traversal and interpreter for it are defined in:
 \begin{code}
 import FreeDSL.BFS.VTraversal
 import qualified FreeDSL.BFS.Interpreter as Interpreter
@@ -41,16 +31,17 @@ And I will check the results using:
 import S1_Cstr.E05_Samples (grid)
 import qualified Instances.ListGraphs as ListGraphs
 import qualified Test.QuickCheck as Property
+import PolyGraph.Common.PropertySupport ((&&&))
 \end{code}
 
-The traversal DSL is defined as 'VTraversal a v r' type where 
+The traversal DSL is defined by 'VTraversal a v r' type where 
  * a - type accumulated during traversal (annotation type)
  * v - vertex type
  * r - computation result type
 
 Notice that this does not include graph type or edge type. I see this as a double edged sword
 when using Free Monad DSL design. Type safety becomes a design factor to think about. 
-Again, I hope to dwell into this more in the future and ignore this issue for now.
+I hope to dwell into this more in the future and ignore this issue for now.
 
 My DSL has about 15 commands, some of them should become clear when looking at the code that follows.
 
@@ -110,7 +101,8 @@ When observing (v1, v2) it applies function to the v1 annotation and uses the re
 
 We will test our program using square grid graph of size 10 (from Example 1.05):
 \begin{code}
-myGraph = grid 10 (,) :: ListGraphs.GEdges (Int, Int)
+type Point = (Int, Int)
+myGraph = grid 10 (,) :: ListGraphs.GEdges Point
 \end{code}
 
 And use interpreter to wire the BFS traversal 
@@ -123,15 +115,15 @@ distanceFrom00' to = Interpreter.runBFS (computeDistance' (0,0) to) myGraph
 Distance on a grid has an obvious formula (Range is used to implement a confinement to 
 size 10 grid):
 \begin{code}
-mightHaveGuessed :: (Range, Range) -> Bool
-mightHaveGuessed point =  
-                sameAsAddingCoordinates distanceFrom00  point  &&
-                sameAsAddingCoordinates distanceFrom00' point
-
-sameAsAddingCoordinates :: ((Int, Int) -> Maybe Int) -> (Range, Range) -> Bool
+sameAsAddingCoordinates :: (Point -> Maybe Int) -> (Range, Range) -> Bool
 sameAsAddingCoordinates f point =  
              let (Range i, Range j) = point
              in f (i,j) == Just(i + j)
+
+bothSatisfyFormula :: (Range, Range) -> Bool
+bothSatisfyFormula  = (&&) <$>
+                sameAsAddingCoordinates distanceFrom00 <*>
+                sameAsAddingCoordinates distanceFrom00'
 
 newtype Range = Range Int deriving Show
 
@@ -143,13 +135,13 @@ This provides a nice property to test my computation:
 \begin{code}
 allThisHardWork :: IO()
 allThisHardWork = do
-    putStrLn "Distance works:"
-    Property.quickCheck mightHaveGuessed
+    putStrLn "Distance calculation works for both implementations:"
+    Property.quickCheck bothSatisfyFormula
 \end{code}
 
-  > Presented DSL API has a very statefull appearance. however it is all pure FP.
-    Except of stdout IO effect in allThisHardWork,
-    no variables have been mutated or otherwise harmed. I think that is kinda slick. 
+  > Presented DSL API has a very statefull appearance. however it is all pure FP.  
+    Except for stdout IO effect in allThisHardWork,
+    no variables have been mutated or otherwise harmed. I think that is kinda slick.
 
-This example provides a nice baseline for a Traversal DSL.  
-My goal moving forward is to improve on that baseline.
+This example provides a nice baseline for a Traversal DSL. My goal moving forward is to improve 
+on that baseline.

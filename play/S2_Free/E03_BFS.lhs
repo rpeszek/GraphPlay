@@ -11,7 +11,7 @@ We will be expanding on my previous example
 import qualified S2_Free.E02_BFS as E02
 \end{code}
 
-We need the same imports
+I need the same imports
 \begin{code}
 import FreeDSL.BFS.VTraversal
 import qualified FreeDSL.BFS.Interpreter as Interpreter
@@ -20,6 +20,7 @@ import qualified Instances.ListGraphs as ListGraphs
 import qualified Test.QuickCheck as Property
 \end{code}
 
+_Generalization:_
 Previous example distance calculation started by annotating root vertex with 0 and performed this at every vertex: 
 ```
 adjustAnnotation (+ 1)
