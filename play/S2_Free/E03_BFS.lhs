@@ -41,23 +41,23 @@ generalizedDistance annF root to =
 
 I need to tell Haskell to aggregate Integers using (+):
 \begin{code}
-newtype Plus = Plus { getSum :: Int } deriving Show
-instance  Monoid (Plus) where
-    mempty = Plus 0
-    Plus x `mappend` Plus y = Plus (x + y)
+newtype PlusInt = PlusInt { getSum :: Int } deriving Show
+instance  Monoid (PlusInt) where
+    mempty = PlusInt 0
+    PlusInt x `mappend` PlusInt y = PlusInt (x + y)
 \end{code}
 
 Now I can check that my generalized function produces expected results:
 \begin{code}
 distanceFrom00'' to = getSum <$> Interpreter.runBFS 
-                        (generalizedDistance (const $ Plus 1) (0,0) to) E02.myGraph
+                       (generalizedDistance (const $ PlusInt 1) (0,0) to) E02.myGraph
 
 sameAsBefore :: IO()
 sameAsBefore = Property.quickCheck $ 
          E02.sameAsAddingCoordinates distanceFrom00''
 \end{code}
 
-And this is why I love Haskell, same code only using on list monoid:
+And here is why I love Haskell, same code only using list monoid instead of PlusInt:
 \begin{code}
 shortestPathFrom00 to = Interpreter.runBFS 
                          (generalizedDistance ((\v -> [v])) (0,0) to) E02.myGraph
