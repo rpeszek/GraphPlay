@@ -1,6 +1,6 @@
-2.01 Free Polymorphism.  DSL for Breadth-first Search Traversal.
+2.02 Free Polymorphism.  DSL for Breadth-first Search Traversal.
 ------
-A fascinating question to me is: Is it possible to write a traversal program agnostic
+For me, a fascinating question is: Is it possible to write a traversal program agnostic
 to which algorithm is being used.  I believe the answer, in general, is no, but the 
 question has more depth and I will try to examine it closer in the future. 
 
