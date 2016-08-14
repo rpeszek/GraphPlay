@@ -1,16 +1,19 @@
 2.02 Free Polymorphism.  DSL for Breadth-first Search Traversal.
 ------
-For me, a fascinating question is: Is it possible to write a traversal program agnostic
-to which algorithm is being used.  I believe the answer, in general, is no, but the 
+Is it possible to write a traversal program agnostic to which algorithm is being used.  
+I believe the answer, in general, is no, but this 
 question has more depth and I will try to examine it closer in the future. 
 
 First problem in my quest for a universal API is that some graph traversals care about edges
 and some care only about vertices. 
 Computations which care about edges (like computations on a weighted graph) tend to be
-more general but also slower since there are typically more edges (O(v^2)) than vertices. 
+more general but also slower since there is typically more edges (O(v^2)) than vertices. 
 
-For now, I am ignoring my dreams of general API.
+For now, I am ignoring my dreams of a general API.
 In this example I will look at BFS traversal which is vertex-centric.
+
+  > [Wikipedia](https://en.wikipedia.org/wiki/Breadth-first_search) has nice imperative pseudo-code for graph BFS.
+ 
 \begin{code}
 module S2_Free.E02_BFS (
   allThisHardWork
@@ -40,7 +43,7 @@ import qualified Instances.ListGraphs as ListGraphs
 import qualified Test.QuickCheck as Property
 \end{code}
 
-The traversal DSL is defined as VTraversal a v r type where 
+The traversal DSL is defined as 'VTraversal a v r' type where 
  * a - type accumulated during traversal (annotation type)
  * v - vertex type
  * r - computation result type
@@ -52,7 +55,7 @@ Again, I hope to dwell into this more in the future and ignore this issue for no
 My DSL has about 15 commands, some of them should become clear when looking at the code that follows.
 
 We will be computing distance on an unweighted (undirected) graph. 
-BSF traversal needs to terminate when the 'to' vertex is reached or when BFS exhausts 
+BFS traversal needs to terminate when the 'to' vertex is reached or when BFS exhausts 
 all vertices.  This is expressed here as a computation:
 
 \begin{code}
