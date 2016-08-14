@@ -28,13 +28,13 @@ Each vertex contributed some information (integer weight of 1) and that informat
 aggregate (+).  
 This has a clear path to generalization: To replace Integer with type 'a'
 I need some annotating function annF :: v -> a and my new type 'a' needs to have monoid characteristics
-(a generalized '0' and generalized (+)):
+('0' becomes mempty and (+) becomes mappend):
 \begin{code}
 generalizedDistance :: (Eq v, Monoid a) => 
                              (v -> a) -> v -> v -> VTraversal a v (Maybe a)
 generalizedDistance annF root to = 
      (rootWithAnnotation root mempty) 
-     >> untilM_ ( nextVertex >>= maybe (return Nothing) (appendAnnotation . annF))
+     >> untilM_ ( nextVertex >>= maybe (return Nothing) (adjustAnnotation . mappend . annF))
         (E02.termination to)
      >> getAnnotationAt to
 \end{code}
