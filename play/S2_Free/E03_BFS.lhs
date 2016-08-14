@@ -1,6 +1,6 @@
 2.03 Free Polymorphism.  DSL for Breadth-first Search Traversal, Part 2.
 ------
-GraphPlay is about polymorphism and in last example I have calculated distance using integers, how lame!  
+GraphPlay is about polymorphism and in my last example I have calculated distance using integers, how lame!  
 Clearly, I should be able to do better. 
 \begin{code}
 module S2_Free.E03_BFS (allThisHardWork) where
@@ -20,13 +20,13 @@ import qualified Instances.ListGraphs as ListGraphs
 import qualified Test.QuickCheck as Property
 \end{code}
 
-Example 2.02 computation started by annotating root vertex with 0 and performed this at every vertex: 
+Previous example distance calculation started by annotating root vertex with 0 and performed this at every vertex: 
 ```
 adjustAnnotation (+ 1)
 ```
-Each vertex contributed some information (integer weight of 1) and that information type itself knew how to 
+Each vertex contributed some information (integer weight of 1) and the information type (Int) itself knew how to 
 aggregate (+).  
-This has a clear path to generalization: To replace Integer with type 'a'
+This has a clear path to generalization: I will replace Integer with a general type 'a'
 I need some annotating function annF :: v -> a and my new type 'a' needs to have monoid characteristics
 ('0' becomes mempty and (+) becomes mappend):
 \begin{code}
