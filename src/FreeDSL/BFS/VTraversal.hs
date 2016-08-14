@@ -104,9 +104,5 @@ getAnnotation = currentObservation >>=
 adjustAnnotation :: forall a v . (a -> a) ->  VTraversal a v (Maybe a)
 adjustAnnotation f = getAnnotation >>= maybe (return Nothing) (annotateR . f)
 
-            
-                       
---return . (maybe Nothing (Just . f))
-
 appendAnnotation :: forall a v . Monoid a => a -> VTraversal a v (Maybe a)
-appendAnnotation a = getAnnotation >>= return . (maybe Nothing (Just . mappend a))
+appendAnnotation a = adjustAnnotation (mappend a)

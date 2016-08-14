@@ -12,7 +12,13 @@ more general but also slower since there are typically more edges (O(v^2)) than 
 For now, I am ignoring my dreams of general API.
 In this example I will look at BFS traversal which is vertex-centric.
 \begin{code}
-module S2_Free.E02_BFS (allThisHardWork) where
+module S2_Free.E02_BFS (
+  allThisHardWork
+  , myGraph
+  , termination
+  , Range(..)
+  , sameAsAddingCoordinates 
+) where
 \end{code}
 
 DLS and interpreter are defined in:
@@ -35,7 +41,7 @@ import qualified Test.QuickCheck as Property
 \end{code}
 
 The traversal DSL is defined as VTraversal a v r type where 
- * a - what is being accumulated during traversal
+ * a - type accumulated during traversal (annotation type)
  * v - vertex type
  * r - computation result type
 
@@ -104,20 +110,25 @@ We will test our program using square grid graph of size 10 (from Example 1.05):
 myGraph = grid 10 (,) :: ListGraphs.GEdges (Int, Int)
 \end{code}
 
-And use interpreter to wire the BFS traversal:
+And use interpreter to wire the BFS traversal 
+(Notice interpreter is passed graph instance, our program is not):
 \begin{code}
-distanceFromRoot  to = Interpreter.runBFS (computeDistance  (0,0) to) myGraph
-distanceFromRoot' to = Interpreter.runBFS (computeDistance' (0,0) to) myGraph
+distanceFrom00  to = Interpreter.runBFS (computeDistance  (0,0) to) myGraph
+distanceFrom00' to = Interpreter.runBFS (computeDistance' (0,0) to) myGraph
 \end{code}
 
 Distance on a grid has an obvious formula (Range is used to implement a confinement to 
 size 10 grid):
 \begin{code}
 mightHaveGuessed :: (Range, Range) -> Bool
-mightHaveGuessed to =  
-             let (Range i, Range j) = to
-             in distanceFromRoot (i,j) == Just(i + j) &&
-                distanceFromRoot'(i,j) == Just(i + j)
+mightHaveGuessed point =  
+                sameAsAddingCoordinates distanceFrom00  point  &&
+                sameAsAddingCoordinates distanceFrom00' point
+
+sameAsAddingCoordinates :: ((Int, Int) -> Maybe Int) -> (Range, Range) -> Bool
+sameAsAddingCoordinates f point =  
+             let (Range i, Range j) = point
+             in f (i,j) == Just(i + j)
 
 newtype Range = Range Int deriving Show
 
