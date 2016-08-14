@@ -18,6 +18,8 @@ module FreeDSL.BFS.VTraversal (
   , getAnnotation
   , appendAnnotation
   , currentVertex
+  -- other versions
+  , nextAsVertexPair
 ) where
   
 --import Control.Monad
@@ -45,6 +47,14 @@ rootAt v  = liftF (StartAt v ())
 
 nextObservation :: forall a v . VTraversal a v (VObservation v)
 nextObservation  = liftF (NextVObs  id)
+
+nextAsVertexPair :: forall a v . VTraversal a v (Maybe (v,v))
+nextAsVertexPair  = nextObservation >>=               
+              (\obs -> case obs of
+                           NoMore -> return Nothing
+                           Observe v1 v2 -> return $ Just (v1, v2)
+              )
+
 
 currentObservation :: forall a v . VTraversal a v (VObservation v)
 currentObservation  = liftF (CurrentVObs  id)

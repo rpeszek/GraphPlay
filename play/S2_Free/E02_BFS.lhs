@@ -22,6 +22,7 @@ import qualified FreeDSL.BFS.Interpreter as Interpreter
 
 I will need these to spell in my language:
 \begin{code}
+import Data.Maybe (fromJust)
 import Control.Monad
 import Control.Monad.Loops
 \end{code}
@@ -55,17 +56,17 @@ termination v = currentVertex >>= return . maybe True (== v)
 
 And the distance calculation is:
 \begin{code}
-computeDistance :: (Eq v) => v -> v -> VTraversal Int v (Maybe Int)
+computeDistance :: (Eq v) => v -> v -> VTraversal Int v Int
 computeDistance root to = 
      (rootWithAnnotation root 0) 
      >> untilM_ ( nextVertex >> adjustAnnotation (+ 1))
         (termination to)
-     >> getAnnotationAt to
+     >> getAnnotationAt to >>= return . fromJust
 \end{code}
 
 To see more what is going on, here is arguably uglier but also a more spelled out version:
 \begin{code}
-computeDistance' :: (Eq v) => v -> v -> VTraversal Int v (Maybe Int)
+computeDistance' :: (Eq v) => v -> v -> VTraversal Int v Int
 computeDistance' root to = do
      rootAt root
      annotateAt root 0 
@@ -80,7 +81,7 @@ computeDistance' root to = do
                 Nothing   -> return ()
                 Just dist -> annotateAt v2 (dist+1)
       ) (termination to)
-     getAnnotationAt to
+     (liftM fromJust) . getAnnotationAt $ to
 \end{code}
 
 The semantics of my DSL gives client program ability to annotate vertices with type a (here Int).
@@ -114,10 +115,10 @@ distanceFrom00' to = Interpreter.runBFS (computeDistance' (0,0) to) myGraph
 Distance on a grid has an obvious formula (Range is used to implement a confinement to 
 size 10 grid):
 \begin{code}
-sameAsAddingCoordinates :: (Point -> Maybe Int) -> (Range, Range) -> Bool
+sameAsAddingCoordinates :: (Point -> Int) -> (Range, Range) -> Bool
 sameAsAddingCoordinates f point =  
              let (Range i, Range j) = point
-             in f (i,j) == Just(i + j)
+             in f (i,j) == i + j
 
 bothSatisfyFormula :: (Range, Range) -> Bool
 bothSatisfyFormula  = (&&) <$>
