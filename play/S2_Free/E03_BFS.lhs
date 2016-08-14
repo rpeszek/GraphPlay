@@ -56,7 +56,7 @@ sameAsBefore = Property.quickCheck $
          E02.sameAsAddingCoordinates distanceFrom00''
 \end{code}
 
-And this is why I love Haskell:
+And this is why I love Haskell, same code on list monoid:
 \begin{code}
 shortestPathFrom00 to = Interpreter.runBFS (generalizedDistance ((\v -> [v])) (0,0) to) E02.myGraph
 \end{code}
