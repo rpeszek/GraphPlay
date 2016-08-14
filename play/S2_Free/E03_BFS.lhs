@@ -3,7 +3,7 @@
 GraphPlay is about polymorphism and in my last example I have calculated distance using integers, how lame!  
 Clearly, I should be able to do better. 
 \begin{code}
-module S2_Free.E03_BFS (allThisHardWork) where
+module S2_Free.E03_BFS (allThisHardWork, sameAsBefore) where
 \end{code}
 
 We will be expanding on my previous example
@@ -40,7 +40,7 @@ generalizedDistance annF root to =
      >> getAnnotationAt to
 \end{code}
 
-I need to tell Haskell to aggregate Integers using (+):
+I need to tell Haskell to aggregate Integers using (+ and 0):
 \begin{code}
 newtype PlusInt = PlusInt { getSum :: Int } deriving Show
 instance  Monoid (PlusInt) where
