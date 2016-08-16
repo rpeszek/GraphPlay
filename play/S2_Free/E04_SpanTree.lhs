@@ -72,7 +72,8 @@ addSingleNodeProg (parent,newNode) =
 _Understanding the following code:_  
 In the type definition 'VTraversal a v r', 
 'a' represents internal state the program can use and 'r' is the program final result type.
-Thus, to implement spanningTree type I need to write in VTraversal DSL and return a program that can be run in TreeBuildingLang language.
+Thus, to implement spanningTree type I need to write in VTraversal DSL and return a program that can be run 
+in TreeBuildingLang language interpreter.
 \begin{code}
 spanningTree :: (Eq v) => v -> VTraversal [(v,v)] v (TreeBuildingLang v)
 spanningTree root = do
