@@ -3,7 +3,7 @@
 GraphPlay is about polymorphism and in my last example I have calculated distance using integers, how lame!  
 Clearly, I should be able to do better. 
 \begin{code}
-module S2_Free.E03_BFS (allThisHardWork, sameAsBefore) where
+module S2_Free.E03_BFS2 (allThisHardWork, sameAsBefore) where
 \end{code}
 
 We will be expanding on my previous example

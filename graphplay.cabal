@@ -59,7 +59,8 @@ library
                        , S1_Cstr.E05_Samples
                        , S2_Free.E01_PolyForFree
                        , S2_Free.E02_BFS
-                       , S2_Free.E03_BFS
+                       , S2_Free.E03_BFS2
+                       , S2_Free.E04_SpanTree
                        , Deprecated.DiGraph.SampleData
                        , Deprecated.DiGraph.TreeFoldOnSimpleGraph
                        , Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph

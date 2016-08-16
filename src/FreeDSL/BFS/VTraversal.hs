@@ -9,6 +9,7 @@ module FreeDSL.BFS.VTraversal (
   , annotateAt
   , getAnnotationAt
   , getWithDefault
+  , modifyAnnotationAt
   -- easy API
   , startWithAnnotation
   , rootWithAnnotation
@@ -64,6 +65,9 @@ annotateAt  v a = liftF (Put (v,a) ())
 
 getAnnotationAt :: forall a v .   v -> VTraversal a v (Maybe a)
 getAnnotationAt v = liftF (Get v id)
+
+modifyAnnotationAt :: forall a v .  v -> (a -> a) -> VTraversal a v ()
+modifyAnnotationAt v f = getAnnotationAt v >>=  maybe (return ()) (annotateAt v . f)
 
 getWithDefault :: forall a v .  a -> v -> VTraversal a v a
 getWithDefault defA v = getAnnotationAt v >>= return . (maybe defA id) 

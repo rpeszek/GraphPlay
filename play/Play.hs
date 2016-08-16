@@ -5,7 +5,7 @@ import qualified S1_Cstr.E03_PolyReloaded as E03
 import qualified S1_Cstr.E04_PolyToMax as E04
 import qualified S2_Free.E01_PolyForFree as E2_01
 import qualified S2_Free.E02_BFS as E2_02
-import qualified S2_Free.E03_BFS as E2_03
+import qualified S2_Free.E03_BFS2 as E2_03
 import qualified Deprecated.DiGraph.TreeFoldOnSimpleGraph as FSG
 import qualified Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph as MFSG
 import qualified Deprecated.DiGraph.IndexedFolds as IND1
