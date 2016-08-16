@@ -132,6 +132,5 @@ It is not possible for fromJust to throw exception in that code since the value 
 cannot possibly be Nothing but the fact that I had to use fromJust bugs me.  I would prefer to have my types
 handle it. I am ignoring this issue for now. 
 
-I admit I was totally blown away after this code came to being. 
 Haskell and monads are sooo deep and powerful.  
-This and previous examples are to me what makes any OO programming feel inferior. 
+This and previous example are to me what makes any OO programming feel inferior. 
