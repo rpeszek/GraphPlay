@@ -1,6 +1,6 @@
-module FreeDSL.Walk.CoWalk where
+module FreeDSL.VWalk.CoWalk where
 
-import FreeDSL.Walk
+import FreeDSL.VWalk
 import Control.Comonad.Cofree
 
 import PolyGraph.Common.Pairing

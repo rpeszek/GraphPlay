@@ -1,5 +1,5 @@
 
-module FreeDSL.Walk where
+module FreeDSL.VWalk where
 
 import Control.Monad
 import Control.Monad.Free
