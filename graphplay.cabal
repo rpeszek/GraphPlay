@@ -44,6 +44,7 @@ library
                        , FreeDSL.GraphBuilder
                        , FreeDSL.BFS.VTraversal
                        , FreeDSL.BFS.Interpreter
+                       , FreeDSL.Walk.VWalk
                        , Instances.DiGraph.DiEdgesByVertexMap
                        , Instances.AdjacencyMatrix
                        , Instances.ListGraphs

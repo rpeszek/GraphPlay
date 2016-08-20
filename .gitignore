@@ -18,6 +18,7 @@ cabal.sandbox.config
 *.eventlog
 .stack-work/
 cabal.project.local
+Work
 Work*.hs
 Work*.lhs
 lhs-to-md*.sh
