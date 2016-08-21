@@ -3,8 +3,10 @@
 
 module PolyGraph.Common.Pairing where
 import Data.Functor.Identity
-import Control.Monad.Free
-import Control.Comonad.Cofree
+import qualified Control.Monad.Free as Free
+--import qualified Control.Monad.Trans.Free as TFree
+import qualified Control.Comonad.Cofree as Cofree
+--import qualified Control.Comonad.Trans.Cofree as TCofree
 
 class (Functor f, Functor g) => Pairing f g where
     pair :: (a -> b -> r) -> f a -> g b -> r
@@ -18,6 +20,6 @@ instance Pairing ((->) a) ((,) a) where
 instance Pairing ((,) a) ((->) a) where
   pair p f g = p (snd f) (g (fst f))
 
-instance Pairing f g => Pairing (Cofree f) (Free g) where
-  pair p (a :< _ ) (Pure x)  = p a x
-  pair p (_ :< fs) (Free gs) = pair (pair p) fs gs
+instance Pairing f g => Pairing (Cofree.Cofree f) (Free.Free g) where
+  pair p (a Cofree.:< _ ) (Free.Pure x)  = p a x
+  pair p (_ Cofree.:< fs) (Free.Free gs) = pair (pair p) fs gs
