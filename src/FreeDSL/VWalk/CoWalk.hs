@@ -3,7 +3,7 @@ module FreeDSL.VWalk.CoWalk where
 import FreeDSL.VWalk
 import Control.Comonad.Cofree
 
-import PolyGraph.Common.Pairing
+import PolyGraph.Common.DslSupport.Pairing
 import PolyGraph.ReadOnly.Graph (AdjacencyIndex(..), neighborsOf)
 
 -- Comonad interpreter

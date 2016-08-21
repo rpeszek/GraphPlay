@@ -41,6 +41,9 @@ library
                        , PolyGraph.Common.PropertySupport
                        , PolyGraph.Common.NonBlockingQueue
                        , PolyGraph.Common.NonBlockingQueue.Properties
+                       , PolyGraph.Common.DslSupport.Pairing
+                       , PolyGraph.Common.DslSupport.Coproduct
+                       , PolyGraph.Common.DslSupport.Product
                        , FreeDSL.GraphBuilder
                        , FreeDSL.BFS.VTraversal
                        , FreeDSL.BFS.Interpreter
@@ -95,6 +98,7 @@ library
                       , DeriveFunctor
                       -- GADT
                       , GeneralizedNewtypeDeriving
+                      , TypeOperators
 
 -- change OverlappingInstances to OVERLAPPING/OVERLAPPABLE/OVERLAPS
 -- https://mail.haskell.org/pipermail/ghc-devs/2014-July/005830.html
