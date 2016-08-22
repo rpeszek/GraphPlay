@@ -6,7 +6,7 @@ module PolyGraph.Common.DslSupport.Coproduct (
     , liftLeft
     , liftRight
     , (:+:)
-    , (:<:)()
+    , (:<:)(..)
 ) where
 import Control.Monad.Free 
 
@@ -21,10 +21,10 @@ class (Functor sub, Functor sup) => sub :<: sup where
 instance Functor f => f :<: f where
   inj = id
 
-instance (Functor f, Functor g) => f :<: (f :+: g) where
+instance {-# OVERLAPPING #-} (Functor f, Functor g) => f :<: (f :+: g) where
   inj = InL
 
-instance (Functor f, Functor g, Functor h, f :<: g) => f :<: (h :+: g) where
+instance {-# OVERLAPPABLE #-} (Functor f, Functor g, Functor h, f :<: g) => f :<: (h :+: g) where
   inj = InR . inj
 
 liftLeft :: (Functor g, Functor f) => Free f a -> Free (Sum f g) a

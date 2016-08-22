@@ -13,7 +13,7 @@ data VWalkCmds v r = GetNeighbors ([v] -> r)      |
 type VWalk v = Free (VWalkCmds v)
 
 -- need different pairing to do FreeT
---type VWalk v m a = FreeT (VWalkCmds v) m a
+--type VWalkT v m a = FreeT (VWalkCmds v) m a
 --type VWalk v a = VWalk v Identity a
 
 --stepWith ::  Monad m => ([v] -> v) -> VWalk v m v
