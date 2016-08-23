@@ -1,4 +1,9 @@
-module FreeDSL.VWalk.CoWalk where
+module FreeDSL.VWalk.CoWalk (
+    VWalkInterpreter
+   , VWalkCoinstructions(..)
+   , buildWalkInstructions
+   , interpretWalk
+) where
 
 import FreeDSL.VWalk
 import Control.Comonad.Cofree
@@ -7,24 +12,26 @@ import PolyGraph.Common.DslSupport.Pairing
 import PolyGraph.ReadOnly.Graph (AdjacencyIndex(..), neighborsOf)
 
 -- Comonad interpreter
-data VWalkInt v k = VWalkInt {
-    getNeighborsI  :: ([v], k)
-  , walkToI :: v -> (v, k)
-  , historyI :: ([v], k)
+data VWalkCoinstructions v k = VWalkCoinstructions {
+    getNeighborsCoI  :: ([v], k)
+  , walkToCoI :: v -> (v, k)
+  , historyCoI :: ([v], k)
   } deriving Functor
 
-type CoVWalk v r = Cofree (VWalkInt v) r
+type VWalkInterpreter v r = Cofree (VWalkCoinstructions v) r
 
-instance Pairing (VWalkInt v) (VWalkCmds v) where
-  pair f (VWalkInt a _ _) (GetNeighbors k) = pair f a k
-  pair f (VWalkInt _ c _) (WalkTo x k) = pair f (c x) k
-  pair f (VWalkInt _ _ t) (History k) = pair f t k
+instance Pairing (VWalkCoinstructions v) (VWalkInstructions v) where
+  pair f (VWalkCoinstructions a _ _) (GetNeighbors k) = pair f a k
+  pair f (VWalkCoinstructions _ c _) (WalkTo x k) = pair f (c x) k
+  pair f (VWalkCoinstructions _ _ t) (History k) = pair f t k
 
-mkCoVWalk :: forall g v e t . (Eq v, AdjacencyIndex g v e t) => 
-                               g -> v -> CoVWalk v (g, [v])
-mkCoVWalk g v = coiter next start 
-               where next w = VWalkInt (coNeighbors w) (coWalkTo w) (coHistory w)
-                     start = (g, [v])
+buildWalkInterpreter :: forall g v e t . (Eq v, AdjacencyIndex g v e t) => 
+                               g -> v -> VWalkInterpreter v (g, [v])
+buildWalkInterpreter g v = coiter buildWalkInstructions (g, [v])
+
+buildWalkInstructions :: forall g v e t . (Eq v, AdjacencyIndex g v e t) => 
+                               (g, [v]) -> VWalkCoinstructions v (g, [v])
+buildWalkInstructions w = VWalkCoinstructions (coNeighbors w) (coWalkTo w) (coHistory w) 
 
 coNeighbors :: forall g v e t . (Eq v, AdjacencyIndex g v e t) => 
                    (g, [v]) -> ([v], (g, [v]))
@@ -43,9 +50,9 @@ coHistory (g,vlist) = (vlist, (g,vlist))
 
 
 runPaired :: forall a g v e t r . (Eq v, AdjacencyIndex g v e t) => 
-                              g -> VWalk v r -> CoVWalk v a -> r
+                              g -> VWalkDSL v r -> VWalkInterpreter v a -> r
 runPaired _ prog coprog = pair (\_ b -> b) coprog prog
 
 interpretWalk :: forall g v e t r . (Eq v, AdjacencyIndex g v e t) => 
-                              VWalk v r -> g -> v -> r
-interpretWalk prog g v = runPaired g prog (mkCoVWalk g v)
+                              VWalkDSL v r -> g -> v -> r
+interpretWalk prog g v = runPaired g prog (buildWalkInterpreter g v)

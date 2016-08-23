@@ -7,7 +7,7 @@ import PolyGraph.ReadOnly.Graph (AdjacencyIndex(..), neighborsOf)
 
 -- regular interpreter
 interpretWalk :: forall  g v e t r . (Eq v, AdjacencyIndex g v e t) => 
-                               g -> v -> VWalk v r -> State ([v]) r
+                               g -> v -> VWalkDSL v r -> State ([v]) r
 interpretWalk g v (Free (GetNeighbors nF)) =
        do
          let choiceVs = neighborsOf g v
@@ -27,14 +27,14 @@ interpretWalk g v (Free (History nF)) =
 interpretWalk _ _ (Pure r) = return r
 
 runWalkFull :: forall  g v e t r . (Eq v, AdjacencyIndex g v e t) => 
-                               VWalk v r -> g -> v -> (r, [v])
+                               VWalkDSL v r -> g -> v -> (r, [v])
 runWalkFull program g v = runState (interpretWalk g v program) [v]
 
 
 runWalkState :: forall  g v e t r . (Eq v, AdjacencyIndex g v e t) => 
-                               VWalk v r -> g -> v -> [v]
+                               VWalkDSL v r -> g -> v -> [v]
 runWalkState program g v = snd $ runWalkFull program g v
   
 runWalk :: forall  g v e t r . (Eq v, AdjacencyIndex g v e t) => 
-                               VWalk v r -> g -> v -> r
+                               VWalkDSL v r -> g -> v -> r
 runWalk program g v = fst $ runWalkFull program g v
