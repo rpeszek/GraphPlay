@@ -43,8 +43,8 @@ data RatingInstructions a r = GetRating a (Int -> r) |
                                       deriving Functor
 \end{code}
 
-On the interpreter side, I also need a base set of abstract 'interpretations' which are really co-instructions.  
-Notice that RatingCoinstructions is a (OO object like) _product_ type.  Type 'a' is inhabited
+On the interpreter side, I also need a base set of abstract 'interpretations' (or co-instructions).  
+Notice that RatingCoinstructions is a (OO object like) _product type_.  Type 'a' is inhabited
 by things we will be rating. Type 'k' is the internal computation state that interpreter will use
 and typically 'r' /= 'k':  
 \begin{code}
@@ -63,7 +63,7 @@ instance Pairing (RatingCoinstructions v) (RatingInstructions v) where
 \end{code}
 
 Free and Cofree are recursive data constuctors that expand base instructions and base interpretations
-into unboud trees. Best way to thin about RatingDSL type as type inhabited by all possible, syntactically 
+into unbound trees. Best way to thin about RatingDSL type as type inhabited by all possible, syntactically 
 valid sequences for base instructions.
 \begin{code}
 type RatingDSL a r = Free (RatingInstructions a) r 
