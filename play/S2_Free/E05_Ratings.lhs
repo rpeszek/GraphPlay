@@ -105,8 +105,8 @@ This is it!  We have a language in place and we can start writing programs in it
 do anything other than look pretty (if you like trees) unless we build an interpreter.
 
 Programs are of type 'RatingDSL a r' and each program can choose what 'r' is. This logically stems from
-the _coproduct_ nature of base instructions.  Interpretations, however, are _product_ and have exactly the 
-opposite requirement. They all need to use the same type to store state when working. 
+the _coproduct_ nature of base instructions.  Interpretations, however, are _product type_ and have exactly the 
+opposite requirement. They all need to share the same type to store state when working. 
 
 We will be using 'HashMap a Int' for that state by I want to be more flexible that that. To do that
 I am defining a type class that defines valid 'k' for my interpreters. Basically, anything that 
@@ -166,8 +166,8 @@ So, here is a simple program that: lowers by one the rating on every element it 
 above specified max value, and returns a list of modified elements with new ratings. 
 \begin{code}
 --adjust values higher than max and return previous highest value larger than max if found
-hateOverachivers :: [a] -> Int -> RatingDSL a [(a,Int)]
-hateOverachivers list maxRating = do
+hateOverachievers :: [a] -> Int -> RatingDSL a [(a,Int)]
+hateOverachievers list maxRating = do
     overachievers <- filterM (liftM (> maxRating) . getRating) list  --to do not monadic
     forM_ overachievers (flip like False)
     mapM (\a -> liftM ((,) a) $ getRating a) overachievers
@@ -181,7 +181,7 @@ prop_ratings initRatings maxR =
       let initNoDupl = HM.toList . HM.fromList $ initRatings
           alist = map(fst) initNoDupl
           expected = map (\(a,i) -> (a,i-1)) . filter( (> maxR) . snd ) $ initNoDupl
-          computed = interpretRating (hateOverachivers alist maxR) initNoDupl 
+          computed = interpretRating (hateOverachievers alist maxR) initNoDupl 
        in sort expected == sort computed
 \end{code}
 
