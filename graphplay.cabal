@@ -67,6 +67,7 @@ library
                        , S2_Free.E02_BFS
                        , S2_Free.E03_BFS2
                        , S2_Free.E04_SpanTree
+                       , S2_Free.E05_Ratings
                        , Deprecated.DiGraph.SampleData
                        , Deprecated.DiGraph.TreeFoldOnSimpleGraph
                        , Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph
@@ -84,6 +85,7 @@ library
                       , QuickCheck
                       , free
                       , monad-loops
+                      , comonad
                       --, derive
   default-language:    Haskell2010
   extensions:          TemplateHaskell

@@ -40,7 +40,6 @@ And will use these to demonstrate the results:
 \begin{code}
 import S1_Cstr.E05_Samples (grid)
 import qualified Instances.ListGraphs as ListGraphs
-import qualified Test.QuickCheck as Property
 \end{code}
 
 Technically, spanning tree is a subgraph of the input graph but from computing stand point it is best

@@ -3,6 +3,7 @@
 module PolyGraph.Common.DslSupport.Coproduct (
     Sum (..)
     , Coproduct
+    , liftDSL
     , liftLeft
     , liftRight
     , (:+:)
@@ -26,6 +27,9 @@ instance {-# OVERLAPPING #-} (Functor f, Functor g) => f :<: (f :+: g) where
 
 instance {-# OVERLAPPABLE #-} (Functor f, Functor g, Functor h, f :<: g) => f :<: (h :+: g) where
   inj = InR . inj
+
+liftDSL :: (Functor f, Functor g, f :<: g) => Free f a -> Free g a
+liftDSL = hoistFree inj
 
 liftLeft :: (Functor g, Functor f) => Free f a -> Free (Sum f g) a
 liftLeft = hoistFree InL
