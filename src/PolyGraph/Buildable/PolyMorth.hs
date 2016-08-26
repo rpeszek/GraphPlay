@@ -1,10 +1,14 @@
 module PolyGraph.Buildable.PolyMorth (
     morth
   , fmorth
+  , morthToVertices
 ) where
 
 import PolyGraph.ReadOnly
 import PolyGraph.Buildable
+import qualified Instances.ListGraphs as ListGraphs
+import PolyGraph.Common (PairLike)
+
 
 
 morthEdges  :: forall g0 v0 e0 t0 g1 v1 e1 t1. (GraphDataSet g0 v0 e0 t0, BuildableGraphDataSet g1 v1 e1 t1) =>
@@ -33,6 +37,11 @@ fmorth :: forall f g0 v0 t0 g1 v1 t1. (Functor f, GraphDataSet g0 v0 (f v0) t0, 
                 (v0 -> v1) -> g0 -> g1
 fmorth f = morth (fGMorphism f)
 
+
+morthToVertices :: forall f g0 v0 t0 . (Functor f, PairLike (f v0) v0, GraphDataSet g0 v0 (f v0) t0) =>
+                     g0 -> [v0]
+morthToVertices g = let verticesG = fmorth id g :: ListGraphs.Vertices v0 (f v0)
+                     in ListGraphs.getVertices verticesG
 
 --
 -- NOTE this type of expression will not compile with functionally dependent types because g has a wrong kind

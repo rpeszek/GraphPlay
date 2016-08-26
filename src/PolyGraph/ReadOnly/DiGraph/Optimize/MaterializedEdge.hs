@@ -1,6 +1,7 @@
 
 module PolyGraph.ReadOnly.DiGraph.Optimize.MaterializedEdge (
    EdgeHelper(..)
+  , convertToEdgeHelper
 ) where
 
 import PolyGraph.Common (OPair)
