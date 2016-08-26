@@ -1,13 +1,23 @@
 2.03 Free Polymorphism. A DSL that rates things, Composable DSLs using Free-Cofree pattern.
 ------
 My plan is to examine how to design programs by creating composable DSLs and Interpreters.  
-In this example, I create a new DSL, one that has nothing to do with graphs, but will be used
+In this example creates a new DSL, one that has nothing to do with graphs, but will be used
 moving forward to demonstrate composability against other DSLs.
 
 This work was motivated by excellent series of posts by [Dave Laing](http://dlaing.org/cofun/posts/free_and_cofree.html).
 as well as from the famous 'Data types a la carte' paper by Wouter Swierstra.
 \begin{code}
-module S2_Free.E05_Ratings where
+module S2_Free.E05_Ratings (
+   allThisHardWork
+  , RatingDSL
+  , RatingInstructions(..)
+  , RatingCoinstructions(..)
+  , RatingContainer(..)
+  , buildRatingInstructions
+  , getRating
+  , like
+  , findBest
+) where
 \end{code}
 
 I will use free monad and interpreter using free comonad. 
@@ -44,9 +54,11 @@ data RatingInstructions a r = GetRating a (Int -> r) |
 \end{code}
 
 On the interpreter side, I also need a base set of abstract 'interpretations' (or co-instructions).  
-Notice that RatingCoinstructions is a (OO object like) _product type_.  Type 'a' is inhabited
-by things we will be rating. Type 'k' is the internal computation state that interpreter will use
-and typically 'r' /= 'k':  
+Notice that RatingCoinstructions is a (OO object like) _product type_.  Type 'a' represents
+the things we will be rating. Type 'k' is the internal computation state that interpreter will use
+and typically 'r' /= 'k'.  Also notice that, there is a perfect duality between data constructors in 
+the RatingInstructions type and record fields in the RatingCoinstructions type (the (,) pair type and
+the (->) function type are dual due to the concept of currying): 
 \begin{code}
 data RatingCoinstructions a k = RatingCoinstructions {
      getRatingCoI  :: a -> (Int, k)
@@ -54,8 +66,13 @@ data RatingCoinstructions a k = RatingCoinstructions {
 } deriving Functor
 \end{code}
 
-Base instructions and base 'interpretations' are two ends of the same stick. They work together
-by being 'paired':
+The clear duality between RatingInstructions and RatingCoinstructions types matches the intuition. 
+Programs and interpreters are two ends of the same stick, as are base instructions and base 'interpretations'.
+This type level duality is extended and formalized by implementing Pairing interface defined in the imported 
+DslSupport.Pairing module.  
+To understand better the implementation, it helps to know other types that implement
+Pairing. Currying provides the duality needed to pair (,) with (->). 
+Trivially, Identity type is paired with itself.  This simply delegates to these implementations:
 \begin{code}
 instance Pairing (RatingCoinstructions v) (RatingInstructions v) where
   pair f (RatingCoinstructions a _) (GetRating x k)  = pair f (a x) k
