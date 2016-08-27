@@ -30,11 +30,14 @@ import qualified Instances.ListGraphs as ListGraphs
 \end{code}
 
 Each lower level language exports: 
- * generating instruction co-products (VWalkInstructions, RatingInstructions)
- * generating interpretations products (VWalkCoinstructions, RatingCoinstructions)
- * free-lifted language instructions if needed in writing new language (e.g. walkTo, history, getRating)
+ * abstract (generating) instruction co-products (VWalkInstructions, RatingInstructions)
+ * abstract (generating) interpretations products (VWalkCoinstructions, RatingCoinstructions)
+ * language instructions if needed in writing new language (e.g. walkTo, history, getRating)
  * container type class representing interpretation state (product type).
- * (optionally, since we can recreate these) language types
+ * (optionally, since we can recreate these) language types (VWalkDSL, RatingDSL)
+
+We will use RatingDSL from the previous example and a VWalkDSL (vertex walk) language that I wrote 
+for the library. The imported instruction names should be self-explanatory. 
 
 All exports from lower level languages (spelled out again):
 \begin{code}
