@@ -18,7 +18,7 @@ import PolyGraph.Common.DslSupport.Product ((:*:), (*:*))
 import PolyGraph.Common.DslSupport.Pairing (Pairing (..))
 \end{code}
 
-And an example test program will need:
+To run an example test program will use:
 \begin{code}
 import Control.Monad
 import Data.Hashable
@@ -29,17 +29,18 @@ import qualified PolyGraph.Buildable.PolyMorth as Morth
 import qualified Instances.ListGraphs as ListGraphs
 \end{code}
 
-Each lower level language exports: 
- * abstract (generating) instruction co-products (VWalkInstructions, RatingInstructions)
- * abstract (generating) interpretations products (VWalkCoinstructions, RatingCoinstructions)
- * language instructions if needed in writing new language (e.g. walkTo, history, getRating)
- * container type class representing interpretation state (product type).
- * (optionally, since we can recreate these) language types (VWalkDSL, RatingDSL)
-
-We will use RatingDSL from the previous example and a VWalkDSL (vertex walk) language that I wrote 
+We will combine RatingDSL from the previous example and a VWalkDSL (vertex walk) language that I wrote 
 for the library. The imported instruction names should be self-explanatory. 
 
-All exports from lower level languages (spelled out again):
+To be combined into a higher level language, each lower level language exports: 
+ * co-product type containing abstract (generating) instructions (VWalkInstructions, RatingInstructions)
+ * product type containing abstract (generating) interpretations (VWalkCoinstructions, RatingCoinstructions)
+ * language instructions (e.g. walkTo, history, getRating)
+ * container type class abstracting language interpretation state (product type).
+ * (optionally, since we can recreate these) language types (VWalkDSL, RatingDSL)
+
+All exports from lower level languages (spelled out again, we import only instructions that will be used 
+in our higher level language):
 \begin{code}
 import FreeDSL.VWalk (
   VWalkInstructions
@@ -64,18 +65,19 @@ import S2_Free.E05_Ratings (
 import PolyGraph.ReadOnly.Graph (AdjacencyIndex) -- constraint needed by VWalkDSL
 \end{code}
 
-The gist of Free-Cofree pattern is in the co-product nature of instruction type, the product 
-nature of interpretation type, and the pairing between them. To compose languages we need to compose these by taking sum
-of instructions and product of interpretations. Actually, any unconstrained sum type and 
-product type would do (like Either and Pair). 
-But to be more elegant I use here TypeOperators extension and the naming convention from 
+The gist of the Free-Cofree pattern is in the co-product nature of instruction type, the product 
+nature of interpretation type, and the pairing between them.  
+To compose languages we need to compose instructions by taking their sum
+and compose interpretations by taking their product.  
+I believe, any unconstrained sum type and product type would do (like Either and Pair). 
+But to be more elegant, I use TypeOperators language extension and the naming convention from 
 the blog and paper I referred to earlier:
 \begin{code}
 type RatedWalkInstructions v   = ((VWalkInstructions v)   :+: (RatingInstructions v)) 
 type RatedWalkCoInstructions v = ((VWalkCoinstructions v) :*: (RatingCoinstructions v)) 
 \end{code}
 
-How cool! We have operators on types. 
+How cool. We can do operators on types!
 
 If I want to, I can create type synonyms for the combined language (this is optional):
 \begin{code}
@@ -83,14 +85,14 @@ type RatedWalkDSL v r = Free (RatedWalkInstructions v) r
 type RatedWalkInterperter v k = Cofree (RatedWalkCoInstructions v) k
 \end{code}
 
-And my DSL and Interpreter are still paired as witnessed by this line of code:
+And my DSL and Interpreter are easily paired:
 \begin{code}
 runPaired :: RatedWalkDSL v r -> RatedWalkInterperter v k -> r
 runPaired prog coprog = pair (\_ b -> b) coprog prog
 \end{code}
 
-Each lower level language exported interpretation builder method which is really a 'bundled all-in-one interpretation'.  
-We need to create such a builder for the new language. This will allow us to distribute the new 
+Each of the lower level language has exported an interpretation builder method (which is really a 'bundled all-in-one interpretation').    
+We need to create such builder for the new language. This will allow us to distribute the new 
 language for further composition.  
 As in the previous example, we abstract out the data constructor for the interpretation state
 into a type class:
@@ -98,7 +100,7 @@ into a type class:
 class (RatingContainer c v, VWalkContainer c v g) => RatedWalkContainer c v g
 \end{code}
 
-And we are ready to build new interpreter. Notice the handy multiplication combinator 
+And we are ready to build the higher level interpretation bundle. Notice the handy multiplication combinator 
 that composes both language interpreters!  
 \begin{code}
 buildRatedWalkInstructions :: forall g v e t c. (RatedWalkContainer c v g, Show v, Hashable v, Eq v, AdjacencyIndex g v e t) =>
@@ -113,9 +115,10 @@ buildRatedWalkInstructions g  = (buildWalkInstructions g) *:* buildRatingInstruc
     that both interpreters require: these could have been packaged together but I prefer the
     more explicit approach of just listing them.
 
-The higher level language, we are building, should define and export its own set of commands written using the lower level languages.
+The higher level language, we are building, should define and export its own set of commands.
+These commands are typically programs written using the lower level languages that are being combined.
 It could also be adding its own abstract instructions and interpretations. (But I think this would be a less elegant approach.)
-Otherwise, the new language is ready to ship for further composition!
+Otherwise, the magic of combining is behind us!
  
 To interpret just this language we need to provide container for the interpretation state:
 \begin{code}
@@ -150,9 +153,9 @@ ratingDSL :: RatingDSL v r -> RatedWalkDSL v r
 ratingDSL = liftRight
 \end{code}
 
-I will add just one instruction to our higher level language. This is done by writing a 
-polyglot program. This program will walk the graph in a way that is informed by ratings.
-It is given total number of steps to make. At each step if moves to next highest rated vertex that was 
+I will add just one instruction to our higher level language. Again, this is done by writing a 
+polyglot program. This program walks the graph in a way that is informed by ratings.
+It is given total number of steps to make, at each step if moves to next highest rated vertex that was 
 not visited yet. If it runs out of placed to go it just stops.
 The program always returns the full path it traveled at the end.
 \begin{code}
@@ -169,10 +172,10 @@ ratedWalk steps = do
 
 To test, the program will walk unordered grid (that boring grid again, sorry) and try to stay as 
 close to the diagonal as possible.  
-Writing code to accomplish this, that that does not look like Java, requires some thinking.
+Writing code to accomplish this one that that does not look like Java, requires some thinking.
 
-The goal is to use abstract vertex type (instead of (Int,Int)).  This way, the type checker works with me. 
-the walk.  And we have clearly done it with ratedWalk!
+The goal is to use abstract vertex type (instead of (Int,Int)).  This way, the type checker will work with me. 
+And we have clearly done it with ratedWalk!  
 The only thing I need is a good rating function which will place higher rating on the diagonal.
 \begin{code}
 weightF :: (Int,Int) -> Int
@@ -198,7 +201,7 @@ allThisHardWork = do
 \end{code}
 
 **Summary:**  I have not really composed these two languages, they have composed themselves!
-There is some minimal boiler plate which is largely copy-paste and probably can be automated. 
+There is some minimal boiler plate which is largely copy-paste and probably can be automated.  
 Free-Cofree design patter is an eye opening example of what happens in FP when pieces are 
 made to fit together.   
 Free-Cofree pattern makes writing polyglot programs easy. The question is what is a good use
@@ -215,7 +218,7 @@ Problems with writing effectful interpreters.  Any effects that actually
 impact state of executing program are probably next to impossible.  Logging and write only
 effects should be doable.  I will be searching for alternatives approaches to the Free-Cofree approach that 
 keep the DSL-Interpreter pattern going.  Obviously nothing forces my hand to write interpreters as co-monads.
-We can write final (lowest level DSL) interpreters using monads and put more code writing effort when composing.
+We can write final (lowest level DSL) interpreters using monads and put more code writing effort when composing.  
 John De A Goes blog (below) is very relevant, so should be stuff on extensible effects.
 
 **As Design Pattern:** 
