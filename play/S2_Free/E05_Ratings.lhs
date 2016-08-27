@@ -1,7 +1,7 @@
 2.05 Free Polymorphism. A DSL that rates things, Composable DSLs using Free-Cofree pattern.
 ------
 My plan is to examine how to design programs by creating composable DSLs and Interpreters.  
-In this example creates a new DSL, one that has nothing to do with graphs, but will be used
+This example creates a new DSL, one that has nothing to do with graphs, but will be used
 moving forward to demonstrate composability against other DSLs.
 
 This work was motivated by excellent series of posts by [Dave Laing](http://dlaing.org/cofun/posts/free_and_cofree.html).
