@@ -68,6 +68,7 @@ library
                        , S2_Free.E03_BFS2
                        , S2_Free.E04_SpanTree
                        , S2_Free.E05_Ratings
+                       , S2_Free.E06_WalkAndRate
                        , Deprecated.DiGraph.SampleData
                        , Deprecated.DiGraph.TreeFoldOnSimpleGraph
                        , Deprecated.DiGraph.TreeMonoidFoldOnSimpleGraph
