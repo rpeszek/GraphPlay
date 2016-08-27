@@ -79,8 +79,8 @@ instance Pairing (RatingCoinstructions v) (RatingInstructions v) where
   pair f (RatingCoinstructions _ a) (Like x k)       = f (a x) k
 \end{code}
 
-Free and Cofree are recursive data constuctors that expand base instructions and base interpretations
-into unbound trees. Best way to thin about RatingDSL type as type inhabited by all possible, syntactically 
+Free and Cofree are recursive data constructors that expand base instructions and base interpretations
+into unbound trees. Best way to think about RatingDSL type as inhabited by all possible, syntactically 
 valid sequences for base instructions.  The term 'generating' instructions comes to mind.
 \begin{code}
 type RatingDSL a r = Free (RatingInstructions a) r 
@@ -90,7 +90,7 @@ type RatingInterpreter a k = Cofree (RatingCoinstructions a) k
     Interpreters are Free co-monads of product 'interpretation' types.  
     Just flip two co-s and we done!
 
-Please notice what is the following type signature is witnessing:  _Given program that inhabits 'RatingDSL a r' and interpreter that inhabits 'RatingInterpreter a k' 
+Please notice what the following type signature is witnessing:  _Given program that inhabits 'RatingDSL a r' and interpreter that inhabits 'RatingInterpreter a k' 
 we can run the program and get the result_:
 \begin{code}
 runPaired :: RatingDSL a r -> RatingInterpreter a k -> r
@@ -125,10 +125,10 @@ Programs are of type 'RatingDSL a r' and each program can choose what 'r' is. Th
 the _coproduct_ nature of instructions.  Interpretations, however, are _product type_ and have exactly the 
 opposite requirement. They all need to share the same type to store state when working. 
 
-We will be using 'HashMap a Int' for that state by I want to be more flexible that that. To do that
+We will be using 'HashMap a Int' for that state by I want to be more flexible than that. To do that
 I am defining a type class that defines valid 'k' for my interpreters. Basically, anything that 
 allows me to 'extract' 'HashMap a Int' and change the value of the stored 'HashMap a Int' is valid for me to use.
-Note similarity to Comonad definition. 
+Note similarity to Comonad type class. 
 \begin{code}
 class RatingContainer c a where
   extractRating :: c -> (HM.HashMap a Int)
@@ -142,7 +142,7 @@ instance RatingContainer (HM.HashMap a Int) a where
   extendRating c f = f c
 \end{code}
 
-Now one by one I need to define how interpretations are handled (reading the implementation
+Now, one by one I need to define how interpretations are handled (reading the implementation
 may help in figuring out what is going on):
 \begin{code}
 coGetRating ::  (RatingContainer c a, Show a, Eq a, Hashable a) => 
@@ -157,7 +157,7 @@ coLike c (a, rating) =
                     in replaceRating c newMap
 \end{code}
 
-And I can now wrap them up together using my product base type:
+And I can now wrap them up together into my product interpretation type:
 \begin{code}
 buildRatingInstructions :: (RatingContainer c a, Show a, Eq a, Hashable a) =>  
               c -> RatingCoinstructions a c
@@ -172,14 +172,14 @@ buildRatingInterpreter :: (Show a, Eq a, Hashable a) =>
 buildRatingInterpreter initMap = coiter buildRatingInstructions initMap 
 \end{code}
 
-This just places final nail, given program and initial set ratings we can run it:
+That was the last nail, given program and initial set ratings we can run it:
 \begin{code}
 interpretRating :: (Show a, Eq a, Hashable a) => 
                               RatingDSL a r -> [(a, Int)] -> r
 interpretRating prog coState = runPaired prog (buildRatingInterpreter $ HM.fromList coState)
 \end{code}
 
-So, here is a simple program that: lowers by one the rating on every element it visits if it is
+To play with the new language, here is a simple program that: lowers by one the rating on every element it visits if it is
 above specified max value, and returns a list of modified elements with new ratings. 
 \begin{code}
 --adjust values higher than max and return previous highest value larger than max if found
@@ -210,9 +210,9 @@ allThisHardWork = do
   Property.quickCheck prop_ratings
 \end{code}
 
-Notes: So where is the catch?  That does seem to be the best thing since sliced bread.
-One catch is that this uses comonads to build interpreters and comonads are the exact 
-opposite of effectful monads.
+Notes: So where is the catch?  That does seem to be the best thing since the sliced bread!
+The catch is that this uses comonads to build interpreters and comonads are the exact 
+opposite of effectful monads.  
 So if you want to handle effects in the interpreter, it will be either hard or just impossible. 
 Still, for more pure programs this does look phenomenal. 
 
