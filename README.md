@@ -26,7 +26,7 @@ __Play Folder__ is separate from standard 'src' and 'test'.
 That folder contain files that demo the library and my experiments. I am re-working these as literate programs (lhs).
 
 __Wiki__ Each lhs program is markdown to a file and checked in to this project wiki pages for easy reading.  
-I think of them as code versions of blog posts. I love FP and Haskell and maybe my affection will become more contagious with these little program examples. The goal is to make these play folder examples *readable without 
+I think of literate programs as better versions of blog posts. I love FP and Haskell and maybe my affection will become more contagious with these little program examples. The goal is to make these play folder examples *readable without 
 knowing much about Haskell* with focus on what can be done more than how it is done.
 
 To play with this project:

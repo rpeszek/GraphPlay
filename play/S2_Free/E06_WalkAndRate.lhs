@@ -103,7 +103,11 @@ class (RatingContainer c v, VWalkContainer c v g) => RatedWalkContainer c v g
 And we are ready to build the higher level interpretation bundle. Notice the handy multiplication combinator 
 that composes both language interpreters!  
 \begin{code}
-buildRatedWalkInstructions :: forall g v e t c. (RatedWalkContainer c v g, Show v, Hashable v, Eq v, AdjacencyIndex g v e t) =>
+buildRatedWalkInstructions :: forall g v e t c. (RatedWalkContainer c v g, 
+                                                 Show v, 
+                                                 Hashable v, 
+                                                 Eq v, 
+                                                 AdjacencyIndex g v e t) =>
                           g ->  c -> RatedWalkCoInstructions v c
 buildRatedWalkInstructions g  = (buildWalkInstructions g) *:* buildRatingInstructions
 \end{code}
@@ -136,12 +140,19 @@ instance VWalkContainer (ComboContainer v g) v g where
 
 And we are done with interpreter work!:
 \begin{code}
-buildRatedWalkInterpreter :: forall g v e t . (Show v, Hashable v, Eq v, AdjacencyIndex g v e t) =>
-                          g -> v -> HM.HashMap v Int -> RatedWalkInterperter v (ComboContainer v g)
-buildRatedWalkInterpreter g v map = coiter ((buildWalkInstructions g) *:* buildRatingInstructions) $ ComboContainer (g, [v]) map
+buildRatedWalkInterpreter :: forall g v e t . (Show v, 
+                                               Hashable v, 
+                                               Eq v, 
+                                               AdjacencyIndex g v e t) =>
+                g -> v -> HM.HashMap v Int -> RatedWalkInterperter v (ComboContainer v g)
+buildRatedWalkInterpreter g v map = 
+      coiter ((buildWalkInstructions g) *:* buildRatingInstructions) $ ComboContainer (g, [v]) map
 
-interpretRatedWalk :: forall g v e t r. (Show v, Hashable v, Eq v, AdjacencyIndex g v e t) =>
-                          RatedWalkDSL v r -> g -> v -> [(v,Int)] -> r
+interpretRatedWalk :: forall g v e t r. (Show v, 
+                                         Hashable v, 
+                                         Eq v, 
+                                         AdjacencyIndex g v e t) =>
+                RatedWalkDSL v r -> g -> v -> [(v,Int)] -> r
 interpretRatedWalk prog g v ratings = runPaired prog (buildRatedWalkInterpreter g v (HM.fromList ratings))
 \end{code}
 
@@ -156,7 +167,7 @@ ratingDSL = liftRight
 I will add just one instruction to our higher level language. Again, this is done by writing a 
 polyglot program. This program walks the graph in a way that is informed by ratings.
 It is given total number of steps to make, at each step if moves to next highest rated vertex that was 
-not visited yet. If it runs out of placed to go it just stops.
+not visited yet. If it runs out of placed to go, it just stops.
 The program always returns the full path it traveled at the end.
 \begin{code}
 ratedWalk :: Eq v => Int -> RatedWalkDSL v [v]
@@ -172,10 +183,10 @@ ratedWalk steps = do
 
 To test, the program will walk unordered grid (that boring grid again, sorry) and try to stay as 
 close to the diagonal as possible.  
-Writing code to accomplish this one that that does not look like Java, requires some thinking.
+It requires some thinking on how to write a program like this so it does not look like Java.
 
-The goal is to use abstract vertex type (instead of (Int,Int)).  This way, the type checker will work with me. 
-And we have clearly done it with ratedWalk!  
+The goal is to keep the vertex type abstract 'v' (instead of (Int,Int)).  This way, 
+the type checker will work with me. And I have clearly done it with ratedWalk!  
 The only thing I need is a good rating function which will place higher rating on the diagonal.
 \begin{code}
 weightF :: (Int,Int) -> Int
@@ -214,12 +225,13 @@ For example, readonly getRating instruction could have been interpreted by simpl
 without any need for HashMap.
 
 **Limitations:** 
-Problems with writing effectful interpreters.  Any effects that actually
-impact state of executing program are probably next to impossible.  Logging and write only
-effects should be doable.  I will be searching for alternatives approaches to the Free-Cofree approach that 
+Problems with writing effectful interpreters.  Any effect that actually
+impacts state of executing program are probably next to impossible.  Logging and write only
+effects appear to be doable.  
+I will be searching for alternatives approaches to the Free-Cofree approach that 
 keep the DSL-Interpreter pattern going.  Obviously nothing forces my hand to write interpreters as co-monads.
 We can write final (lowest level DSL) interpreters using monads and put more code writing effort when composing.  
-John De A Goes blog (below) is very relevant, so should be stuff on extensible effects.
+John De A Goes blog (below) is very relevant.
 
 **As Design Pattern:** 
 DSL-Interpreter provides nice isolation of concerns. Probably the most elegant solution is to decompose
