@@ -1,4 +1,4 @@
-2.03 Free Polymorphism. A DSL that rates things, Composable DSLs using Free-Cofree pattern.
+2.05 Free Polymorphism. A DSL that rates things, Composable DSLs using Free-Cofree pattern.
 ------
 My plan is to examine how to design programs by creating composable DSLs and Interpreters.  
 In this example creates a new DSL, one that has nothing to do with graphs, but will be used
@@ -20,7 +20,7 @@ module S2_Free.E05_Ratings (
 ) where
 \end{code}
 
-I will use free monad and interpreter using free comonad. 
+I will use Free monad and comonad (no need to be scared). 
 \begin{code}
 import Control.Monad.Free
 import Control.Comonad.Cofree
@@ -81,7 +81,7 @@ instance Pairing (RatingCoinstructions v) (RatingInstructions v) where
 
 Free and Cofree are recursive data constuctors that expand base instructions and base interpretations
 into unbound trees. Best way to thin about RatingDSL type as type inhabited by all possible, syntactically 
-valid sequences for base instructions.
+valid sequences for base instructions.  The term 'generating' instructions comes to mind.
 \begin{code}
 type RatingDSL a r = Free (RatingInstructions a) r 
 type RatingInterpreter a k = Cofree (RatingCoinstructions a) k
@@ -122,7 +122,7 @@ This is it!  We have a language in place and we can start writing programs in it
 do anything other than look pretty (if you like trees) unless we build an interpreter.
 
 Programs are of type 'RatingDSL a r' and each program can choose what 'r' is. This logically stems from
-the _coproduct_ nature of base instructions.  Interpretations, however, are _product type_ and have exactly the 
+the _coproduct_ nature of instructions.  Interpretations, however, are _product type_ and have exactly the 
 opposite requirement. They all need to share the same type to store state when working. 
 
 We will be using 'HashMap a Int' for that state by I want to be more flexible that that. To do that
@@ -212,7 +212,7 @@ allThisHardWork = do
 
 Notes: So where is the catch?  That does seem to be the best thing since sliced bread.
 One catch is that this uses comonads to build interpreters and comonads are the exact 
-opposite of effectfull monads.
+opposite of effectful monads.
 So if you want to handle effects in the interpreter, it will be either hard or just impossible. 
 Still, for more pure programs this does look phenomenal. 
 

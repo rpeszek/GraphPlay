@@ -1,4 +1,4 @@
-2.03 Free Polymorphism.  Spanning Tree, Computing on DSLs.
+2.04 Free Polymorphism.  Spanning Tree, Computing on DSLs.
 ------
 Typically, people write DSLs to compute in them or with them. In this example I will compute *on* a DSL.  
 

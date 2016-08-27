@@ -1,5 +1,13 @@
 
-module FreeDSL.VWalk where
+module FreeDSL.VWalk (
+  VWalkInstructions(..)
+  , VWalkDSL
+  , stepWith
+  , getNeighbors
+  , walkTo
+  , history
+  , whereAmI
+) where
 
 import Control.Monad
 import Control.Monad.Free
