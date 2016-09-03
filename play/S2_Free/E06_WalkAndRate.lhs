@@ -13,7 +13,7 @@ This post is using Free and Cofree tools:
 \begin{code}
 import Control.Monad.Free
 import Control.Comonad.Cofree
-import PolyGraph.Common.DslSupport.Coproduct ((:+:), liftLeft, liftRight)
+import PolyGraph.Common.DslSupport.Coproduct ((:+:), liftDSL, liftLeft, liftRight)
 import PolyGraph.Common.DslSupport.Product ((:*:), (*:*))
 import PolyGraph.Common.DslSupport.Pairing (Pairing (..))
 \end{code}
@@ -159,7 +159,7 @@ interpretRatedWalk prog g v ratings = runPaired prog (buildRatedWalkInterpreter 
 To write polyglot programs I define a clear set of 'namespaces':
 \begin{code}
 walkDSL :: VWalkDSL v r -> RatedWalkDSL v r
-walkDSL = liftLeft
+walkDSL = liftDSL
 ratingDSL :: RatingDSL v r -> RatedWalkDSL v r
 ratingDSL = liftRight
 \end{code}

@@ -11,8 +11,11 @@ import PolyGraph.Common.DslSupport.Product
 --import qualified Control.Monad.Trans.Free as TFree
 --import qualified Control.Comonad.Trans.Cofree as TCofree
 
-class (Functor f, Functor g) => Pairing f g where
-    pair :: (a -> b -> r) -> f a -> g b -> r
+class Pairing f g | f -> g, g -> f where
+  pair :: (a -> b -> r) -> f a -> g b -> r
+
+--class (Functor f, Functor g) => Pairing f g where
+--    pair :: (a -> b -> r) -> f a -> g b -> r
 
 instance Pairing Identity Identity where
   pair f (Identity a) (Identity b) = f a b
