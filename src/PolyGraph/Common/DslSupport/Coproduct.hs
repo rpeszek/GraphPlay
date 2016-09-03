@@ -28,11 +28,6 @@ instance {-# OVERLAPPING #-} (Functor f, Functor g) => f :<: (Sum f g) where
 instance {-# OVERLAPPING #-} (Functor f, Functor g, Functor h, f :<: g) => f :<: (Sum h g) where
   inj = InR . inj
 
---instance {-# OVERLAPPING #-} (Functor f, Functor g) => f :<: (f :+: g) where
---  inj = InL
-
---instance {-# OVERLAPPABLE #-} (Functor f, Functor g, Functor h, f :<: g) => f :<: (h :+: g) where
---  inj = InR . inj
 
 liftDSL :: (Functor f, Functor g, f :<: g) => Free f a -> Free g a
 liftDSL = hoistFree inj

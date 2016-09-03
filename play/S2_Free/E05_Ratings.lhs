@@ -25,6 +25,7 @@ I will use Free monad and comonad (no need to be scared).
 import Control.Monad.Free
 import Control.Comonad.Cofree
 import PolyGraph.Common.DslSupport.Pairing (Pairing (..))
+import PolyGraph.Common.DslSupport.Coproduct ((:<:), liftDSL)
 \end{code}
 
 I will need these for implementation and testing.
@@ -101,16 +102,29 @@ and build interpreter of type 'RatingInterpreter a k'.
 
 Non-abstract instructions are implemented by simply lifting abstract instruction into the Free tree:
 \begin{code}
-getRating ::  a -> RatingDSL a Int
-getRating a   = liftF (GetRating a id)
-like      ::  a -> Bool -> RatingDSL a ()
-like a isGood = liftF (Like (a,isGood) ())
+getRating' ::  a -> RatingDSL a Int
+getRating' a   = liftF (GetRating a id)
+like'      ::  a -> Bool -> RatingDSL a ()
+like' a isGood = liftF (Like (a,isGood) ())
+\end{code}
+
+But we can do better than that!  We can define these instructions so they work in any polyglot DSL that
+includes RatingDSL instructions. 
+This approach is based on 'Data types a la carte' paper.
+\begin{code}
+getRating ::  forall a polyglot.(Functor polyglot, (RatingInstructions a) :<: polyglot) 
+                       => a -> Free polyglot Int
+getRating a   = liftDSL $ liftF (GetRating a id)
+like      ::  forall a polyglot.(Functor polyglot, (RatingInstructions a) :<: polyglot) 
+                       => a -> Bool -> Free polyglot ()
+like a isGood = liftDSL $ liftF (Like (a,isGood) ())
 \end{code}
 
 A good thing to notice that we can expand the language and implement new instructions, by simply 
 writing a program using base instructions (base instructions 'generate' the language):
 \begin{code}
-findBest :: [a] -> RatingDSL a (Maybe a)
+findBest :: forall a polyglot.(Functor polyglot, (RatingInstructions a) :<: polyglot) 
+                      => [a] -> Free polyglot (Maybe a)
 findBest [] = return Nothing
 findBest (x0:xs) = do -- todo just is incorrect
     rating0 <- getRating x0

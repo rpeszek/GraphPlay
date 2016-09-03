@@ -11,6 +11,7 @@ module FreeDSL.VWalk (
 
 import Control.Monad
 import Control.Monad.Free
+import PolyGraph.Common.DslSupport.Coproduct ((:<:), liftDSL)
 --import Data.Functor.Identity
 --import Control.Monad.Trans.Free
 
@@ -25,19 +26,30 @@ type VWalkDSL v = Free (VWalkInstructions v)
 --type VWalkDSL v a = VWalkDSL v Identity a
 
 --stepWith ::  Monad m => ([v] -> v) -> VWalkDSL v m v
-stepWith ::  ([v] -> v) -> VWalkDSL v v
+--getRating ::  forall a polyglot.(Functor polyglot, (RatingInstructions a) :<: polyglot) 
+--                       => a -> Free polyglot Int
+
+--
+-- using polymorphic signatures to allow for composability a la carte
+--
+stepWith :: forall v polyglot.(Functor polyglot, (VWalkInstructions v) :<: polyglot) 
+                      => ([v] -> v) -> Free polyglot v
 stepWith f = do
     n <- getNeighbors
     walkTo $ f n
 
-getNeighbors :: VWalkDSL v [v]
-getNeighbors = liftF (GetNeighbors id)
+getNeighbors :: forall v polyglot.(Functor polyglot, (VWalkInstructions v) :<: polyglot) 
+                      => Free polyglot [v]
+getNeighbors = liftDSL $ liftF (GetNeighbors id)
 
-walkTo :: v -> VWalkDSL v v
-walkTo v = liftF (WalkTo v id)
+walkTo :: forall v polyglot.(Functor polyglot, (VWalkInstructions v) :<: polyglot) 
+                      => v -> Free polyglot v
+walkTo v = liftDSL $ liftF (WalkTo v id)
 
-history ::  VWalkDSL v [v]
-history = liftF (History id)
+history ::  forall v polyglot.(Functor polyglot, (VWalkInstructions v) :<: polyglot) 
+                      => Free polyglot [v]
+history = liftDSL $ liftF (History id)
 
-whereAmI ::  VWalkDSL v v
+whereAmI ::  forall v polyglot.(Functor polyglot, (VWalkInstructions v) :<: polyglot) 
+                      => Free polyglot v
 whereAmI = (liftM head) history

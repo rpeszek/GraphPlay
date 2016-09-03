@@ -13,7 +13,7 @@ This post is using Free and Cofree tools:
 \begin{code}
 import Control.Monad.Free
 import Control.Comonad.Cofree
-import PolyGraph.Common.DslSupport.Coproduct ((:+:), liftDSL, liftLeft, liftRight)
+import PolyGraph.Common.DslSupport.Coproduct ((:+:))
 import PolyGraph.Common.DslSupport.Product ((:*:), (*:*))
 import PolyGraph.Common.DslSupport.Pairing (Pairing (..))
 \end{code}
@@ -156,12 +156,13 @@ interpretRatedWalk :: forall g v e t r. (Show v,
 interpretRatedWalk prog g v ratings = runPaired prog (buildRatedWalkInterpreter g v (HM.fromList ratings))
 \end{code}
 
-To write polyglot programs I define a clear set of 'namespaces':
+Since we have defined DSL instructions polymorphically to work in any polyglot program we 
+do not need any 'namespaces' spelling out which DSL is used!  
+To make my program clearer I could consider doing this just to prefix each language
+instruction for readability (but I will not do it in this example): 
 \begin{code}
-walkDSL :: VWalkDSL v r -> RatedWalkDSL v r
-walkDSL = liftDSL
-ratingDSL :: RatingDSL v r -> RatedWalkDSL v r
-ratingDSL = liftRight
+walkDSL = id
+ratingDSL = id
 \end{code}
 
 I will add just one instruction to our higher level language. Again, this is done by writing a 
@@ -173,12 +174,13 @@ The program always returns the full path it traveled at the end.
 ratedWalk :: Eq v => Int -> RatedWalkDSL v [v]
 ratedWalk 0  = return []
 ratedWalk steps = do
-     neighVs <- walkDSL $ getNeighbors
-     visited <- walkDSL $ history
-     maybeV  <- ratingDSL $ findBest (neighVs \\ visited)
+     neighVs <- getNeighbors                  -- walkDSL
+     visited <- history                       -- walkDSL
+     maybeV  <- findBest (neighVs \\ visited) -- ratingDSL
      case maybeV of
         Nothing -> return []
-        Just v  -> (walkDSL $ walkTo v) >> (liftM((:) v) . ratedWalk $ (steps-1))
+        Just v  -> (walkTo v) >>              -- walkDSL
+                   (liftM((:) v) . ratedWalk $ (steps-1))  
 \end{code}
 
 To test, the program will walk unordered grid (that boring grid again, sorry) and try to stay as 
