@@ -50,6 +50,7 @@ library
                        , FreeDSL.VWalk
                        , FreeDSL.VWalk.CoWalk
                        , FreeDSL.VWalk.InterpreterStd
+                       , FreeDSL.VWalk.InterpreterFold
                        , Instances.DiGraph.DiEdgesByVertexMap
                        , Instances.AdjacencyMatrix
                        , Instances.ListGraphs

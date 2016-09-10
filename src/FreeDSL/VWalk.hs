@@ -12,6 +12,9 @@ module FreeDSL.VWalk (
 import Control.Monad
 import Control.Monad.Free
 import PolyGraph.Common.DslSupport.Coproduct ((:<:), liftDSL)
+import Control.Monad.State.Strict
+import PolyGraph.Common.DslSupport (MInterpreterWithCtx (..))
+import PolyGraph.ReadOnly.Graph (AdjacencyIndex(..), neighborsOf)
 --import Data.Functor.Identity
 --import Control.Monad.Trans.Free
 
@@ -53,3 +56,22 @@ history = liftDSL $ liftF (History id)
 whereAmI ::  forall v polyglot.(Functor polyglot, (VWalkInstructions v) :<: polyglot) 
                       => Free polyglot v
 whereAmI = (liftM head) history
+
+
+instance forall  g v e t m. (Eq v, AdjacencyIndex g v e t, MonadState ([v]) m) => 
+               MInterpreterWithCtx (g,v) m (VWalkInstructions v) where
+  interpretM (g,v) (GetNeighbors nF) = do
+       let choiceVs = neighborsOf g v
+       if null choiceVs 
+       then fail "out of cheese error"
+       else nF choiceVs
+
+  interpretM _ (WalkTo choiceV nF) =
+       do
+         modify $ (:) choiceV
+         nF choiceV
+
+  interpretM _ (History nF) = 
+       do
+         path <- get
+         nF path

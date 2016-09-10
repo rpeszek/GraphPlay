@@ -199,7 +199,7 @@ above specified max value, and returns a list of modified elements with new rati
 --adjust values higher than max and return previous highest value larger than max if found
 hateOverachievers :: [a] -> Int -> RatingDSL a [(a,Int)]
 hateOverachievers list maxRating = do
-    overachievers <- filterM (liftM (> maxRating) . getRating) list  --to do not monadic
+    overachievers <- filterM (liftM (> maxRating) . getRating) list  
     forM_ overachievers (flip like False)
     mapM (\a -> liftM ((,) a) $ getRating a) overachievers
 \end{code}
