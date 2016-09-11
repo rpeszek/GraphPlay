@@ -27,7 +27,7 @@ interpretWalk' prog g v = execInM (g,v) prog
 --
 runWalkFull :: forall  g v e t r m . (Eq v, Monad m, AdjacencyIndex g v e t) => 
                                VWalkDSL v r -> g -> v -> m (r, [v])
-runWalkFull program g v = runStateT (execInM (g,v) program) [v] -- ([] is empty initial state)
+runWalkFull program g v = runStateT (execInM g program) [v] -- ([] is empty initial state)
 
 runWalkState :: forall  g v e t r m . (Eq v, Monad m, AdjacencyIndex g v e t) => 
                                VWalkDSL v r -> g -> v -> m [v]

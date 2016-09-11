@@ -89,13 +89,13 @@ type GuidedWalkDSL v  = Free ((VWalkInstructions v) :+: (ChoiceAbstInst v))
 
 {-
 interpretGuidedWalk :: forall g v e t r. (Show v, Read v, Eq v, AdjacencyIndex g v e t) =>
-                               GuidedWalkDSL v r -> g -> v -> StateT [v] IO r
-interpretGuidedWalk prog g v = execInM (g,v) prog
+                               GuidedWalkDSL v r -> g  -> StateT [v] IO r
+interpretGuidedWalk prog g  = execInM g prog
 -}
 
 runGuidedWalkFull :: forall  g v e t r  . (Show v, Read v, Eq v, AdjacencyIndex g v e t) => 
                                GuidedWalkDSL v r -> g -> v -> IO (r, [v])
-runGuidedWalkFull program g v = runStateT (execInM (g,v) program) [v] -- ([] is empty initial state)
+runGuidedWalkFull program g v = runStateT (execInM g program) [v] -- ([] is empty initial state)
 
 runGuidedWalk :: forall g v e t r . (Show v, Read v, Eq v,  AdjacencyIndex g v e t) => 
                                GuidedWalkDSL v r -> g -> v -> IO r

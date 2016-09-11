@@ -59,8 +59,8 @@ whereAmI = (liftM head) history
 
 
 instance forall  g v e t m. (Eq v, AdjacencyIndex g v e t, MonadState ([v]) m) => 
-               MInterpreterWithCtx (g,v) m (VWalkInstructions v) where
-  interpretM (g,_) (GetNeighbors nF) = do
+               MInterpreterWithCtx g m (VWalkInstructions v) where
+  interpretM g (GetNeighbors nF) = do
        (vx:_) <- get
        let choiceVs = neighborsOf g vx
        if null choiceVs 
