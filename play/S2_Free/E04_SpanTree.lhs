@@ -122,7 +122,7 @@ You can evaluate the following in ghci to see the outcome of my hard work:
 \begin{code}
 allThisHardWork :: IO()
 allThisHardWork = do
-  putStrLn "Distance from 00 to 55 is: \n"
+  putStrLn "Spanning Tree: \n"
   putStrLn $ show $ runSpanningTree (0,0) myGraph
 \end{code}
 
