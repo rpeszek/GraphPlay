@@ -25,7 +25,7 @@ instance Functor f => f :<: f where
 instance {-# OVERLAPPING #-} (Functor f, Functor g) => f :<: (Sum f g) where
    inj = InL
 
-instance {-# OVERLAPPING #-} (Functor f, Functor g, Functor h, f :<: g) => f :<: (Sum h g) where
+instance {-# OVERLAPPABLE #-} (Functor f, Functor g, Functor h, f :<: g) => f :<: (Sum h g) where
   inj = InR . inj
 
 
