@@ -16,18 +16,18 @@ import PolyGraph.ReadOnly.Graph (AdjacencyIndex(..))
 
 import S1_Cstr.E05_Samples (bipartiteGraph)
 
-data ChoiceAbstInst a r =  Choose [a] (a -> r)
+data ChoiceInstructions a r =  Choose [a] (a -> r)
                                   deriving Functor
                   
-type ChoiceDSL a r = Free (ChoiceAbstInst a) r
+type ChoiceDSL a r = Free (ChoiceInstructions a) r
 
 
-choose ::  forall a polyglot. (Functor polyglot, (ChoiceAbstInst a) :<: polyglot) 
+choose ::  forall a polyglot. (Functor polyglot, (ChoiceInstructions a) :<: polyglot) 
                          => [a] -> Free polyglot a
 choose list =  liftDSL $ liftF (Choose list id)
 
-choose' :: [a] -> ChoiceDSL a a
-choose' list = liftF (Choose list id)
+--choose' :: [a] -> ChoiceDSL a a
+--choose' list = liftF (Choose list id)
 
 interpretChoices :: (Show a, Read a, Eq a) => ChoiceDSL a r -> IO ()
 interpretChoices (Free (Choose alist nF)) = do
@@ -36,20 +36,19 @@ interpretChoices (Free (Choose alist nF)) = do
       let choiceA = read choiceStr
       guard (elem choiceA alist)
       interpretChoices $ nF choiceA
-
 interpretChoices (Pure r) = return ()
 
---testChoice :: forall a polyglot. (IoInterpreter polyglot, Functor polyglot, (ChoiceAbstInst a) :<: polyglot) 
+--testChoice :: forall a polyglot. (IoInterpreter polyglot, Functor polyglot, (ChoiceInstructions a) :<: polyglot) 
 --        => [a] -> Free polyglot ()
-testChoice :: [a] -> ChoiceDSL a ()
-testChoice alist = do
-   choose alist
-   testChoice alist
+testChoice :: Int -> [a] -> ChoiceDSL a [a]
+testChoice noPicks alist = do
+   mapM (const $ choose alist) [1 .. noPicks]
+   
 
-testIO = interpretChoices $ testChoice [0..10]
+testIO = interpretChoices $ testChoice 3 [0..10]
 
 {-
-instance (Show a, Read a, Eq a) => IoInterpreter (ChoiceAbstInst a) where
+instance (Show a, Read a, Eq a) => IoInterpreter (ChoiceInstructions a) where
   interpretInIO (Choose alist nF) = do
         putStrLn $ "Make a pick " ++ show(alist)
         choiceStr <- getLine
@@ -62,7 +61,7 @@ testIO2  = execInIo $ testChoice [0..10]
 
 
 -- TODO change IO to t IO (transformer)
-instance (Show a, Read a, Eq a, MonadIO m, MonadPlus m) => MInterpreterWithCtx c m (ChoiceAbstInst a) where
+instance (Show a, Read a, Eq a, MonadIO m, MonadPlus m) => MInterpreterWithCtx c m (ChoiceInstructions a) where
   interpretM _ (Choose alist nF) = do
         liftIO $ putStrLn $ "Make a pick " ++ show(alist)
         choiceStr <- liftIO $ getLine
@@ -70,12 +69,12 @@ instance (Show a, Read a, Eq a, MonadIO m, MonadPlus m) => MInterpreterWithCtx c
         guard (elem choiceA alist)
         nF choiceA
 
-testIO3 :: forall c. c -> IO()
-testIO3 c = execInM c (testChoice [0..10]) 
+testIO3 :: forall c. c -> IO [Int]
+testIO3 c = execInM c (testChoice 3 [0..10]) 
 
 --not really needed to get it working, work with explicit :+: types
 {-
-testChoice' :: forall a polyglot. (Functor polyglot, (ChoiceAbstInst a) :<: polyglot) 
+testChoice' :: forall a polyglot. (Functor polyglot, (ChoiceInstructions a) :<: polyglot) 
         => [a] -> Free polyglot ()
 testChoice' alist = do
    choose alist
@@ -85,7 +84,7 @@ testChoice' alist = do
 
 --testIO4 :: forall c. c -> IO()
 --testIO4 c = execInM c (testChoice' [0..10]) 
-type GuidedWalkDSL v  = Free ((VWalkInstructions v) :+: (ChoiceAbstInst v))
+type GuidedWalkDSL v  = Free ((VWalkInstructions v) :+: (ChoiceInstructions v))
 
 {-
 interpretGuidedWalk :: forall g v e t r. (Show v, Read v, Eq v, AdjacencyIndex g v e t) =>
@@ -101,22 +100,22 @@ runGuidedWalk :: forall g v e t r . (Show v, Read v, Eq v,  AdjacencyIndex g v e
                                GuidedWalkDSL v r -> g -> v -> IO r
 runGuidedWalk program g  =  liftM fst . runGuidedWalkFull program g
 
-walkDSL = id
-choiceDSL :: ChoiceDSL v r -> GuidedWalkDSL v r
-choiceDSL = liftRight
+--walkDSL = id
+--choiceDSL = id
 
-guidedStep ::  GuidedWalkDSL v ()
+guidedStep ::  forall v.  GuidedWalkDSL v ()
 guidedStep  = do
-     neighVs <- walkDSL $ getNeighbors
-     next <- choiceDSL $ choose' neighVs
-     walkDSL $ walkTo next
+     neighVs <- getNeighbors                        -- WalkDSL
+     next    <- choose neighVs :: GuidedWalkDSL v v -- ChoiceDSL
+     walkTo next                                    -- WalkDSL
      return ()
 
 sampleWalk ::  Int -> GuidedWalkDSL v [v]
 sampleWalk steps = do
    forM_ [1..steps] (const guidedStep)
-   walk <- history
+   walk <- history                                  -- WalkDSL
    return walk
+
 
 testGraph = bipartiteGraph ([0..3], [10..11]) :: ListGraphs.GEdges Int
 
