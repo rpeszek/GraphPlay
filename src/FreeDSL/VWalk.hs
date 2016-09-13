@@ -60,19 +60,19 @@ whereAmI = (liftM head) history
 
 instance forall  g v e t m. (Eq v, AdjacencyIndex g v e t, MonadState ([v]) m) => 
                MInterpreterWithCtx g m (VWalkInstructions v) where
-  interpretM g (GetNeighbors nF) = do
+  interpretStepM g (GetNeighbors nF) = do
        (vx:_) <- get
        let choiceVs = neighborsOf g vx
        if null choiceVs 
        then fail "out of cheese error"
        else nF choiceVs
 
-  interpretM _ (WalkTo choiceV nF) =
+  interpretStepM _ (WalkTo choiceV nF) =
        do
          modify $ (:) choiceV
          nF choiceV
 
-  interpretM _ (History nF) = 
+  interpretStepM _ (History nF) = 
        do
          path <- get
          nF path
