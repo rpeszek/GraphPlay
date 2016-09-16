@@ -1,9 +1,9 @@
 2.07 Free Polymorphism.  DLS for choosing things.  Effectful fold interpreters.
 ------
 
-Another DSL that has nothing to do with Graphs but will be useful moving forward. 
+This example builds another DSL that has nothing to do with Graphs but will be useful moving forward. 
 The goal is to examine 'Data Types a la carte' approach in both DSL and interpreter design. 
-In this approach interpreters are Free AST tree folds and can be effectful. (Catamorphism folds.)
+In this approach interpreters are Free AST tree folds and can be effectful. (Catamorphisms.)
 \begin{code}
 module S2_Free.E07_ChoiceDSL where
 
@@ -32,7 +32,7 @@ choose ::  forall a polyglot. (Functor polyglot, (ChoiceInstructions a) :<: poly
 choose list =  liftDSL $ liftF (Choose list id)
 \end{code}
 
-My example interpreter will simply ask user what to pick using primitive CLI interaction.  
+My example interpreter will simply ask user what to pick using a primitive CLI interaction.  
 The following code simply pattern matches on the expressions, asks user to make a pick, and recursively processes next language instruction.  
 The 'or' nature of coproduct instruction set would allow me to equally easy pattern match on a larger list of abstract instructions
 as long as I know all of them.  
@@ -58,7 +58,7 @@ To work with polyglot DSLs I need to do better.
 The idea is to think about interpretation as folding of program instructions to produce result. 
 This approach splits interpreter logic into fold and accumulation (often called algebra).    
 It turns about that the following fold function is easy to implement 
-(think of 'f' as DslInstructions type, see DslSupport module for implementation):
+(think of 'f' as 'DslInstructions' type, see DslSupport module for implementation):
 ```
 foldDslProg :: Functor f => (a -> b) -> (f b -> b) -> Free f a -> b 
 ```
@@ -74,8 +74,8 @@ interpretInIO :: Free f a -> IO a
 interpretInIO prog = foldDslProg return interpretInIO prog
 ```
 
-What is left do to is to generalize 'interpretStep' to work with other things than IO and to make it 
-polymorphic to work with any DSL instructions 'f'.  Graph DSLs shown in previous examples are agnostic
+But that is still not good enough. What is left do to is to generalize 'interpretStep' to work with other things than IO and to make it 
+polymorphic to work with any polyglot DSL instructions 'f'.  All my Graph DSLs, shown in previous examples, are agnostic
 of which graph type is used.  It is interpreter job to worry about stuff like that. 
 So, in general, effectful interpreter step needs to also be able to handle additional context 'c'.  
 Generalize polymorphic constraint for interpretStep is defined in DslSupport module as: 
@@ -95,9 +95,10 @@ instance (Show a, Read a, Eq a, MonadIO m, MonadPlus m) =>
         nF choiceA
 \end{code}
 
-We are all set for polyglot consumption of our DSL and interpreter!
-This will be in the next example.  Here is a way to try out what I have done so far 
-(see DslSupport module for interpretInM definition):
+We are all set for polyglot consumption of our DSL and interpreter!  
+This will happen in my next example.  To finish and try out what I have done so far simply evaluate
+runTestChoice' in GHCi. 
+(interpretInM is analogous to interpretInIO we have seen above, see DslSupport module for its definition):
 \begin{code}
 whateverContext :: c
 whateverContext = undefined
