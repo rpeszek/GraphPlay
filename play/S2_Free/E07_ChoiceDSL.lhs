@@ -83,7 +83,7 @@ Generalize polymorphic constraint for interpretStep is defined in DslSupport mod
 class (Monad m, Functor f) => MInterpreterWithCtx c m f where
   interpretStepM :: c -> f (m a) -> m a
 ```
-And we can implement that general constraint:
+And we can implement that general constraint that will allow us to use any monad stack that includes IO:
 \begin{code}
 instance (Show a, Read a, Eq a, MonadIO m, MonadPlus m) => 
              MInterpreterWithCtx c m (ChoiceInstructions a) where

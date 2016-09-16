@@ -158,6 +158,11 @@ interpretRatedWalk prog g v ratings = runPaired prog (buildRatedWalkInterpreter 
 
 Since we have defined DSL instructions polymorphically to work in any polyglot program we 
 do not need any 'namespaces' spelling out which DSL is used!  
+  > The (:>:) type class that makes this happen is quite interesting. It maybe intuitive that we have  
+    a :<: (a :+: b :+: c) and b :<: (a :+: b :+: c) as well as c :<: (a :+: b :+: c)  
+    but this amounts to recursion on types and requires overlapping of instance definitions. 
+    Refer to 'Data types a la carte' for more information about ingenious approach and its limits.
+
 To make my program clearer I could consider doing this just to prefix each language
 instruction for readability (but I will not do it in this example): 
 \begin{code}
