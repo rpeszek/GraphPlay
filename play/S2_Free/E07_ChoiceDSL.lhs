@@ -67,10 +67,10 @@ I should be easily able to pattern match (like above) to implement accumulation 
 ```
 interpretStep :: f (IO a) -> IO a
 ```
-  > I use the term 'Step' as an analogy to fold.  This is not very precise analogy, since it encapsulates 
-    both fold step and setting initial accumulation value.  A better way of thinking about it maybe
-    evaluation of the outer most language expression.  The term algebra is probably better to use. 
-
+  > I use the term 'Step' as an analogy to fold.  This is not a very precise analogy.
+    A better way of thinking about it maybe evaluation of the outer most language expression.  
+    The term algebra is probably better to use. 
+ 
 and I have IO interpreter!
 ```
 interpretInIO :: Free f a -> IO a
