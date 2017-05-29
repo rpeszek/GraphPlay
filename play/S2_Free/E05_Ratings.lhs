@@ -227,7 +227,8 @@ allThisHardWork = do
 Notes: So where is the catch?  That does seem to be the best thing since the sliced bread!
 The catch is that this uses comonads to build interpreters and comonads are the exact 
 opposite of effectful monads.  
-So if you want to handle effects in the interpreter, it will be either hard or just impossible. 
-Still, for more pure programs this does look phenomenal. 
+So if I want to handle effects in the interpreter, this approach will need some adjustments. 
+One approach I should investigate at some point is to use another pairing to flip back to monad on the interpreter side.
+Even with current limitation, this approach looks phenomenal. 
 
 More notes in next example. 
